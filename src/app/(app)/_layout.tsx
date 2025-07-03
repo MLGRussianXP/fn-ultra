@@ -4,13 +4,11 @@ import React, { useCallback, useEffect } from 'react';
 import {
   Home as HomeIcon,
   Settings as SettingsIcon,
-  Style as StyleIcon,
 } from '@/components/ui/icons';
-import { useAuth, useIsFirstTime } from '@/lib';
+import { useAuth } from '@/lib';
 
 export default function TabLayout() {
   const status = useAuth.use.status();
-  const [isFirstTime] = useIsFirstTime();
   const hideSplash = useCallback(async () => {
     await SplashScreen.hideAsync();
   }, []);
@@ -22,9 +20,6 @@ export default function TabLayout() {
     }
   }, [hideSplash, status]);
 
-  if (isFirstTime) {
-    return <Redirect href="/onboarding" />;
-  }
   if (status === 'signOut') {
     return <Redirect href="/login" />;
   }
@@ -36,16 +31,6 @@ export default function TabLayout() {
           title: 'Shop',
           tabBarIcon: ({ color }) => <HomeIcon color={color} />,
           tabBarButtonTestID: 'shop-tab',
-        }}
-      />
-
-      <Tabs.Screen
-        name="style"
-        options={{
-          title: 'Style',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <StyleIcon color={color} />,
-          tabBarButtonTestID: 'style-tab',
         }}
       />
       <Tabs.Screen

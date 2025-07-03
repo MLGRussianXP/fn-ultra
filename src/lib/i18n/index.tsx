@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { locale } from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';

@@ -1,11 +1,10 @@
-/* eslint-disable react/react-in-jsx-scope */
 import { Env } from '@env';
 import { useColorScheme } from 'nativewind';
 
-import { Item } from '@/components/settings/item';
-import { ItemsContainer } from '@/components/settings/items-container';
-import { LanguageItem } from '@/components/settings/language-item';
-import { ThemeItem } from '@/components/settings/theme-item';
+import { Item } from '@/components/features/settings/item';
+import { ItemsContainer } from '@/components/features/settings/items-container';
+import { LanguageItem } from '@/components/features/settings/language-item';
+import { ThemeItem } from '@/components/features/settings/theme-item';
 import {
   colors,
   FocusAwareStatusBar,

@@ -101,7 +101,7 @@ function GridItems({
 }) {
   return (
     <View className="w-full px-4">
-      <View className="flex-row flex-wrap justify-center gap-3">
+      <View className="flex-row flex-wrap gap-3">
         {entries.map((entry) => (
           <ShopItemCard
             key={entry.offerId}
@@ -157,8 +157,8 @@ function CategorySection({
       <View
         style={{
           opacity: isExpanded ? 1 : 0,
-          maxHeight: isExpanded ? 1000 : 0,
-          overflow: 'hidden',
+          maxHeight: isExpanded ? undefined : 0,
+          overflow: isExpanded ? 'visible' : 'hidden',
         }}
       >
         <GridItems entries={group.entries} vbuckIcon={vbuckIcon} />

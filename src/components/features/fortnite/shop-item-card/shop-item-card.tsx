@@ -22,7 +22,7 @@ export function ShopItemCard({ entry, isWide = false, vbuckIcon }: Props) {
 
   return (
     <View className={`mb-3 overflow-hidden rounded-xl shadow-lg ${widthClass}`}>
-      <View className="relative h-52">
+      <View className="relative h-52 bg-gray-200 dark:bg-gray-700">
         {/* Gradient Background - only show if colors are present */}
         {hasColors && (
           <LinearGradient

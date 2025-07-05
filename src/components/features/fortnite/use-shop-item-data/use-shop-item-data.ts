@@ -26,7 +26,15 @@ function getMainItem(entry: FortniteShopItem) {
 }
 
 function getImage(entry: FortniteShopItem) {
+  // Check bundle image first
   if (entry.bundle && entry.bundle.image) return entry.bundle.image;
+
+  // Check newDisplayAsset renderImages (primary source for shop items)
+  if (entry.newDisplayAsset?.renderImages?.[0]?.image) {
+    return entry.newDisplayAsset.renderImages[0].image;
+  }
+
+  // Fallback to main item images
   const mainItem = getMainItem(entry);
   if (mainItem && 'images' in mainItem && mainItem.images) {
     if ('icon' in mainItem.images && mainItem.images.icon)
@@ -55,12 +63,10 @@ function getTitle(entry: FortniteShopItem) {
 
 function getGradientColors(entry: FortniteShopItem) {
   if (!entry.colors) {
-    console.log('No colors for:', entry.devName);
     return ['#6366f1', '#8b5cf6'] as const; // Default purple gradient
   }
 
   const { color1, color2, color3 } = entry.colors;
-  console.log('Raw colors for', entry.devName, ':', { color1, color2, color3 });
 
   // Convert 8-digit hex to 6-digit hex (remove alpha channel)
   const convertColor = (color: string) => {
@@ -78,14 +84,11 @@ function getGradientColors(entry: FortniteShopItem) {
   if (color3) colors.push(convertColor(color3));
 
   const filteredColors = colors.filter(Boolean);
-  console.log('Converted colors for', entry.devName, ':', filteredColors);
 
   // Ensure we have at least 2 colors for the gradient
   if (filteredColors.length < 2) {
-    console.log('Not enough colors, using default for:', entry.devName);
     return ['#6366f1', '#8b5cf6'] as const;
   }
 
-  console.log('Final gradient colors for', entry.devName, ':', filteredColors);
   return filteredColors as [string, string, ...string[]];
 }

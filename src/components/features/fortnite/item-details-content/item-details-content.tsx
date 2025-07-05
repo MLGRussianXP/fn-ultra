@@ -1,0 +1,58 @@
+import * as React from 'react';
+import { Linking, Pressable } from 'react-native';
+
+import type { FortniteDetailedBrItem } from '@/api/fortnite/types';
+import { Text, View } from '@/components/ui';
+
+import { ItemAdditionalInfo } from './item-additional-info';
+import { ItemHero } from './item-hero';
+import { ItemInfo } from './item-info';
+import { ItemVariants } from './item-variants';
+
+type Props = {
+  item: FortniteDetailedBrItem;
+};
+
+export function ItemDetailsContent({ item }: Props) {
+  const handleShowcaseVideoPress = React.useCallback(() => {
+    if (item.showcaseVideo) {
+      Linking.openURL(`https://www.youtube.com/watch?v=${item.showcaseVideo}`);
+    }
+  }, [item.showcaseVideo]);
+
+  return (
+    <View className="flex-1">
+      <ItemHero item={item} />
+
+      <View className="px-4 pb-2 pt-4">
+        <Text className="mb-1 text-2xl font-bold text-neutral-900 dark:text-white">
+          {item.name}
+        </Text>
+        <Text className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
+          {item.type.displayValue}
+        </Text>
+        <Text className="text-base text-neutral-800 dark:text-neutral-200">
+          {item.description}
+        </Text>
+      </View>
+
+      <View className="p-4 pt-0">
+        <ItemInfo item={item} />
+        <ItemVariants variants={item.variants} />
+
+        {item.showcaseVideo && (
+          <View className="mb-6">
+            <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
+              Showcase Video
+            </Text>
+            <Pressable onPress={handleShowcaseVideoPress}>
+              <Text className="text-blue-500 underline">Watch on YouTube</Text>
+            </Pressable>
+          </View>
+        )}
+
+        <ItemAdditionalInfo item={item} />
+      </View>
+    </View>
+  );
+}

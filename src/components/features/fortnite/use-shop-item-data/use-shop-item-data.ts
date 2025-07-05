@@ -5,12 +5,16 @@ export function useShopItemData(entry: FortniteShopItem) {
   const title = getTitle(entry);
   const gradientColors = getGradientColors(entry);
   const hasColors = !!entry.colors;
+  const seriesImage = getSeriesImage(entry);
+  const hasSeriesImage = !!seriesImage;
 
   return {
     image,
     title,
     gradientColors,
     hasColors,
+    seriesImage,
+    hasSeriesImage,
   };
 }
 
@@ -91,4 +95,12 @@ function getGradientColors(entry: FortniteShopItem) {
   }
 
   return filteredColors as [string, string, ...string[]];
+}
+
+function getSeriesImage(entry: FortniteShopItem) {
+  const mainItem = getMainItem(entry);
+  if (mainItem && 'series' in mainItem && mainItem.series?.image) {
+    return mainItem.series.image;
+  }
+  return undefined;
 }

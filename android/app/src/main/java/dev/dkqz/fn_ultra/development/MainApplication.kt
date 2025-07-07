@@ -1,4 +1,4 @@
-package dev.dkqz.fn.development
+package dev.dkqz.fn_ultra.development
 import com.facebook.react.common.assets.ReactFontManager
 
 import android.app.Application

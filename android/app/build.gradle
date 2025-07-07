@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'dev.dkqz.fn.development'
+    namespace 'dev.dkqz.fn_ultra.development'
     defaultConfig {
-        applicationId 'dev.dkqz.fn.development'
+        applicationId 'dev.dkqz.fn_ultra.development'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

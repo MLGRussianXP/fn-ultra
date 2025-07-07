@@ -1,4 +1,4 @@
-package dev.dkqz.fn.development
+package dev.dkqz.fn_ultra.development
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

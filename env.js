@@ -35,11 +35,11 @@ require('dotenv').config({
 
 // TODO: Replace these values with your own
 
-const BUNDLE_ID = 'dev.dkqz.fn_ultra'; // ios bundle id
+const BUNDLE_ID = 'dev.dkqz.fn-ultra'; // ios bundle id
 const PACKAGE = 'dev.dkqz.fn_ultra'; // android package name
 const NAME = 'FN Ultra'; // app name
 const EXPO_ACCOUNT_OWNER = 'dkqz.dev'; // expo account owner
-const EAS_PROJECT_ID = 'c3e1075b-6fe7-4686-aa49-35b46a229044'; // eas project id
+const EAS_PROJECT_ID = 'f70e32bb-516b-4066-b2c2-ecc70789174b'; // eas project id
 const SCHEME = 'fn_ultra'; // app scheme
 
 /**
@@ -80,10 +80,7 @@ const client = z.object({
   VERSION: z.string(),
 
   // ADD YOUR CLIENT ENV VARS HERE
-  API_URL: z.string(),
   FORTNITE_API_URL: z.string(),
-  VAR_NUMBER: z.number(),
-  VAR_BOOL: z.boolean(),
 });
 
 const buildTime = z.object({
@@ -105,10 +102,7 @@ const _clientEnv = {
   VERSION: packageJSON.version,
 
   // ADD YOUR ENV VARS HERE TOO
-  API_URL: process.env.API_URL,
   FORTNITE_API_URL: process.env.FORTNITE_API_URL,
-  VAR_NUMBER: Number(process.env.VAR_NUMBER),
-  VAR_BOOL: process.env.VAR_BOOL === 'true',
 };
 
 /**

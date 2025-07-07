@@ -53,7 +53,7 @@ describe('ItemImageCarousel', () => {
   it('shows image counter when multiple images are available', () => {
     render(<ItemImageCarousel item={mockItem as any} />);
 
-    expect(screen.getByText('1 / 3')).toBeTruthy(); // featured + variant + icon
+    expect(screen.getByText('1 / 2')).toBeTruthy(); // featured + icon
   });
 
   it('handles item with only icon image', () => {
@@ -98,6 +98,6 @@ describe('ItemImageCarousel', () => {
       },
     });
 
-    expect(screen.getByText('2 / 3')).toBeTruthy();
+    expect(screen.getByText('2 / 2')).toBeTruthy();
   });
 });

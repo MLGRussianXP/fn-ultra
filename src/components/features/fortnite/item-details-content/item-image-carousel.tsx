@@ -78,8 +78,15 @@ function VideoPlayer({ videoId }: { videoId: string }) {
   );
 }
 
-function ImageItem({ uri }: { uri: string }) {
-  return <Image source={{ uri }} className="size-full" contentFit="contain" />;
+function ImageItem({ uri, testID }: { uri: string; testID?: string }) {
+  return (
+    <Image
+      source={{ uri }}
+      className="size-full"
+      contentFit="contain"
+      testID={testID}
+    />
+  );
 }
 
 function CarouselItemComponent({
@@ -100,7 +107,7 @@ function CarouselItemComponent({
       {item.isVideo && item.videoId ? (
         <VideoPlayer videoId={item.videoId} />
       ) : (
-        <ImageItem uri={item.uri} />
+        <ImageItem uri={item.uri} testID={`carousel-image-${index}`} />
       )}
     </Pressable>
   );

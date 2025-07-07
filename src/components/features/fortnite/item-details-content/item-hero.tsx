@@ -30,7 +30,10 @@ export function ItemHero({ item }: Props) {
     <View className="relative aspect-[1.2] w-full overflow-hidden">
       {/* Series Image Background - show if available */}
       {hasSeriesImage && (
-        <View className="absolute inset-0 size-full">
+        <View
+          className="absolute inset-0 size-full"
+          testID="item-hero-series-image"
+        >
           <LinearGradient
             colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.1)']}
             start={{ x: 0, y: 0 }}

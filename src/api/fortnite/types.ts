@@ -332,3 +332,37 @@ export type FortniteShopRequest = {
   includeGiftable?: boolean;
   includeExpired?: boolean;
 };
+
+// Detailed BR Item Types for individual item endpoint
+export type FortniteDetailedBrItem = {
+  id: string;
+  name: string;
+  description: string;
+  exclusiveDescription?: string;
+  unlockRequirements?: string;
+  customExclusiveCallout?: string;
+  type: FortniteType;
+  rarity: FortniteRarity;
+  series?: FortniteSeries;
+  set?: FortniteSet;
+  introduction?: FortniteIntroduction;
+  images: FortniteImages;
+  variants?: FortniteVariant[];
+  builtInEmoteIds?: string[];
+  searchTags?: string[];
+  gameplayTags?: string[];
+  metaTags?: string[];
+  showcaseVideo?: string;
+  dynamicPakId?: string;
+  itemPreviewHeroPath?: string;
+  displayAssetPath?: string;
+  definitionPath?: string;
+  path?: string;
+  added: string;
+  shopHistory?: string[];
+};
+
+export type FortniteDetailedBrItemResponse = {
+  status: number;
+  data: FortniteDetailedBrItem;
+};

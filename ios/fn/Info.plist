@@ -7,7 +7,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>fn</string>
+    <string>FN Ultra</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -27,8 +27,8 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>fn</string>
-          <string>com...development</string>
+          <string>fn_ultra</string>
+          <string>dev.dkqz.fn-ultra.development</string>
         </array>
       </dict>
       <dict>

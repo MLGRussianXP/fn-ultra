@@ -1,16 +1,10 @@
-import { Redirect, SplashScreen, Tabs } from 'expo-router';
+import { Redirect, SplashScreen, Stack } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
 
-import {
-  Home as HomeIcon,
-  Settings as SettingsIcon,
-  Style as StyleIcon,
-} from '@/components/ui/icons';
-import { useAuth, useIsFirstTime } from '@/lib';
+import { useAuth } from '@/lib';
 
-export default function TabLayout() {
+export default function AppLayout() {
   const status = useAuth.use.status();
-  const [isFirstTime] = useIsFirstTime();
   const hideSplash = useCallback(async () => {
     await SplashScreen.hideAsync();
   }, []);
@@ -22,41 +16,27 @@ export default function TabLayout() {
     }
   }, [hideSplash, status]);
 
-  if (isFirstTime) {
-    return <Redirect href="/onboarding" />;
-  }
   if (status === 'signOut') {
     return <Redirect href="/login" />;
   }
+
   return (
-    <Tabs>
-      <Tabs.Screen
+    <Stack>
+      <Stack.Screen
         name="index"
         options={{
           title: 'Shop',
-          tabBarIcon: ({ color }) => <HomeIcon color={color} />,
-          tabBarButtonTestID: 'shop-tab',
         }}
       />
-
-      <Tabs.Screen
-        name="style"
+      <Stack.Screen
+        name="item/[id]"
         options={{
-          title: 'Style',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <StyleIcon color={color} />,
-          tabBarButtonTestID: 'style-tab',
+          presentation: 'modal',
+          headerShown: true,
+          headerBackTitle: 'Back',
+          title: 'Item Details',
         }}
       />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'Settings',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
-          tabBarButtonTestID: 'settings-tab',
-        }}
-      />
-    </Tabs>
+    </Stack>
   );
 }

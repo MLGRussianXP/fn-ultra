@@ -26,6 +26,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="fn"/>
         <data android:scheme="exp+obytesapp"/>
+        <data android:scheme="fn_ultra"/>
       </intent-filter>
     </activity>
   </application>

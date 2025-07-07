@@ -15,12 +15,13 @@ type ItemData = {
   name: string;
   image: string;
   type: string;
+  isAccessible: boolean;
 };
 
 function extractItemsFromEntry(entry: FortniteShopItem): ItemData[] {
   const items: ItemData[] = [];
 
-  // Extract BR items
+  // Extract BR items - these are accessible via API
   if (entry.brItems && Array.isArray(entry.brItems)) {
     entry.brItems.forEach((item) => {
       items.push({
@@ -28,11 +29,12 @@ function extractItemsFromEntry(entry: FortniteShopItem): ItemData[] {
         name: item.name,
         image: item.images.icon,
         type: 'BR Item',
+        isAccessible: true,
       });
     });
   }
 
-  // Extract tracks
+  // Extract tracks - these are NOT accessible via API
   if (entry.tracks && Array.isArray(entry.tracks)) {
     entry.tracks.forEach((track) => {
       items.push({
@@ -40,11 +42,12 @@ function extractItemsFromEntry(entry: FortniteShopItem): ItemData[] {
         name: track.title,
         image: track.albumArt,
         type: 'Track',
+        isAccessible: false,
       });
     });
   }
 
-  // Extract instruments
+  // Extract instruments - these are NOT accessible via API
   if (entry.instruments && Array.isArray(entry.instruments)) {
     entry.instruments.forEach((instrument) => {
       items.push({
@@ -52,11 +55,12 @@ function extractItemsFromEntry(entry: FortniteShopItem): ItemData[] {
         name: instrument.name,
         image: instrument.images.large,
         type: 'Instrument',
+        isAccessible: false,
       });
     });
   }
 
-  // Extract cars
+  // Extract cars - these are NOT accessible via API
   if (entry.cars && Array.isArray(entry.cars)) {
     entry.cars.forEach((car) => {
       items.push({
@@ -64,11 +68,12 @@ function extractItemsFromEntry(entry: FortniteShopItem): ItemData[] {
         name: car.name,
         image: car.images.large,
         type: 'Car',
+        isAccessible: false,
       });
     });
   }
 
-  // Extract lego kits
+  // Extract lego kits - these are NOT accessible via API
   if (entry.legoKits && Array.isArray(entry.legoKits)) {
     entry.legoKits.forEach((kit) => {
       items.push({
@@ -76,6 +81,7 @@ function extractItemsFromEntry(entry: FortniteShopItem): ItemData[] {
         name: kit.name,
         image: kit.images.large,
         type: 'Lego Kit',
+        isAccessible: false,
       });
     });
   }
@@ -92,21 +98,46 @@ function ItemSelectorItem({
   isSelected: boolean;
   onPress: () => void;
 }) {
+  const isDisabled = !item.isAccessible;
+
+  const getContainerStyles = () => {
+    if (isDisabled) {
+      return 'mr-3 rounded-lg border-2 p-2 border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-800 opacity-50';
+    }
+
+    if (isSelected) {
+      return 'mr-3 rounded-lg border-2 p-2 border-blue-500 bg-blue-50 dark:bg-blue-900/20';
+    }
+
+    return 'mr-3 rounded-lg border-2 p-2 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800';
+  };
+
+  const getTextStyles = () => {
+    if (isDisabled) {
+      return 'text-xs font-medium text-gray-500 dark:text-gray-500';
+    }
+
+    if (isSelected) {
+      return 'text-xs font-medium text-blue-600 dark:text-blue-400';
+    }
+
+    return 'text-xs font-medium text-gray-700 dark:text-gray-300';
+  };
+
   return (
     <Pressable
       onPress={onPress}
-      className={`mr-3 rounded-lg border-2 p-2 ${isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'}`}
+      disabled={isDisabled}
+      className={getContainerStyles()}
       testID={`item-selector-${item.id}`}
     >
       <Image
         source={{ uri: item.image }}
         className="mb-2 size-16 rounded"
         contentFit="cover"
+        style={isDisabled ? { opacity: 0.5 } : undefined}
       />
-      <Text
-        className={`text-xs font-medium ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'}`}
-        numberOfLines={2}
-      >
+      <Text className={getTextStyles()} numberOfLines={2}>
         {item.name}
       </Text>
     </Pressable>
@@ -121,7 +152,7 @@ export function ItemSelector({ entry, selectedItemId, onItemSelect }: Props) {
       <ItemSelectorItem
         item={item}
         isSelected={item.id === selectedItemId}
-        onPress={() => onItemSelect(item.id)}
+        onPress={() => item.isAccessible && onItemSelect(item.id)}
       />
     ),
     [selectedItemId, onItemSelect]

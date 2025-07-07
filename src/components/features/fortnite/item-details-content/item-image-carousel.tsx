@@ -82,7 +82,7 @@ function ImageItem({ uri }: { uri: string }) {
   return <Image source={{ uri }} className="size-full" contentFit="contain" />;
 }
 
-function CarouselItem({
+function CarouselItemComponent({
   item,
   index,
   onPress,
@@ -135,7 +135,11 @@ function CarouselContent({
 }) {
   const renderItem = React.useCallback(
     ({ item: carouselItem, index }: { item: CarouselItem; index: number }) => (
-      <CarouselItem item={carouselItem} index={index} onPress={onImagePress} />
+      <CarouselItemComponent
+        item={carouselItem}
+        index={index}
+        onPress={onImagePress}
+      />
     ),
     [onImagePress]
   );

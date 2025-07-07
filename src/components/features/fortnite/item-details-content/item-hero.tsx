@@ -1,7 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient';
 
 import type { FortniteDetailedBrItem } from '@/api/fortnite/types';
-import { Image, View } from '@/components/ui';
+import { View } from '@/components/ui';
+
+import { ItemImageCarousel } from './item-image-carousel';
 
 type Props = {
   item: FortniteDetailedBrItem;
@@ -28,12 +30,21 @@ export function ItemHero({ item }: Props) {
     <View className="relative aspect-[1.2] w-full overflow-hidden">
       {/* Series Image Background - show if available */}
       {hasSeriesImage && (
-        <Image
-          source={{ uri: item.series!.image }}
-          className="absolute inset-0 size-full"
-          contentFit="cover"
-          testID="item-hero-series-image"
-        />
+        <View className="absolute inset-0 size-full">
+          <LinearGradient
+            colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.1)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1,
+            }}
+          />
+        </View>
       )}
 
       {/* Background gradient - only show if no series image */}
@@ -53,14 +64,10 @@ export function ItemHero({ item }: Props) {
         />
       )}
 
-      {/* Image */}
-      {item.images.featured && (
-        <Image
-          source={{ uri: item.images.featured }}
-          className="relative z-10 size-full"
-          contentFit="contain"
-        />
-      )}
+      {/* Image Carousel */}
+      <View className="relative z-10 size-full">
+        <ItemImageCarousel item={item} />
+      </View>
     </View>
   );
 }

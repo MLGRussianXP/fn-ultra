@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Linking, Pressable } from 'react-native';
 
 import type { FortniteDetailedBrItem } from '@/api/fortnite/types';
 import { Text, View } from '@/components/ui';
@@ -14,12 +13,6 @@ type Props = {
 };
 
 export function ItemDetailsContent({ item }: Props) {
-  const handleShowcaseVideoPress = React.useCallback(() => {
-    if (item.showcaseVideo) {
-      Linking.openURL(`https://www.youtube.com/watch?v=${item.showcaseVideo}`);
-    }
-  }, [item.showcaseVideo]);
-
   return (
     <View className="flex-1">
       <ItemHero item={item} />
@@ -39,17 +32,6 @@ export function ItemDetailsContent({ item }: Props) {
       <View className="p-4 pt-0">
         <ItemInfo item={item} />
         <ItemVariants variants={item.variants} />
-
-        {item.showcaseVideo && (
-          <View className="mb-6">
-            <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
-              Showcase Video
-            </Text>
-            <Pressable onPress={handleShowcaseVideoPress}>
-              <Text className="text-blue-500 underline">Watch on YouTube</Text>
-            </Pressable>
-          </View>
-        )}
 
         <ItemAdditionalInfo item={item} />
       </View>

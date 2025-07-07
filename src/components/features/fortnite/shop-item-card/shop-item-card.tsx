@@ -7,6 +7,7 @@ import type { FortniteShopItem } from '@/api/fortnite/types';
 import { ShopItemPrice } from '@/components/features/fortnite/shop-item-price';
 import { useShopItemData } from '@/components/features/fortnite/use-shop-item-data';
 import { Image, Text, View } from '@/components/ui';
+import { countItemsInEntry, isSingleItemEntry } from '@/lib/utils';
 
 type Props = {
   entry: FortniteShopItem;
@@ -102,6 +103,39 @@ function ShopItemOverlay({
   );
 }
 
+function useShopItemNavigation(
+  entry: FortniteShopItem,
+  hasBrItems: boolean,
+  brItems: any[]
+) {
+  return React.useCallback(() => {
+    if (hasBrItems) {
+      const itemCount = countItemsInEntry(entry);
+      const isSingleItem = isSingleItemEntry(entry);
+
+      if (isSingleItem) {
+        // Single item - redirect to item details page
+        router.push(`/item/${brItems[0].id}` as any);
+      } else {
+        // Multiple items - log and redirect to item details page with entry data
+        console.log(
+          `Shop item "${entry.devName}" contains ${itemCount} items. Is single item: ${isSingleItem}`
+        );
+        console.log(
+          `Redirecting to multi-item details (first item): ${brItems[0].id}`
+        );
+        router.push({
+          pathname: `/item/${brItems[0].id}` as any,
+          params: {
+            entryData: JSON.stringify(entry),
+            isMultiItem: 'true',
+          },
+        });
+      }
+    }
+  }, [brItems, hasBrItems, entry]);
+}
+
 export function ShopItemCard({ entry, isWide = false, vbuckIcon }: Props) {
   const {
     image,
@@ -118,11 +152,7 @@ export function ShopItemCard({ entry, isWide = false, vbuckIcon }: Props) {
   const priceClass = isWide ? 'text-base' : 'text-sm';
   const hasBrItems = brItems && brItems.length > 0;
 
-  const handlePress = React.useCallback(() => {
-    if (hasBrItems) {
-      router.push(`/item/${brItems[0].id}`);
-    }
-  }, [brItems, hasBrItems]);
+  const handlePress = useShopItemNavigation(entry, !!hasBrItems, brItems || []);
 
   return (
     <Pressable

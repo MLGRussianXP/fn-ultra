@@ -23,7 +23,13 @@ export default function AppLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="item"
+        name="index"
+        options={{
+          title: 'Shop',
+        }}
+      />
+      <Stack.Screen
+        name="item/[id]"
         options={{
           presentation: 'modal',
           headerShown: true,

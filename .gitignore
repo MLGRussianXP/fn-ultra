@@ -11,7 +11,7 @@ npm-debug.*
 web-build/
 yarn-error.log
 /coverage
-.env.*
+.env.production
 # macOS
 .DS_Store
 

@@ -12,6 +12,8 @@ web-build/
 yarn-error.log
 /coverage
 .env.production
+android/
+ios/
 # macOS
 .DS_Store
 

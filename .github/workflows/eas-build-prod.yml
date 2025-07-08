@@ -36,6 +36,13 @@ jobs:
       - name: 📦 Setup Node + PNPM + install deps
         uses: ./.github/actions/setup-node-pnpm-install
 
+      - name: Create envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_DEBUG: false
+          envkey_FORTNITE_API_URL: ${{ secrets.FORTNITE_API_URL }}
+          file_name: .env.production
+
       - name: ⏱️ EAS Build
         uses: ./.github/actions/eas-build
         with:

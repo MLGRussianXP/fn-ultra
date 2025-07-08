@@ -3,9 +3,14 @@ import '@shopify/flash-list/jestSetup';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 import type { RenderOptions } from '@testing-library/react-native';
-import { render, userEvent } from '@testing-library/react-native';
+import { cleanup, render, userEvent } from '@testing-library/react-native';
 import type { ReactElement } from 'react';
 import React from 'react';
+
+// Clean up after each test
+afterEach(() => {
+  cleanup();
+});
 
 const createAppWrapper = () => {
   return ({ children }: { children: React.ReactNode }) => (

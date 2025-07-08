@@ -110,7 +110,7 @@ let ModalImpl = React.forwardRef(
 );
 
 if (process.env.NODE_ENV === 'test') {
-  ModalImpl = React.forwardRef(function ModalMock(props: any) {
+  ModalImpl = React.forwardRef(function ModalMock(props: any, _ref: any) {
     return props.children ?? null;
   });
   ModalImpl.displayName = 'Modal';

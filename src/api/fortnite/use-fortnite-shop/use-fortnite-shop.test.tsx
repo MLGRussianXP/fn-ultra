@@ -87,23 +87,28 @@ const mockShopResponse = {
   },
 };
 
-function createWrapper() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-
+function createWrapper(queryClient: QueryClient) {
   return ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }
 
 describe('useFortniteShop', () => {
+  let queryClient: QueryClient;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+  });
+
+  afterEach(() => {
+    queryClient.clear();
   });
 
   it('fetches shop data successfully', async () => {
@@ -113,7 +118,7 @@ describe('useFortniteShop', () => {
     });
 
     const { result } = renderHook(() => useFortniteShop(), {
-      wrapper: createWrapper(),
+      wrapper: createWrapper(queryClient),
     });
 
     await waitFor(() => {
@@ -129,7 +134,7 @@ describe('useFortniteShop', () => {
     (fetch as jest.Mock).mockRejectedValueOnce(new Error(errorMessage));
 
     const { result } = renderHook(() => useFortniteShop(), {
-      wrapper: createWrapper(),
+      wrapper: createWrapper(queryClient),
     });
 
     await waitFor(() => {
@@ -146,7 +151,7 @@ describe('useFortniteShop', () => {
     });
 
     const { result } = renderHook(() => useFortniteShop(), {
-      wrapper: createWrapper(),
+      wrapper: createWrapper(queryClient),
     });
 
     await waitFor(() => {

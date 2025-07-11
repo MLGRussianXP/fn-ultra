@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import * as React from 'react';
 import { Dimensions, Pressable } from 'react-native';
 import Animated, {
@@ -93,22 +94,64 @@ function CarouselItemComponent({
   item,
   index,
   onPress,
+  parentItem,
 }: {
   item: CarouselItem;
   index: number;
   onPress: (index: number) => void;
+  parentItem: FortniteDetailedBrItem;
 }) {
+  // Background logic (series image or gradient)
+  const hasSeriesImage = !!parentItem.series?.image;
+  const gradientColors = React.useMemo(() => {
+    if (parentItem.series?.colors && parentItem.series.colors.length >= 2) {
+      const colors = parentItem.series.colors
+        .slice(0, 2)
+        .map((color) => `#${color.slice(0, 6)}`);
+      return colors as [string, string];
+    }
+    return ['#6366f1', '#8b5cf6'] as const;
+  }, [parentItem]);
+
   return (
     <Pressable
       onPress={() => onPress(index)}
       className="w-full items-center justify-center"
       style={{ width: screenWidth }}
     >
-      {item.isVideo && item.videoId ? (
-        <VideoPlayer videoId={item.videoId} />
-      ) : (
-        <ImageItem uri={item.uri} testID={`carousel-image-${index}`} />
-      )}
+      {/* Background: series image or gradient */}
+      <View className="absolute inset-0 size-full">
+        {hasSeriesImage && parentItem.series?.image ? (
+          <Image
+            source={{ uri: parentItem.series.image }}
+            className="absolute inset-0 size-full"
+            contentFit="cover"
+            testID="carousel-series-image-bg"
+          />
+        ) : (
+          <LinearGradient
+            colors={gradientColors}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+            testID="carousel-gradient-bg"
+          />
+        )}
+      </View>
+      {/* Foreground: image or video */}
+      <View className="relative z-10 size-full">
+        {item.isVideo && item.videoId ? (
+          <VideoPlayer videoId={item.videoId} />
+        ) : (
+          <ImageItem uri={item.uri} testID={`carousel-image-${index}`} />
+        )}
+      </View>
     </Pressable>
   );
 }
@@ -134,11 +177,13 @@ function CarouselContent({
   onImagePress,
   onScroll,
   onMomentumScrollEnd,
+  parentItem,
 }: {
   images: CarouselItem[];
   onImagePress: (index: number) => void;
   onScroll: any;
   onMomentumScrollEnd: any;
+  parentItem: FortniteDetailedBrItem;
 }) {
   const renderItem = React.useCallback(
     ({ item: carouselItem, index }: { item: CarouselItem; index: number }) => (
@@ -146,9 +191,10 @@ function CarouselContent({
         item={carouselItem}
         index={index}
         onPress={onImagePress}
+        parentItem={parentItem}
       />
     ),
-    [onImagePress]
+    [onImagePress, parentItem]
   );
 
   return (
@@ -206,6 +252,7 @@ export function ItemImageCarousel({ item }: Props) {
         onImagePress={handleImagePress}
         onScroll={scrollHandler}
         onMomentumScrollEnd={handleMomentumScrollEnd}
+        parentItem={item}
       />
 
       {/* Image counter */}

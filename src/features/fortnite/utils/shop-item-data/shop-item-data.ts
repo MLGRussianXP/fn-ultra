@@ -40,10 +40,18 @@ export function getSeriesImage(entry: ShopItem) {
 export function getGradientColors(entry: ShopItem): string[] {
   // If the entry has colors, use them
   if (entry.colors) {
-    return [
-      `#${entry.colors.color1.slice(0, 6)}`,
-      `#${entry.colors.color2.slice(0, 6)}`,
-    ];
+    // Check if color1 and color2 exist and have the slice method
+    const color1 =
+      entry.colors.color1 && typeof entry.colors.color1 === 'string'
+        ? `#${entry.colors.color1.slice(0, 6)}`
+        : '#6366f1';
+
+    const color2 =
+      entry.colors.color2 && typeof entry.colors.color2 === 'string'
+        ? `#${entry.colors.color2.slice(0, 6)}`
+        : '#8b5cf6';
+
+    return [color1, color2];
   }
 
   // If the main item has series colors, use them
@@ -51,7 +59,9 @@ export function getGradientColors(entry: ShopItem): string[] {
   if (mainItem?.series?.colors && mainItem.series.colors.length >= 2) {
     return mainItem.series.colors
       .slice(0, 2)
-      .map((color) => `#${color.slice(0, 6)}`);
+      .map((color) =>
+        typeof color === 'string' ? `#${color.slice(0, 6)}` : '#6366f1'
+      );
   }
 
   // Default gradient colors

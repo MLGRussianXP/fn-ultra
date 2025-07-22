@@ -1,175 +1,247 @@
+import { FlashList } from '@shopify/flash-list';
 import { router } from 'expo-router';
-import React from 'react';
-import { FlatList, RefreshControl } from 'react-native';
+import * as React from 'react';
+import { Pressable, RefreshControl } from 'react-native';
 
 import { useShop } from '@/api/fortnite';
 import type { ShopItem } from '@/api/fortnite/types';
-import { FocusAwareStatusBar, Text, View } from '@/components/ui';
+import { EmptyList, FocusAwareStatusBar, Text, View } from '@/components/ui';
 
 import { ShopItem as ShopItemComponent } from '../shop-item';
 
-/**
- * Loading state component
- */
-function LoadingView() {
-  return (
-    <View className="flex-1 items-center justify-center bg-neutral-950">
-      <FocusAwareStatusBar />
-      <Text className="text-lg text-white">Loading shop...</Text>
-    </View>
-  );
+// Custom hook for shop state management
+function useShopState() {
+  const { data, isPending, isError, error, refetch } = useShop();
+
+  const grouped = React.useMemo(() => {
+    const entries = data?.data?.entries || [];
+
+    if (entries.length === 0) {
+      return [];
+    }
+
+    return groupAndSortEntries(entries);
+  }, [data]);
+
+  return {
+    data,
+    isPending,
+    isError,
+    error,
+    refetch,
+    grouped,
+  };
 }
 
-/**
- * Error state component
- */
-function ErrorView({
+function ShopError({
   error,
-  refetch,
+  onRetry,
 }: {
   error: unknown;
-  refetch: () => void;
+  onRetry: () => void;
 }) {
   return (
-    <View className="flex-1 items-center justify-center bg-neutral-950">
+    <View className="flex-1 items-center justify-center p-4">
       <FocusAwareStatusBar />
-      <Text className="mb-2 text-center text-lg font-semibold text-white">
+      <Text className="mb-2 text-center text-lg font-semibold text-gray-900 dark:text-white">
         Error Loading Shop
       </Text>
-      <Text className="mb-4 text-center text-sm text-gray-300">
-        {error instanceof Error ? error.message : 'Failed to load shop data'}
+      <Text className="mb-4 text-center text-sm text-gray-600 dark:text-gray-300">
+        {error instanceof Error
+          ? error.message
+          : 'Failed to load Fortnite shop data'}
       </Text>
       <Text
-        className="text-blue-400 underline"
-        onPress={() => refetch()}
-        testID="refresh-button"
+        onPress={onRetry}
+        className="rounded bg-blue-500 px-4 py-2 text-white"
       >
-        Tap to retry
+        Try Again
       </Text>
     </View>
   );
 }
 
-/**
- * Empty state component
- */
-function EmptyView() {
+// Group entries by layout index, sort each group by sortPriority, and sort groups by layout index
+function groupAndSortEntries(entries: ShopItem[]) {
+  const groupsMap = new Map<
+    number,
+    { layoutName: string; layoutIndex: number; entries: ShopItem[] }
+  >();
+  for (const entry of entries) {
+    const idx = entry.layout.index;
+    if (!groupsMap.has(idx)) {
+      groupsMap.set(idx, {
+        layoutName: entry.layout.name,
+        layoutIndex: idx,
+        entries: [],
+      });
+    }
+    groupsMap.get(idx)!.entries.push(entry);
+  }
+  // Sort each group by sortPriority
+  const groups = Array.from(groupsMap.values());
+  for (const group of groups) {
+    group.entries.sort((a, b) => {
+      if (a.layoutId > b.layoutId) return -1;
+      if (a.layoutId < b.layoutId) return 1;
+      return b.sortPriority - a.sortPriority;
+    });
+  }
+  // Sort groups by layout index
+  groups.sort((a, b) => a.layoutIndex - b.layoutIndex);
+  return groups;
+}
+
+// Render grid items for a group
+function GridItems({
+  entries,
+  onItemPress,
+}: {
+  entries: ShopItem[];
+  onItemPress: (entry: ShopItem) => void;
+}) {
   return (
-    <View className="flex-1 items-center justify-center bg-neutral-950">
+    <View className="w-full px-4">
+      <View className="flex-row flex-wrap gap-3">
+        {entries.map((entry) => (
+          <View key={entry.offerId} className="mb-4 w-[48%] grow">
+            <ShopItemComponent
+              item={entry}
+              onPress={() => onItemPress(entry)}
+            />
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+// Foldable category component with its own state
+function CategorySection({
+  group,
+  onItemPress,
+}: {
+  group: {
+    layoutName: string;
+    layoutIndex: number;
+    entries: ShopItem[];
+  };
+  onItemPress: (entry: ShopItem) => void;
+}) {
+  const [isExpanded, setIsExpanded] = React.useState(true); // Start expanded by default
+
+  const toggleExpanded = React.useCallback(() => {
+    setIsExpanded((prev) => !prev);
+  }, []);
+
+  return (
+    <View className="mb-6 w-full">
+      {/* Collapsible Header */}
+      <Pressable
+        className="mx-4 mb-4 flex-row items-center justify-between rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800"
+        onPress={toggleExpanded}
+        android_ripple={{ color: 'rgba(0,0,0,0.1)' }}
+      >
+        <View className="flex-1 flex-row items-center">
+          <View className="h-px flex-1 bg-neutral-300 dark:bg-neutral-700" />
+          <Text className="mx-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+            {group.layoutName} ({group.entries.length} items)
+          </Text>
+          <View className="h-px flex-1 bg-neutral-300 dark:bg-neutral-700" />
+        </View>
+        <Text className="ml-2 text-lg text-neutral-500 dark:text-neutral-400">
+          {isExpanded ? '−' : '+'}
+        </Text>
+      </Pressable>
+
+      {/* Content - always render but hide when collapsed */}
+      <View
+        style={{
+          opacity: isExpanded ? 1 : 0,
+          maxHeight: isExpanded ? undefined : 0,
+          overflow: isExpanded ? 'visible' : 'hidden',
+        }}
+      >
+        <GridItems entries={group.entries} onItemPress={onItemPress} />
+      </View>
+    </View>
+  );
+}
+
+// Loading state component
+function LoadingState() {
+  return (
+    <View className="flex-1 items-center justify-center bg-neutral-50 dark:bg-neutral-900">
       <FocusAwareStatusBar />
-      <Text className="text-lg text-white">No items in shop</Text>
+      <Text className="text-lg text-gray-900 dark:text-white">
+        Loading Fortnite Shop...
+      </Text>
+    </View>
+  );
+}
+
+// No data state component
+function NoDataState({ onRetry }: { onRetry: () => void }) {
+  return (
+    <View className="flex-1 items-center justify-center bg-neutral-50 dark:bg-neutral-900">
+      <FocusAwareStatusBar />
+      <Text className="mb-4 text-center text-lg text-gray-900 dark:text-white">
+        No shop data available
+      </Text>
+      <Text className="mb-4 text-center text-sm text-gray-600 dark:text-gray-300">
+        The Fortnite shop might be temporarily unavailable
+      </Text>
+      <Text
+        onPress={onRetry}
+        className="rounded bg-blue-500 px-4 py-2 text-white"
+      >
+        Try Again
+      </Text>
     </View>
   );
 }
 
 export function ShopScreen() {
-  const { data, isPending, isError, error, refetch } = useShop();
+  const { data, isPending, isError, error, refetch, grouped } = useShopState();
 
-  if (isPending) {
-    return <LoadingView />;
-  }
-
-  if (isError) {
-    return <ErrorView error={error} refetch={refetch} />;
-  }
-
-  if (!data?.data?.entries?.length) {
-    return <EmptyView />;
-  }
-
-  const groupedEntries = groupAndSortEntries(data.data.entries);
-
-  return (
-    <View className="flex-1 bg-neutral-950">
-      <FocusAwareStatusBar />
-      <FlatList<GroupedEntry>
-        data={groupedEntries}
-        keyExtractor={(item) => String(item.layoutName)}
-        renderItem={({ item }) => (
-          <ShopSection
-            title={item.layoutName}
-            entries={item.entries}
-            onItemPress={(entry) => {
-              router.push({
-                pathname: '/item/[id]',
-                params: {
-                  id: entry.brItems?.[0]?.id || 'unknown',
-                  entry: JSON.stringify(entry),
-                },
-              });
-            }}
-          />
-        )}
-        refreshControl={
-          <RefreshControl
-            refreshing={isPending}
-            onRefresh={refetch}
-            tintColor="white"
-          />
-        }
-      />
-    </View>
-  );
-}
-
-// Define the type for grouped entries
-type GroupedEntry = {
-  layoutName: string;
-  layoutIndex: number;
-  entries: ShopItem[];
-};
-
-/**
- * Groups shop entries by layout name and sorts them by layout index
- */
-function groupAndSortEntries(entries: ShopItem[]): GroupedEntry[] {
-  const groupedEntries = entries.reduce((acc: GroupedEntry[], entry) => {
-    const layoutName = entry.layout?.name || 'Unknown';
-    const layoutIndex = entry.layout?.index || 999;
-
-    const existingGroup = acc.find((group) => group.layoutName === layoutName);
-
-    if (existingGroup) {
-      existingGroup.entries.push(entry);
-    } else {
-      acc.push({
-        layoutName,
-        layoutIndex,
-        entries: [entry],
-      });
-    }
-
-    return acc;
+  const handleItemPress = React.useCallback((entry: ShopItem) => {
+    router.push({
+      pathname: '/item/[id]',
+      params: {
+        id: entry.brItems?.[0]?.id || 'unknown',
+        entry: JSON.stringify(entry),
+      },
+    });
   }, []);
 
-  // Sort by layout index
-  return groupedEntries.sort((a, b) => a.layoutIndex - b.layoutIndex);
-}
+  if (isError) {
+    return <ShopError error={error} onRetry={refetch} />;
+  }
 
-/**
- * A section of shop items with a title
- */
-function ShopSection({
-  title,
-  entries,
-  onItemPress,
-}: {
-  title: string;
-  entries: ShopItem[];
-  onItemPress: (entry: ShopItem) => void;
-}) {
+  if (isPending) {
+    return <LoadingState />;
+  }
+
+  if (!data?.data?.entries || data.data.entries.length === 0) {
+    return <NoDataState onRetry={refetch} />;
+  }
+
   return (
-    <View className="px-4 pb-6 pt-4">
-      <Text className="mb-4 text-xl font-bold text-white">{title}</Text>
-      <FlatList
-        data={entries}
-        keyExtractor={(item) => item.offerId}
-        renderItem={({ item }) => (
-          <ShopItemComponent item={item} onPress={() => onItemPress(item)} />
+    <View className="flex-1 bg-neutral-50 dark:bg-neutral-900">
+      <FocusAwareStatusBar />
+      <FlashList
+        data={grouped}
+        renderItem={({ item: group }) => (
+          <CategorySection group={group} onItemPress={handleItemPress} />
         )}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        ItemSeparatorComponent={() => <View className="w-4" />}
+        keyExtractor={(group) => `layout-${group.layoutIndex}`}
+        ListEmptyComponent={<EmptyList isLoading={isPending} />}
+        estimatedItemSize={300}
+        refreshControl={
+          <RefreshControl refreshing={isPending} onRefresh={refetch} />
+        }
+        contentContainerStyle={{ paddingVertical: 16 }}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );

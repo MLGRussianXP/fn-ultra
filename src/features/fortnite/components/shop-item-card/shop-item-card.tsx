@@ -104,9 +104,15 @@ function useShopItemNavigation(
 
       if (isSingleItem) {
         // Single item - redirect to item details page
-        router.push(`/item/${brItems[0].id}` as any);
+        router.push({
+          pathname: '/item/[id]',
+          params: {
+            id: brItems[0].id,
+            entry: JSON.stringify(entry),
+          },
+        });
       } else {
-        // Multiple items - log and redirect to item details page with entry data
+        // Multiple items - redirect to item details page with entry data
         console.log(
           `Shop item "${entry.devName}" contains ${itemCount} items. Is single item: ${isSingleItem}`
         );
@@ -114,10 +120,10 @@ function useShopItemNavigation(
           `Redirecting to multi-item details (first item): ${brItems[0].id}`
         );
         router.push({
-          pathname: `/item/${brItems[0].id}` as any,
+          pathname: '/item/[id]',
           params: {
-            entryData: JSON.stringify(entry),
-            isMultiItem: 'true',
+            id: brItems[0].id,
+            entry: JSON.stringify(entry),
           },
         });
       }
@@ -149,8 +155,6 @@ export function ShopItemCard({ entry, isWide = false }: Props) {
       android_ripple={{ color: 'rgba(0,0,0,0.1)' }}
       disabled={!hasBrItems}
       testID="shop-item-card-pressable"
-      role="button"
-      accessibilityRole="button"
     >
       <View className="relative h-52 bg-gray-200 dark:bg-gray-700">
         <ShopItemBackground

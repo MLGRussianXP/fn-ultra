@@ -6,9 +6,7 @@ import { useBrItem } from '@/api/fortnite';
 import type { ShopItem } from '@/api/fortnite/types';
 import { FocusAwareStatusBar, Text } from '@/components/ui';
 import { ItemAdditionalInfo } from '@/features/fortnite/components/item-details-content/item-additional-info';
-import { ItemDetails } from '@/features/fortnite/components/item-details-content/item-details';
 import { ItemHero } from '@/features/fortnite/components/item-details-content/item-hero';
-import { ItemImageCarousel } from '@/features/fortnite/components/item-details-content/item-image-carousel';
 import { ItemInfo } from '@/features/fortnite/components/item-details-content/item-info';
 import { ItemSelector } from '@/features/fortnite/components/item-details-content/item-selector';
 import { ItemVariants } from '@/features/fortnite/components/item-details-content/item-variants';
@@ -107,13 +105,6 @@ export function ItemDetailsScreen() {
           gradientColors={gradientColors}
         />
 
-        {/* Image carousel */}
-        <ItemImageCarousel
-          brItemData={brItemData.data}
-          seriesImage={seriesImage}
-          gradientColors={gradientColors}
-        />
-
         {/* Item info */}
         <ItemInfo brItemData={brItemData.data} />
 
@@ -124,14 +115,6 @@ export function ItemDetailsScreen() {
 
         {/* Additional info */}
         <ItemAdditionalInfo brItemData={brItemData.data} />
-
-        {/* Full item details for debugging */}
-        <ItemDetails
-          entry={entry}
-          brItemData={brItemData.data}
-          selectedItemId={selectedItemId}
-          onSelectItem={handleSelectItem}
-        />
       </ScrollView>
     </View>
   );

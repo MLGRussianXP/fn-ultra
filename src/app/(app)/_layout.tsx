@@ -1,24 +1,16 @@
-import { Redirect, SplashScreen, Stack } from 'expo-router';
+import { SplashScreen, Stack } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
 
-import { useAuth } from '@/lib';
-
 export default function AppLayout() {
-  const status = useAuth.use.status();
   const hideSplash = useCallback(async () => {
     await SplashScreen.hideAsync();
   }, []);
-  useEffect(() => {
-    if (status !== 'idle') {
-      setTimeout(() => {
-        hideSplash();
-      }, 1000);
-    }
-  }, [hideSplash, status]);
 
-  if (status === 'signOut') {
-    return <Redirect href="/login" />;
-  }
+  useEffect(() => {
+    setTimeout(() => {
+      hideSplash();
+    }, 1000);
+  }, [hideSplash]);
 
   return (
     <Stack>

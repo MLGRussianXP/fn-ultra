@@ -3,15 +3,6 @@
  * This component is used to handle the keyboard in a modal.
  * It is a wrapper around the `KeyboardAwareScrollView` component from `react-native-keyboard-controller`.
  * It is used to handle the keyboard in a modal.
- * example usage:
-      export function Example() {
-        return (
-          <Modal>
-            <BottomSheetKeyboardAwareScrollView>
-            </BottomSheetKeyboardAwareScrollView>
-          </Modal>
-        );
-        }
  */
 import {
   type BottomSheetScrollViewMethods,

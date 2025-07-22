@@ -1,98 +1,159 @@
-<h1 align="center">
-  <img alt="logo" src="./assets/icon.png" width="124px" style="border-radius:10px"/><br/>
-FN Ultra - Fortnite Shop App </h1>
+# FN Ultra - Fortnite Shop App
 
-> A React Native app for viewing the current Fortnite shop items
+<div align="center">
+  <img src="./assets/icon.png" width="124px" style="border-radius:10px"/>
+</div>
 
-## Requirements
+A React Native mobile application that displays the current Fortnite shop items with detailed information including prices, rarity, descriptions, and images.
 
-- [React Native dev environment ](https://reactnative.dev/docs/environment-setup)
-- [Node.js LTS release](https://nodejs.org/en/)
+## 🚀 Tech Stack
+
+- **Framework**: [React Native](https://reactnative.dev/) with [Expo](https://expo.dev/)
+- **Navigation**: [Expo Router](https://docs.expo.dev/router/introduction/)
+- **Styling**: [NativeWind](https://www.nativewind.dev/) (TailwindCSS for React Native)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Data Fetching**: [TanStack Query](https://tanstack.com/query/latest) (React Query)
+- **API Client**: [Axios](https://axios-http.com/)
+- **Form Handling**: [React Hook Form](https://react-hook-form.com/) with [Zod](https://zod.dev/) validation
+- **Internationalization**: [i18next](https://www.i18next.com/) with [react-i18next](https://react.i18next.com/)
+- **Storage**: [MMKV](https://github.com/mrousavy/react-native-mmkv)
+- **UI Components**: Custom components built with NativeWind
+- **Testing**: [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+
+## 📋 Requirements
+
+- [Node.js](https://nodejs.org/en/) (LTS version)
 - [Git](https://git-scm.com/)
-- [Watchman](https://facebook.github.io/watchman/docs/install#buildinstall), required only for macOS or Linux users
-- [Pnpm](https://pnpm.io/installation)
-- [Cursor](https://www.cursor.com/) or [VS Code Editor](https://code.visualstudio.com/download) ⚠️ Make sure to install all recommended extension from `.vscode/extensions.json`
+- [pnpm](https://pnpm.io/installation) (Package manager)
+- [Watchman](https://facebook.github.io/watchman/docs/install#buildinstall) (for macOS/Linux users)
+- [React Native development environment](https://reactnative.dev/docs/environment-setup)
+- [Cursor](https://www.cursor.com/) or [VS Code](https://code.visualstudio.com/download) with recommended extensions
 
-## 👋 Quick start
+## 🔧 Setup Instructions
 
-Clone the repo to your machine and install deps :
+### 1. Clone the repository
 
-```sh
+```bash
 git clone https://github.com/user/repo-name
+cd repo-name
+```
 
-cd ./repo-name
+### 2. Install dependencies
 
+```bash
 pnpm install
 ```
 
-### Environment Setup
+### 3. Run the app
 
-Create a `.env.development` file in the root directory with the following variables:
+For iOS:
 
-```sh
-# API Configuration
-API_URL=https://jsonplaceholder.typicode.com
-FORTNITE_API_URL=https://fortnite-api.com
-
-# Environment Variables
-VAR_NUMBER=42
-VAR_BOOL=true
-
-# Build Time Variables
-SECRET_KEY=your-secret-key-here
-```
-
-To run the app on ios
-
-```sh
+```bash
 pnpm ios
 ```
 
-To run the app on Android
+For Android:
 
-```sh
+```bash
 pnpm android
 ```
 
-## 🎮 Features
-
-- **Daily Fortnite Shop**: View current shop items with real-time data from the Fortnite API
-- **Item Details**: See item names, descriptions, prices, rarity, and images
-- **Pull to Refresh**: Refresh shop data with pull-to-refresh functionality
-- **Dark Mode Support**: Full dark mode support with automatic theme switching
-- **Responsive Design**: Optimized for both iOS and Android devices
-
 ## 🧪 Testing
 
-Run the test suite:
+Run tests:
 
-```sh
+```bash
 pnpm test
 ```
 
 Run tests in watch mode:
 
-```sh
+```bash
 pnpm test:watch
 ```
 
-## 📱 App Structure
+Run linting, type checking, and tests:
+
+```bash
+pnpm check-all
+```
+
+## 📁 Project Structure
+
+The project follows a feature-based architecture:
 
 ```
 src/
-  ├── api/fortnite/          # Fortnite API integration
-  ├── components/fortnite/   # Fortnite-specific UI components
-  ├── app/                   # Expo Router screens
-  └── lib/                   # Shared utilities and hooks
+  ├── api/              # API related code
+  │   ├── common/       # Common API utilities (pagination, query keys)
+  │   └── fortnite/     # Fortnite API hooks and types
+  │
+  ├── app/              # Expo Router entry point
+  │   └── (app)/        # App routes
+  │
+  ├── components/       # Shared components
+  │   └── ui/           # Core UI components (buttons, inputs, etc.)
+  │
+  ├── features/         # Feature modules
+  │   ├── fortnite/     # Fortnite feature
+  │   │   ├── components/  # Feature components
+  │   │   ├── screens/     # Feature screens
+  │   │   ├── hooks/       # Feature hooks
+  │   │   └── utils/       # Feature utilities
+  │   └── settings/     # Settings feature
+  │
+  ├── hooks/            # Shared hooks
+  │
+  ├── lib/              # Shared libraries
+  │   ├── i18n/         # Internationalization
+  │   ├── storage/      # Storage utilities
+  │   └── utils/        # Utility functions
+  │
+  ├── test/             # Test utilities and setup
+  │
+  ├── translations/     # Translation files
+  │
+  └── types/            # Shared types
 ```
 
-## ✍️ Documentation
+### Key Architecture Concepts
 
-- [Rules and Conventions](https://starter.obytes.com/getting-started/rules-and-conventions/)
-- [Project structure](https://starter.obytes.com/getting-started/project-structure)
-- [Environment vars and config](https://starter.obytes.com/getting-started/environment-vars-config)
-- [UI and Theming](https://starter.obytes.com/ui-and-theme/ui-theming)
-- [Components](https://starter.obytes.com/ui-and-theme/components)
-- [Forms](https://starter.obytes.com/ui-and-theme/Forms)
-- [Data fetching](https://starter.obytes.com/guides/data-fetching)
-- [Contribute to starter](https://starter.obytes.com/how-to-contribute/)
+#### Feature-based Organization
+
+Each feature (e.g., fortnite, settings) has its own directory with components, screens, hooks, and utilities specific to that feature.
+
+#### Component Structure
+
+Components follow a consistent structure:
+
+- Each component has its own directory
+- Contains the component file, test file, and index.ts for clean exports
+
+#### Data Flow
+
+1. API calls are made using hooks from the `api` directory
+2. Data is processed using utilities from the `utils` directory
+3. Components use hooks to access and display data
+4. Screens compose components to create complete UI views
+
+## 🎮 Features
+
+- **Daily Fortnite Shop**: View current shop items with real-time data
+- **Item Details**: See item names, descriptions, prices, rarity, and images
+- **Pull to Refresh**: Refresh shop data with pull-to-refresh functionality
+- **Dark Mode**: Full dark mode support with automatic theme switching
+- **Internationalization**: Support for multiple languages
+- **Responsive Design**: Optimized for both iOS and Android devices
+
+## 📱 Available Scripts
+
+- `pnpm start` - Start the development server
+- `pnpm ios` - Run on iOS simulator
+- `pnpm android` - Run on Android emulator
+- `pnpm test` - Run tests
+- `pnpm lint` - Run ESLint
+- `pnpm type-check` - Run TypeScript type checking
+
+## 📄 License
+
+This project is licensed under the [MIT License](./LICENSE).

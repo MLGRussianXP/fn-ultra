@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { cleanup, render, screen } from '@/lib/test-utils';
+import { cleanup, render, screen } from '@/test';
 
 import { Select } from './select';
 

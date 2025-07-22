@@ -1,4 +1,4 @@
-import { ShopScreen } from '@/components/features/fortnite/shop-screen';
+import { ShopScreen } from '@/features/fortnite/screens';
 
 export default function Index() {
   return <ShopScreen />;

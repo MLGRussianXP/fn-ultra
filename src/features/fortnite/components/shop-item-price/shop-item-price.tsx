@@ -1,20 +1,27 @@
 import * as React from 'react';
 
 import type { ShopItem } from '@/api/fortnite/types';
-import { Text } from '@/components/ui';
+import { Text, View } from '@/components/ui';
 
 type Props = {
   item: ShopItem;
 };
 
 export function ShopItemPrice({ item }: Props) {
-  const formatPrice = (price: number) => {
-    return `${price} V-Bucks`;
-  };
+  const hasDiscount = item.regularPrice !== item.finalPrice;
 
   return (
-    <Text className="text-sm font-semibold text-white">
-      {formatPrice(item.finalPrice)}
-    </Text>
+    <View className="flex-row items-center">
+      <Text className="text-sm font-semibold text-white">
+        {item.finalPrice}
+      </Text>
+      <Text className="ml-1 text-xs text-white">V-Bucks</Text>
+
+      {hasDiscount && (
+        <Text className="ml-2 text-xs text-gray-300 line-through">
+          {item.regularPrice}
+        </Text>
+      )}
+    </View>
   );
 }

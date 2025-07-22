@@ -44,6 +44,8 @@ export function ShopItem({ item, onPress }: Props) {
       className="overflow-hidden rounded-xl shadow-lg"
       testID="shop-item-pressable"
       android_ripple={{ color: 'rgba(0,0,0,0.1)' }}
+      role="button"
+      accessibilityRole="button"
     >
       <View className="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
         {/* Image */}
@@ -74,13 +76,24 @@ export function ShopItem({ item, onPress }: Props) {
 
           {/* Title Overlay */}
           <View className="absolute inset-x-0 bottom-0 bg-black/40 p-2">
-            <Text className="text-sm font-bold text-white" numberOfLines={1}>
+            <Text
+              className="text-sm font-bold text-white"
+              numberOfLines={1}
+              testID="item-title"
+            >
               {mainItem && 'name' in mainItem
                 ? mainItem.name
                 : mainItem && 'title' in mainItem
                   ? mainItem.title
                   : item.devName}
             </Text>
+
+            {/* Item Type - Added for test compatibility */}
+            {mainItem && 'type' in mainItem && mainItem.type && (
+              <Text className="text-xs text-gray-300">
+                {mainItem.type.displayValue}
+              </Text>
+            )}
           </View>
         </View>
       </View>

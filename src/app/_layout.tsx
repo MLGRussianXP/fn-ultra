@@ -12,6 +12,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { APIProvider } from '@/api';
+import { NotificationsProvider } from '@/features/notifications/provider/notifications-provider';
+import { setupNotificationChannels } from '@/features/notifications/services';
 import { loadSelectedTheme } from '@/hooks/use-selected-theme';
 import { useThemeConfig } from '@/hooks/use-theme-config';
 
@@ -21,7 +23,10 @@ export const unstable_settings = {
   initialRouteName: '(app)',
 };
 
+// Initialize app services
 loadSelectedTheme();
+setupNotificationChannels();
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 // Set the animation options. This is optional.
@@ -50,10 +55,12 @@ function Providers({ children }: { children: React.ReactNode }) {
       <KeyboardProvider>
         <ThemeProvider value={theme}>
           <APIProvider>
-            <BottomSheetModalProvider>
-              {children}
-              <FlashMessage position="top" />
-            </BottomSheetModalProvider>
+            <NotificationsProvider>
+              <BottomSheetModalProvider>
+                {children}
+                <FlashMessage position="top" />
+              </BottomSheetModalProvider>
+            </NotificationsProvider>
           </APIProvider>
         </ThemeProvider>
       </KeyboardProvider>

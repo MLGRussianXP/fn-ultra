@@ -20,3 +20,12 @@ export {
   Item as SettingsItem,
   ThemeItem,
 } from './settings/components';
+
+// Export Notifications feature components
+export { ShopUpdatesToggle } from './notifications/components';
+export { useNotifications } from './notifications/hooks';
+export {
+  requestNotificationPermissions,
+  scheduleLocalNotification,
+  sendTestNotification,
+} from './notifications/services';

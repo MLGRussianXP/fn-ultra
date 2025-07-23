@@ -1,5 +1,6 @@
 import { Env } from '@env';
 import { useColorScheme } from 'nativewind';
+import { Linking } from 'react-native';
 
 import {
   colors,
@@ -8,65 +9,54 @@ import {
   Text,
   View,
 } from '@/components/ui';
-import { Github, Rate, Share, Support, Website } from '@/components/ui/icons';
+import { Github, Star } from '@/components/ui/icons';
+import { ShopUpdatesToggle } from '@/features/notifications/components/shop-updates-toggle/shop-updates-toggle';
 import { translate } from '@/lib/i18n';
 
 import { Item, ItemsContainer, LanguageItem, ThemeItem } from '../components';
+
+const GITHUB_REPO = 'https://github.com/MLGRussianXP/fn-ultra';
 
 export function SettingsScreen() {
   const { colorScheme } = useColorScheme();
   const iconColor =
     colorScheme === 'dark' ? colors.neutral[400] : colors.neutral[500];
 
+  const handleOpenGithub = () => {
+    Linking.openURL(GITHUB_REPO);
+  };
+
+  const handleStarRepo = () => {
+    Linking.openURL(`${GITHUB_REPO}/stargazers`);
+  };
+
   return (
     <>
       <FocusAwareStatusBar />
 
       <ScrollView>
-        <View className="flex-1 px-4 pt-16">
+        <View className="flex-1 px-4 pt-6">
           <Text className="text-xl font-bold">
             {translate('settings.title')}
           </Text>
           <ItemsContainer title="settings.generale">
             <LanguageItem />
             <ThemeItem />
+            <ShopUpdatesToggle />
           </ItemsContainer>
 
           <ItemsContainer title="settings.about">
             <Item text="settings.app_name" value={Env.NAME} />
             <Item text="settings.version" value={Env.VERSION} />
-          </ItemsContainer>
-
-          <ItemsContainer title="settings.support_us">
-            <Item
-              text="settings.share"
-              icon={<Share color={iconColor} />}
-              onPress={() => {}}
-            />
-            <Item
-              text="settings.rate"
-              icon={<Rate color={iconColor} />}
-              onPress={() => {}}
-            />
-            <Item
-              text="settings.support"
-              icon={<Support color={iconColor} />}
-              onPress={() => {}}
-            />
-          </ItemsContainer>
-
-          <ItemsContainer title="settings.links">
-            <Item text="settings.privacy" onPress={() => {}} />
-            <Item text="settings.terms" onPress={() => {}} />
             <Item
               text="settings.github"
               icon={<Github color={iconColor} />}
-              onPress={() => {}}
+              onPress={handleOpenGithub}
             />
             <Item
-              text="settings.website"
-              icon={<Website color={iconColor} />}
-              onPress={() => {}}
+              text="settings.star"
+              icon={<Star color={iconColor} />}
+              onPress={handleStarRepo}
             />
           </ItemsContainer>
         </View>

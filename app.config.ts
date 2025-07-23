@@ -40,6 +40,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: Env.BUNDLE_ID,
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
+      UIBackgroundModes: ['remote-notification'],
     },
   },
   experiments: {
@@ -51,6 +52,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: '#2E3C4B',
     },
     package: Env.PACKAGE,
+    permissions: ['NOTIFICATIONS', 'VIBRATE', 'RECEIVE_BOOT_COMPLETED'],
   },
   web: {
     favicon: './assets/favicon.png',
@@ -75,6 +77,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
     ['app-icon-badge', appIconBadgeConfig],
     ['react-native-edge-to-edge'],
+    'expo-notifications',
   ],
   extra: {
     ...ClientEnv,

@@ -9,6 +9,7 @@ import {
   View,
 } from '@/components/ui';
 import { Github, Rate, Share, Support, Website } from '@/components/ui/icons';
+import { ShopUpdatesToggle } from '@/features/notifications/components/shop-updates-toggle/shop-updates-toggle';
 import { translate } from '@/lib/i18n';
 
 import { Item, ItemsContainer, LanguageItem, ThemeItem } from '../components';
@@ -30,6 +31,7 @@ export function SettingsScreen() {
           <ItemsContainer title="settings.generale">
             <LanguageItem />
             <ThemeItem />
+            <ShopUpdatesToggle />
           </ItemsContainer>
 
           <ItemsContainer title="settings.about">

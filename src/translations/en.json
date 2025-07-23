@@ -13,6 +13,16 @@
     "links": "Links",
     "logout": "Logout",
     "more": "More",
+    "notifications": {
+      "shop_updates": "Daily Shop Updates",
+      "shop_updates_description": "Get notified when the shop refreshes",
+      "status": {
+        "denied": "Notifications are disabled",
+        "granted": "Notifications are enabled"
+      },
+      "watch_item": "Watch This Item",
+      "watch_item_description": "Get notified when this item returns to the shop"
+    },
     "privacy": "Privacy Policy",
     "rate": "Rate",
     "share": "Share",

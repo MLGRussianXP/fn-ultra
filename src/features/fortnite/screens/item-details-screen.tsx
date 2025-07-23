@@ -5,12 +5,16 @@ import { ScrollView, View } from 'react-native';
 import { useBrItem } from '@/api/fortnite';
 import type { ShopItem } from '@/api/fortnite/types';
 import { FocusAwareStatusBar, Text } from '@/components/ui';
-import { ItemAdditionalInfo } from '@/features/fortnite/components/item-details-content/item-additional-info';
-import { ItemHero } from '@/features/fortnite/components/item-details-content/item-hero';
-import { ItemInfo } from '@/features/fortnite/components/item-details-content/item-info';
-import { ItemSelector } from '@/features/fortnite/components/item-details-content/item-selector';
-import { ItemVariants } from '@/features/fortnite/components/item-details-content/item-variants';
 import { getShopItemData } from '@/features/fortnite/utils/shop-item-data';
+import { ItemWatchToggle } from '@/features/notifications/components/item-watch-toggle/item-watch-toggle';
+
+import {
+  ItemAdditionalInfo,
+  ItemHero,
+  ItemInfo,
+  ItemSelector,
+  ItemVariants,
+} from '../components/item-details-content';
 
 // eslint-disable-next-line max-lines-per-function
 export function ItemDetailsScreen() {
@@ -107,6 +111,9 @@ export function ItemDetailsScreen() {
 
         {/* Item info */}
         <ItemInfo brItemData={brItemData.data} />
+
+        {/* Watch toggle */}
+        <ItemWatchToggle brItemData={brItemData.data} />
 
         {/* Variants (if any) */}
         {brItemData.data.variants && brItemData.data.variants.length > 0 && (

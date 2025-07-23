@@ -6,7 +6,7 @@ import { useBrItem } from '@/api/fortnite';
 import type { ShopItem } from '@/api/fortnite/types';
 import { FocusAwareStatusBar, Text } from '@/components/ui';
 import { getShopItemData } from '@/features/fortnite/utils/shop-item-data';
-import { ItemWatchToggle } from '@/features/notifications/components/item-watch-toggle/item-watch-toggle';
+import { ItemWatchButton } from '@/features/notifications/components';
 
 import {
   ItemAdditionalInfo,
@@ -92,6 +92,9 @@ export function ItemDetailsScreen() {
   return (
     <View className="flex-1 bg-neutral-950">
       <FocusAwareStatusBar />
+      {/* Floating notification button */}
+      <ItemWatchButton brItemData={brItemData.data} />
+
       <ScrollView>
         {/* Item selector (if bundle) */}
         {entry && (
@@ -111,9 +114,6 @@ export function ItemDetailsScreen() {
 
         {/* Item info */}
         <ItemInfo brItemData={brItemData.data} />
-
-        {/* Watch toggle */}
-        <ItemWatchToggle brItemData={brItemData.data} />
 
         {/* Variants (if any) */}
         {brItemData.data.variants && brItemData.data.variants.length > 0 && (

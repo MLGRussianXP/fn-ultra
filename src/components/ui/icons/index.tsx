@@ -1,4 +1,5 @@
 export * from './arrow-right';
+export * from './bell';
 export * from './caret-down';
 export * from './feed';
 export * from './github';

@@ -1,6 +1,39 @@
+// Mock the entire storage module for testing
+// Import the mocked storage module
 import * as storage from './storage';
 
+jest.mock('./storage', () => {
+  const mockStorage = new Map();
+  return {
+    storage: {
+      getString: jest.fn((key) => mockStorage.get(key)),
+      set: jest.fn((key, value) => mockStorage.set(key, value)),
+      delete: jest.fn((key) => mockStorage.delete(key)),
+    },
+    getItem: jest.fn((key) => {
+      const value = mockStorage.get(key);
+      return value ? JSON.parse(value) : null;
+    }),
+    setItem: jest.fn((key, value) => {
+      mockStorage.set(key, JSON.stringify(value));
+    }),
+    removeItem: jest.fn((key) => {
+      mockStorage.delete(key);
+    }),
+  };
+});
+
 describe('storage', () => {
+  beforeEach(() => {
+    // Clear all mocks before each test
+    jest.clearAllMocks();
+    // Clear the storage map by calling removeItem on all keys
+    const mockStorage = storage.storage as any;
+    for (const key of mockStorage.getString.mock.calls.map((call) => call[0])) {
+      storage.removeItem(key);
+    }
+  });
+
   it('should export an object', () => {
     expect(typeof storage).toBe('object');
   });

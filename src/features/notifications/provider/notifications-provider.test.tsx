@@ -253,8 +253,8 @@ describe('NotificationsProvider - Multiple Operations', () => {
       result.current.toggleItemWatch('item-2', true);
     });
 
-    // Rerender the hook
-    rerender();
+    // Rerender the hook with the same props
+    rerender({ wrapper });
 
     // Verify that the state persists after rerender
     expect(result.current.watchedItems).toEqual({

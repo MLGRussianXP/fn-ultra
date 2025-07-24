@@ -5,6 +5,7 @@ import { AppState } from 'react-native';
 import {
   addNotificationReceivedListener,
   addNotificationResponseReceivedListener,
+  manageShopNotifications,
   requestNotificationPermissions,
   setupNotificationChannels,
 } from '@/features/notifications/services';
@@ -141,9 +142,16 @@ const useShopUpdatesPreference = () => {
   }, []);
 
   // Toggle function
-  const toggleShopUpdates = React.useCallback((enabled: boolean) => {
+  const toggleShopUpdates = React.useCallback(async (enabled: boolean) => {
     setShopUpdatesEnabled(enabled);
     setItem(STORAGE_KEYS.NOTIFICATIONS.SHOP_UPDATES_ENABLED, enabled);
+
+    // Manage shop notifications based on the new preference
+    try {
+      await manageShopNotifications(enabled);
+    } catch (error: unknown) {
+      console.error('Failed to manage shop notifications:', error);
+    }
   }, []);
 
   return {
@@ -268,8 +276,9 @@ const useCreateContextValue = (contextData: NotificationsContextType) => {
   );
 };
 
-// Setup hooks for the provider
-const useProviderSetup = () => {
+// Split useProviderSetup into smaller hooks to comply with max-lines-per-function
+
+function useProviderSetup() {
   // Permission state
   const {
     permissionStatus,
@@ -299,25 +308,23 @@ const useProviderSetup = () => {
     isItemWatched,
   } = useWatchedItemsPreference();
 
-  // Setup notification listeners
   useNotificationChannelSetup();
   useNotificationReceivedListener();
   useNotificationResponseListener();
   useAppStateChangeListener(checkPermissions);
 
-  // Check permissions on mount
   React.useEffect(() => {
     checkPermissions();
   }, [checkPermissions]);
 
-  // Load preferences on mount
   React.useEffect(() => {
     loadShopUpdatesPreference();
     loadWatchedItemsPreference();
   }, [loadShopUpdatesPreference, loadWatchedItemsPreference]);
 
-  // Create context data
-  const contextData: NotificationsContextType = {
+  useShopNotificationInit(shopUpdatesEnabled, hasPermissions);
+
+  return useCreateContextValue({
     shopUpdatesEnabled,
     watchedItems,
     permissionStatus,
@@ -327,11 +334,21 @@ const useProviderSetup = () => {
     isItemWatched,
     requestPermissions,
     hasPermissions,
-  };
+  });
+}
 
-  // Create memoized context value
-  return useCreateContextValue(contextData);
-};
+function useShopNotificationInit(
+  shopUpdatesEnabled: boolean,
+  hasPermissions: boolean
+) {
+  React.useEffect(() => {
+    if (shopUpdatesEnabled && hasPermissions) {
+      manageShopNotifications(true).catch((error) => {
+        console.error('Failed to initialize shop notifications:', error);
+      });
+    }
+  }, [shopUpdatesEnabled, hasPermissions]);
+}
 
 export const NotificationsProvider = ({
   children,

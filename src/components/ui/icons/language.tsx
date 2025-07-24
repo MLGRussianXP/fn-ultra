@@ -1,6 +1,6 @@
 import React from 'react';
 import type { SvgProps } from 'react-native-svg';
-import Svg, { G, Path, Text, TSpan } from 'react-native-svg';
+import Svg, { G, Path } from 'react-native-svg';
 
 export const Language = ({ ...props }: SvgProps) => (
   <Svg width={100} height={71} {...props}>
@@ -17,17 +17,6 @@ export const Language = ({ ...props }: SvgProps) => (
         d="M96.682 14H44.316A3.32 3.32 0 0 0 41 17.318v36.08a3.321 3.321 0 0 0 3.316 3.323h28.11L86.473 71V56.721h10.208A3.32 3.32 0 0 0 100 53.398v-36.08A3.317 3.317 0 0 0 96.682 14"
         fill="#192332"
       />
-      <Text
-        // fontFamily="HelveticaNeueLTArabic-Bold, Helvetica Neue LT Arabic"
-        fontSize={30}
-        fontWeight="bold"
-        fill="#FFF"
-        transform="translate(0 -4)"
-      >
-        <TSpan x={59} y={42}>
-          ي
-        </TSpan>
-      </Text>
     </G>
   </Svg>
 );

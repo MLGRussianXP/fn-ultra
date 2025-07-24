@@ -1,4 +1,3 @@
-// TODO: Fix daily shop update notification scheduling to ensure it only fires at 00:00 GMT and never on app start. Review and test time zone conversion and scheduling logic for reliability across all platforms.
 import { Env } from '@env';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as Notifications from 'expo-notifications';
@@ -14,9 +13,6 @@ export const WATCHED_ITEMS_TASK = 'WATCHED_ITEMS_TASK';
 
 // Last notification timestamps (to prevent duplicate notifications)
 const LAST_ITEM_WATCH_KEY = 'notifications.lastItemWatch';
-
-// Notification identifiers
-const SHOP_UPDATE_NOTIFICATION_ID = 'shop-update-notification';
 
 /**
  * Fetches the latest shop data from the Fortnite API
@@ -178,6 +174,23 @@ async function sendWatchedItemsNotification(
 }
 
 /**
+ * Sends a shop update notification
+ */
+async function sendShopUpdateNotification(shopDate: string): Promise<void> {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: 'Fortnite Shop Update',
+      body: 'The item shop has been updated! Check out the new items.',
+      data: {
+        type: 'shop_update',
+        shopDate,
+      },
+    },
+    trigger: null, // Send immediately
+  });
+}
+
+/**
  * Background task handler for shop updates
  */
 async function handleShopUpdateTask(): Promise<BackgroundFetch.BackgroundFetchResult> {
@@ -212,8 +225,8 @@ async function handleShopUpdateTask(): Promise<BackgroundFetch.BackgroundFetchRe
     // Store the current shop date
     storeItem(STORAGE_KEYS.NOTIFICATIONS.LAST_SEEN_SHOP_DATE, shopData.date);
 
-    // DO NOT send shop update notification here!
-    // The daily notification is scheduled at 00:00 GMT only.
+    // Send shop update notification only if the shop is new
+    await sendShopUpdateNotification(shopData.date);
 
     // Check for watched items in the shop
     const watchedItemsInShop = getWatchedItemsInShop(shopData);
@@ -276,64 +289,19 @@ export async function unregisterShopUpdateTask(): Promise<void> {
 }
 
 /**
- * Schedules a daily notification for shop updates at midnight GMT
+ * Schedules a shop update notification (no-op, kept for API compatibility)
  */
 export async function scheduleDailyShopNotification(): Promise<string | null> {
-  try {
-    // Check if a notification with our identifier is already scheduled
-    const scheduled = await Notifications.getAllScheduledNotificationsAsync();
-    const alreadyScheduled = scheduled.some(
-      (n) => n.identifier === SHOP_UPDATE_NOTIFICATION_ID
-    );
-    if (alreadyScheduled) {
-      console.log('Daily shop notification already scheduled');
-      return SHOP_UPDATE_NOTIFICATION_ID;
-    }
-
-    // Convert 00:00 GMT to device local time
-    const now = new Date();
-    const offsetMinutes = now.getTimezoneOffset();
-    // Local time for 00:00 GMT
-    const localMidnightHour = (24 + 0 - Math.floor(offsetMinutes / 60)) % 24;
-    const localMidnightMinute = (60 + 0 - (offsetMinutes % 60)) % 60;
-
-    // Schedule a new notification at local time corresponding to 00:00 GMT
-    const notificationId = await Notifications.scheduleNotificationAsync({
-      identifier: SHOP_UPDATE_NOTIFICATION_ID,
-      content: {
-        title: 'Fortnite Shop Update',
-        body: 'The item shop has been updated! Check out the new items.',
-        data: {
-          type: 'shop_update',
-        },
-      },
-      trigger: {
-        hour: localMidnightHour,
-        minute: localMidnightMinute,
-        repeats: true,
-      } as any, // Type casting to avoid TypeScript errors with the trigger
-    });
-
-    console.log('Daily shop notification scheduled:', notificationId);
-    return notificationId;
-  } catch (error) {
-    console.error('Failed to schedule daily shop notification:', error);
-    return null;
-  }
+  // No longer schedules a repeating notification
+  return null;
 }
 
 /**
- * Cancels the daily shop notification
+ * Cancels the shop update notification (no-op, kept for API compatibility)
  */
 export async function cancelDailyShopNotification(): Promise<void> {
-  try {
-    await Notifications.cancelScheduledNotificationAsync(
-      SHOP_UPDATE_NOTIFICATION_ID
-    );
-    console.log('Daily shop notification canceled');
-  } catch (error) {
-    console.error('Failed to cancel daily shop notification:', error);
-  }
+  // No longer cancels a repeating notification
+  return;
 }
 
 /**

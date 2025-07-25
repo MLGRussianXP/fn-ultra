@@ -1,5 +1,5 @@
 import { Env } from '@env';
-import * as BackgroundFetch from 'expo-background-fetch';
+import * as BackgroundTask from 'expo-background-task';
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
 
@@ -193,22 +193,26 @@ async function sendShopUpdateNotification(shopDate: string): Promise<void> {
 /**
  * Background task handler for shop updates
  */
-async function handleShopUpdateTask(): Promise<BackgroundFetch.BackgroundFetchResult> {
+async function handleShopUpdateTask(): Promise<number> {
   try {
+    console.log('[ShopUpdateTask] Task running at', new Date().toISOString());
+
     // Check if shop updates are enabled
     const shopUpdatesEnabled = getItem<boolean>(
       STORAGE_KEYS.NOTIFICATIONS.SHOP_UPDATES_ENABLED
     );
 
     if (!shopUpdatesEnabled) {
-      return BackgroundFetch.BackgroundFetchResult.NoData;
+      console.log('[ShopUpdateTask] Shop updates not enabled, skipping');
+      return BackgroundTask.BackgroundTaskResult.Success;
     }
 
     // Fetch shop data
     const shopData = await fetchShopData();
 
     if (!shopData) {
-      return BackgroundFetch.BackgroundFetchResult.Failed;
+      console.log('[ShopUpdateTask] Failed to fetch shop data');
+      return BackgroundTask.BackgroundTaskResult.Failed;
     }
 
     // Get the last seen shop date
@@ -218,15 +222,22 @@ async function handleShopUpdateTask(): Promise<BackgroundFetch.BackgroundFetchRe
 
     // If we've already seen this shop update, don't send notifications
     if (lastSeenShopDate === shopData.date) {
-      console.log('Shop already seen, skipping notifications');
-      return BackgroundFetch.BackgroundFetchResult.NoData;
+      console.log(
+        '[ShopUpdateTask] Shop not updated (date:',
+        shopData.date,
+        '), skipping notification'
+      );
+      return BackgroundTask.BackgroundTaskResult.Success;
     }
+
+    console.log('[ShopUpdateTask] Shop updated! New date:', shopData.date);
 
     // Store the current shop date
     storeItem(STORAGE_KEYS.NOTIFICATIONS.LAST_SEEN_SHOP_DATE, shopData.date);
 
     // Send shop update notification only if the shop is new
     await sendShopUpdateNotification(shopData.date);
+    console.log('[ShopUpdateTask] Shop update notification sent');
 
     // Check for watched items in the shop
     const watchedItemsInShop = getWatchedItemsInShop(shopData);
@@ -237,12 +248,13 @@ async function handleShopUpdateTask(): Promise<BackgroundFetch.BackgroundFetchRe
       (await shouldSendWatchedItemsNotification())
     ) {
       await sendWatchedItemsNotification(watchedItemsInShop);
+      console.log('[ShopUpdateTask] Watched items notification sent');
     }
 
-    return BackgroundFetch.BackgroundFetchResult.NewData;
+    return BackgroundTask.BackgroundTaskResult.Success;
   } catch (error) {
-    console.error('Background fetch failed:', error);
-    return BackgroundFetch.BackgroundFetchResult.Failed;
+    console.error('[ShopUpdateTask] Background fetch failed:', error);
+    return BackgroundTask.BackgroundTaskResult.Failed;
   }
 }
 
@@ -264,10 +276,8 @@ export async function registerShopUpdateTask(): Promise<void> {
     }
 
     // Register the background fetch task
-    await BackgroundFetch.registerTaskAsync(SHOP_UPDATE_TASK, {
-      minimumInterval: 60 * 60, // 1 hour minimum
-      stopOnTerminate: false,
-      startOnBoot: true,
+    await BackgroundTask.registerTaskAsync(SHOP_UPDATE_TASK, {
+      minimumInterval: 60, // 1 hour in minutes
     });
 
     console.log('Shop update task registered');
@@ -281,7 +291,7 @@ export async function registerShopUpdateTask(): Promise<void> {
  */
 export async function unregisterShopUpdateTask(): Promise<void> {
   try {
-    await BackgroundFetch.unregisterTaskAsync(SHOP_UPDATE_TASK);
+    await BackgroundTask.unregisterTaskAsync(SHOP_UPDATE_TASK);
     console.log('Shop update task unregistered');
   } catch (error) {
     console.error('Failed to unregister shop update task:', error);

@@ -3,8 +3,20 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type BrItem } from '@/api/fortnite/types';
 import { type SearchParams, useBrCosmeticsSearch } from '@/api/search';
 
+import { type SearchParam } from '../utils/search-params';
+
+export interface PrimaryState {
+  name: string;
+  id: string;
+  type: string;
+  rarity: string;
+  hasVariants: string;
+  hasFeaturedImage: string;
+  [key: string]: string;
+}
+
 export function buildSearchParams(
-  primary: Record<string, string>,
+  primary: PrimaryState,
   additional: Record<string, string>,
   page: number
 ) {
@@ -36,16 +48,8 @@ function useDisplayedResults({
   }, [results, hasSearched, setDisplayCount, setDisplayedResults]);
 }
 
-function useSearchScreenState(
-  ALL_PARAMS: {
-    key: string;
-    label: string;
-    type: string;
-    primary: boolean;
-    options?: string[];
-  }[]
-) {
-  const [primary, setPrimary] = useState({
+function useSearchScreenState(ALL_PARAMS: SearchParam[]) {
+  const [primary, setPrimary] = useState<PrimaryState>({
     name: '',
     id: '',
     type: '',
@@ -56,7 +60,7 @@ function useSearchScreenState(
   const [additional, setAdditional] = useState(
     Object.fromEntries(
       ALL_PARAMS.filter(
-        (p: any) =>
+        (p) =>
           !p.primary &&
           p.key !== 'name' &&
           p.key !== 'id' &&
@@ -64,7 +68,7 @@ function useSearchScreenState(
           p.key !== 'rarity' &&
           p.key !== 'hasVariants' &&
           p.key !== 'hasFeaturedImage'
-      ).map((p: any) => [p.key, ''])
+      ).map((p) => [p.key, ''])
     )
   );
   const [showAdditional, setShowAdditional] = useState(false);
@@ -120,15 +124,7 @@ function useSearchScreenHandlers({
   return { handleSearch, handleViewMore };
 }
 
-export function useSearchScreen(
-  ALL_PARAMS: {
-    key: string;
-    label: string;
-    type: string;
-    primary: boolean;
-    options?: string[];
-  }[]
-) {
+export function useSearchScreen(ALL_PARAMS: SearchParam[]) {
   const state = useSearchScreenState(ALL_PARAMS);
   const params: SearchParams = useMemo(
     () => buildSearchParams(state.primary, state.additional, state.page),

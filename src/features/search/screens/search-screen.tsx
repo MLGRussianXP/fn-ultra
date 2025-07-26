@@ -7,148 +7,24 @@ import {
   View,
 } from 'react-native';
 
+import { type BrItem } from '@/api/fortnite/types';
+
 import { BrItemCard } from '../components/br-item-card';
 import { FieldAdditional, FieldPrimary } from '../components/render-fields';
-import { useSearchScreen } from '../hooks/use-search-screen';
+import { type PrimaryState, useSearchScreen } from '../hooks/use-search-screen';
+import { ALL_SEARCH_PARAMS } from '../utils/search-params';
 
-const ALL_PARAMS = [
-  { key: 'name', label: 'Name', type: 'string', primary: true },
-  { key: 'id', label: 'ID', type: 'string', primary: true },
-  { key: 'type', label: 'Type', type: 'string', primary: true },
-  { key: 'rarity', label: 'Rarity', type: 'string', primary: true },
-  { key: 'hasVariants', label: 'Has Variants', type: 'boolean', primary: true },
-  {
-    key: 'hasFeaturedImage',
-    label: 'Has Featured Image',
-    type: 'boolean',
-    primary: true,
-  },
-  { key: 'language', label: 'Language', type: 'string', primary: false },
-  {
-    key: 'searchLanguage',
-    label: 'Search Language',
-    type: 'string',
-    primary: false,
-  },
-  {
-    key: 'matchMethod',
-    label: 'Match Method',
-    type: 'select',
-    options: ['full', 'contains', 'starts', 'ends'],
-    primary: false,
-  },
-  { key: 'description', label: 'Description', type: 'string', primary: false },
-  { key: 'displayType', label: 'Display Type', type: 'string', primary: false },
-  { key: 'backendType', label: 'Backend Type', type: 'string', primary: false },
-  {
-    key: 'displayRarity',
-    label: 'Display Rarity',
-    type: 'string',
-    primary: false,
-  },
-  {
-    key: 'backendRarity',
-    label: 'Backend Rarity',
-    type: 'string',
-    primary: false,
-  },
-  { key: 'hasSeries', label: 'Has Series', type: 'boolean', primary: false },
-  { key: 'series', label: 'Series', type: 'string', primary: false },
-  {
-    key: 'backendSeries',
-    label: 'Backend Series',
-    type: 'string',
-    primary: false,
-  },
-  { key: 'hasSet', label: 'Has Set', type: 'boolean', primary: false },
-  { key: 'set', label: 'Set', type: 'string', primary: false },
-  { key: 'setText', label: 'Set Text', type: 'string', primary: false },
-  { key: 'backendSet', label: 'Backend Set', type: 'string', primary: false },
-  {
-    key: 'hasIntroduction',
-    label: 'Has Introduction',
-    type: 'boolean',
-    primary: false,
-  },
-  {
-    key: 'backendIntroduction',
-    label: 'Backend Introduction',
-    type: 'string',
-    primary: false,
-  },
-  {
-    key: 'introductionChapter',
-    label: 'Introduction Chapter',
-    type: 'string',
-    primary: false,
-  },
-  {
-    key: 'introductionSeason',
-    label: 'Introduction Season',
-    type: 'string',
-    primary: false,
-  },
-  {
-    key: 'hasGameplayTags',
-    label: 'Has Gameplay Tags',
-    type: 'boolean',
-    primary: false,
-  },
-  { key: 'gameplayTag', label: 'Gameplay Tag', type: 'string', primary: false },
-  {
-    key: 'hasMetaTags',
-    label: 'Has Meta Tags',
-    type: 'boolean',
-    primary: false,
-  },
-  { key: 'metaTag', label: 'Meta Tag', type: 'string', primary: false },
-  {
-    key: 'hasDynamicPakId',
-    label: 'Has Dynamic Pak Id',
-    type: 'boolean',
-    primary: false,
-  },
-  {
-    key: 'dynamicPakId',
-    label: 'Dynamic Pak Id',
-    type: 'string',
-    primary: false,
-  },
-  {
-    key: 'added',
-    label: 'Added (Unix Timestamp)',
-    type: 'string',
-    primary: false,
-  },
-  {
-    key: 'addedSince',
-    label: 'Added Since (Unix Timestamp)',
-    type: 'string',
-    primary: false,
-  },
-  {
-    key: 'unseenFor',
-    label: 'Unseen For (Seconds)',
-    type: 'string',
-    primary: false,
-  },
-  {
-    key: 'lastAppearance',
-    label: 'Last Appearance',
-    type: 'string',
-    primary: false,
-  },
-];
+interface ResultsGridProps {
+  displayedResults: BrItem[];
+  onViewMore: () => void;
+  canViewMore: boolean;
+}
 
 function ResultsGrid({
   displayedResults,
   onViewMore,
   canViewMore,
-}: {
-  displayedResults: any[];
-  onViewMore: () => void;
-  canViewMore: boolean;
-}) {
+}: ResultsGridProps) {
   return (
     <>
       <View className="flex-row flex-wrap justify-between">
@@ -159,13 +35,85 @@ function ResultsGrid({
       {canViewMore && (
         <Pressable
           onPress={onViewMore}
-          className="mb-12 mt-6 self-center rounded bg-gray-700 px-4 py-2"
+          className="mb-12 mt-6 self-center rounded-full bg-blue-500 px-6 py-3 shadow-sm"
         >
-          <Text className="font-bold text-white">View More</Text>
+          <Text className="font-medium text-white">View More</Text>
         </Pressable>
       )}
     </>
   );
+}
+
+interface PrimaryFiltersProps {
+  primary: PrimaryState;
+  setPrimary: React.Dispatch<React.SetStateAction<PrimaryState>>;
+  handleSearch: () => void;
+}
+
+function PrimaryFilters({
+  primary,
+  setPrimary,
+  handleSearch,
+}: PrimaryFiltersProps) {
+  return (
+    <View className="mb-6 rounded-xl bg-white p-4 shadow-sm dark:bg-gray-800">
+      <Text className="mb-3 text-base font-medium text-gray-700 dark:text-gray-300">
+        Primary Filters
+      </Text>
+      <View>
+        {ALL_SEARCH_PARAMS.filter((p) => p.primary).map((param) => (
+          <FieldPrimary
+            key={param.key}
+            param={param}
+            value={primary}
+            setValue={setPrimary}
+            handleSearch={handleSearch}
+          />
+        ))}
+      </View>
+    </View>
+  );
+}
+
+interface AdditionalFiltersProps {
+  additional: Record<string, string>;
+  setAdditional: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  handleSearch: () => void;
+}
+
+function AdditionalFilters({
+  additional,
+  setAdditional,
+  handleSearch,
+}: AdditionalFiltersProps) {
+  return (
+    <View className="mb-6 rounded-xl bg-white p-4 shadow-sm dark:bg-gray-800">
+      <Text className="mb-3 text-base font-medium text-gray-700 dark:text-gray-300">
+        Additional Filters
+      </Text>
+      <View>
+        {ALL_SEARCH_PARAMS.filter((p) => !p.primary).map((param) => (
+          <FieldAdditional
+            key={param.key}
+            param={param}
+            value={additional}
+            setValue={setAdditional}
+            handleSearch={handleSearch}
+          />
+        ))}
+      </View>
+    </View>
+  );
+}
+
+interface SearchFormProps {
+  primary: PrimaryState;
+  setPrimary: React.Dispatch<React.SetStateAction<PrimaryState>>;
+  additional: Record<string, string>;
+  setAdditional: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  showAdditional: boolean;
+  setShowAdditional: React.Dispatch<React.SetStateAction<boolean>>;
+  handleSearch: () => void;
 }
 
 function SearchForm({
@@ -176,54 +124,60 @@ function SearchForm({
   showAdditional,
   setShowAdditional,
   handleSearch,
-}: any) {
+}: SearchFormProps) {
   return (
     <>
-      <Text className="mb-2 text-lg font-bold text-white">
+      <Text className="mb-4 text-xl font-bold text-gray-800 dark:text-white">
         Search BR Cosmetics
       </Text>
-      <View className="mb-4">
-        {ALL_PARAMS.filter((p) => p.primary).map((param) => (
-          <FieldPrimary
-            key={param.key}
-            param={param}
-            value={primary}
-            setValue={setPrimary}
-            handleSearch={handleSearch}
-          />
-        ))}
-      </View>
+
+      <PrimaryFilters
+        primary={primary}
+        setPrimary={setPrimary}
+        handleSearch={handleSearch}
+      />
+
       <Pressable
         onPress={() => setShowAdditional(!showAdditional)}
-        className="mb-4"
+        className="mb-4 flex-row items-center"
       >
-        <Text className="text-blue-400">
+        <View className="mr-2 size-5 items-center justify-center rounded-full bg-blue-500">
+          <Text className="text-xs font-bold text-white">
+            {showAdditional ? '-' : '+'}
+          </Text>
+        </View>
+        <Text className="text-blue-500">
           {showAdditional
             ? 'Hide Additional Filters'
             : 'Show Additional Filters'}
         </Text>
       </Pressable>
+
       {showAdditional && (
-        <View className="mb-4">
-          {ALL_PARAMS.filter((p) => !p.primary).map((param) => (
-            <FieldAdditional
-              key={param.key}
-              param={param}
-              value={additional}
-              setValue={setAdditional}
-              handleSearch={handleSearch}
-            />
-          ))}
-        </View>
+        <AdditionalFilters
+          additional={additional}
+          setAdditional={setAdditional}
+          handleSearch={handleSearch}
+        />
       )}
+
       <Pressable
         onPress={handleSearch}
-        className="mb-6 self-start rounded bg-blue-600 px-4 py-2"
+        className="mb-8 self-start rounded-full bg-blue-600 px-6 py-3 shadow-sm"
       >
-        <Text className="font-bold text-white">Search</Text>
+        <Text className="font-medium text-white">Search</Text>
       </Pressable>
     </>
   );
+}
+
+interface SearchResultsProps {
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | unknown;
+  displayedResults: BrItem[];
+  displayCount: number;
+  handleViewMore: () => void;
 }
 
 function SearchResults({
@@ -233,25 +187,49 @@ function SearchResults({
   displayedResults,
   displayCount,
   handleViewMore,
-}: any) {
+}: SearchResultsProps) {
   return (
     <>
       {isLoading && (
-        <ActivityIndicator size="large" color="#60a5fa" className="my-8" />
+        <View className="my-8 items-center justify-center">
+          <ActivityIndicator size="large" color="#3b82f6" />
+          <Text className="mt-2 text-gray-600 dark:text-gray-400">
+            Loading results...
+          </Text>
+        </View>
       )}
+
       {isError && (
-        <Text className="mb-4 text-red-400">
-          {error instanceof Error ? error.message : String(error)}
-        </Text>
+        <View className="mb-6 rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
+          <Text className="text-red-600 dark:text-red-400">
+            {error instanceof Error ? error.message : String(error)}
+          </Text>
+        </View>
       )}
+
       {!isLoading && displayedResults.length === 0 && !isError && (
-        <Text className="text-gray-400">No results found.</Text>
+        <View className="my-8 items-center justify-center">
+          <Text className="text-gray-500 dark:text-gray-400">
+            No results found.
+          </Text>
+          <Text className="mt-1 text-sm text-gray-400 dark:text-gray-500">
+            Try adjusting your search filters.
+          </Text>
+        </View>
       )}
-      <ResultsGrid
-        displayedResults={displayedResults.slice(0, displayCount)}
-        onViewMore={handleViewMore}
-        canViewMore={displayCount < displayedResults.length}
-      />
+
+      {displayedResults.length > 0 && (
+        <View className="mb-4">
+          <Text className="mb-4 text-base font-medium text-gray-700 dark:text-gray-300">
+            Search Results ({displayedResults.length})
+          </Text>
+          <ResultsGrid
+            displayedResults={displayedResults.slice(0, displayCount)}
+            onViewMore={handleViewMore}
+            canViewMore={displayCount < displayedResults.length}
+          />
+        </View>
+      )}
     </>
   );
 }
@@ -271,10 +249,10 @@ export function SearchScreen() {
     error,
     handleSearch,
     handleViewMore,
-  } = useSearchScreen(ALL_PARAMS);
+  } = useSearchScreen(ALL_SEARCH_PARAMS);
 
   return (
-    <View className="flex-1 bg-neutral-950">
+    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ padding: 16 }}

@@ -27,7 +27,6 @@ export { useNotifications } from './notifications/hooks';
 export {
   requestNotificationPermissions,
   scheduleLocalNotification,
-  sendTestNotification,
 } from './notifications/services';
 
 // Export Search feature components and screens

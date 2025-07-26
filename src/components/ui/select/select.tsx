@@ -125,7 +125,15 @@ const Option = React.memo(
         className="flex-row items-center border-b border-neutral-300 bg-white px-3 py-2 dark:border-neutral-700 dark:bg-neutral-800"
         {...props}
       >
-        <Text className="flex-1 dark:text-neutral-100 ">{label}</Text>
+        <Text
+          className="flex-1 dark:text-neutral-100"
+          style={{
+            fontFamily: 'FORTNITE BATTLEFEST',
+            textTransform: 'uppercase',
+          }}
+        >
+          {label}
+        </Text>
         {selected && <Check />}
       </Pressable>
     );
@@ -142,6 +150,7 @@ export interface SelectProps {
   placeholder?: string;
   testID?: string;
 }
+
 interface ControlledSelectProps<T extends FieldValues>
   extends SelectProps,
     InputControllerType<T> {}
@@ -191,6 +200,10 @@ export const Select = (props: SelectProps) => {
           <Text
             testID={testID ? `${testID}-label` : undefined}
             className={styles.label()}
+            style={{
+              fontFamily: 'FORTNITE BATTLEFEST',
+              textTransform: 'uppercase',
+            }}
           >
             {label}
           </Text>
@@ -202,7 +215,15 @@ export const Select = (props: SelectProps) => {
           testID={testID ? `${testID}-trigger` : undefined}
         >
           <View className="flex-1">
-            <Text className={styles.inputValue()}>{textValue}</Text>
+            <Text
+              className={styles.inputValue()}
+              style={{
+                fontFamily: 'FORTNITE BATTLEFEST',
+                textTransform: 'uppercase',
+              }}
+            >
+              {textValue}
+            </Text>
           </View>
           <CaretDown />
         </Pressable>

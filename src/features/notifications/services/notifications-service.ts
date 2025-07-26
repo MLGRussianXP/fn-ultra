@@ -4,13 +4,29 @@ import { Linking, Platform } from 'react-native';
 
 // Configure how notifications appear when the app is in the foreground
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
+  handleNotification: async (notification) => {
+    // Check if this is a silent notification that should not be shown
+    const data = notification.request.content.data;
+    if (data && data.silent === true) {
+      // Don't show silent notifications
+      return {
+        shouldShowAlert: false,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+        shouldShowBanner: false,
+        shouldShowList: false,
+      };
+    }
+
+    // Show all other notifications
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    };
+  },
 });
 
 export interface NotificationData {
@@ -211,18 +227,5 @@ export async function scheduleLocalNotification(
       data: data || {},
     },
     trigger: null, // Send immediately
-  });
-}
-
-/**
- * Sends a test notification
- */
-export async function sendTestNotification(): Promise<string> {
-  return await scheduleLocalNotification({
-    title: 'Test Notification',
-    body: 'This is a test notification from the app',
-    data: {
-      type: 'test',
-    },
   });
 }

@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Apply FORTNITE BATTLEFEST font globally */
+@layer base {
+  html,
+  body,
+  * {
+    font-family: 'FORTNITE BATTLEFEST';
+    text-transform: uppercase;
+  }
+
+  /* Ensure bold text uses our font */
+  b,
+  strong,
+  [style*='font-weight: bold'],
+  [style*='font-weight:bold'] {
+    font-family: 'FORTNITE BATTLEFEST' !important;
+    font-weight: normal !important; /* FORTNITE BATTLEFEST doesn't have weight variants */
+  }
+}
+
+/* Override for specific elements that should use Inter */
+.font-inter {
+  font-family: 'Inter' !important;
+  text-transform: none !important;
+}

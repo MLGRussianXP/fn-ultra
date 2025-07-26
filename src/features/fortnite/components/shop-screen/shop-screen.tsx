@@ -41,22 +41,27 @@ function ShopError({
   onRetry: () => void;
 }) {
   return (
-    <View className="flex-1 items-center justify-center p-4">
+    <View className="flex-1 items-center justify-center p-base">
       <FocusAwareStatusBar />
-      <Text className="mb-2 text-center text-lg font-semibold text-gray-900 dark:text-white">
+      <Text variant="heading" className="mb-sm text-center">
         Error Loading Shop
       </Text>
-      <Text className="mb-4 text-center text-sm text-gray-600 dark:text-gray-300">
+      <Text
+        variant="bodySmall"
+        className="mb-md text-center text-neutral-600 dark:text-neutral-300"
+      >
         {error instanceof Error
           ? error.message
           : 'Failed to load Fortnite shop data'}
       </Text>
-      <Text
+      <Pressable
+        className="rounded bg-primary-600 px-md py-sm"
         onPress={onRetry}
-        className="rounded bg-blue-500 px-4 py-2 text-white"
       >
-        Try Again
-      </Text>
+        <Text variant="fortnite" className="text-white">
+          Try Again
+        </Text>
+      </Pressable>
     </View>
   );
 }
@@ -101,10 +106,10 @@ function GridItems({
   onItemPress: (entry: ShopItem) => void;
 }) {
   return (
-    <View className="w-full px-4">
-      <View className="flex-row flex-wrap gap-3">
+    <View className="w-full px-base">
+      <View className="flex-row flex-wrap gap-sm">
         {entries.map((entry) => (
-          <View key={entry.offerId} className="mb-4 w-[48%] grow">
+          <View key={entry.offerId} className="mb-md w-[48%] grow">
             <ShopItemComponent
               item={entry}
               onPress={() => onItemPress(entry)}
@@ -135,21 +140,24 @@ function CategorySection({
   }, []);
 
   return (
-    <View className="mb-6 w-full">
+    <View className="mb-xl w-full">
       {/* Collapsible Header */}
       <Pressable
-        className="mx-4 mb-4 flex-row items-center justify-between rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800"
+        className="mx-base mb-md flex-row items-center justify-between rounded-lg bg-white p-base shadow-sm dark:bg-neutral-800"
         onPress={toggleExpanded}
         android_ripple={{ color: 'rgba(0,0,0,0.1)' }}
       >
         <View className="flex-1 flex-row items-center">
           <View className="h-px flex-1 bg-neutral-300 dark:bg-neutral-700" />
-          <Text className="mx-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-            {group.layoutName} ({group.entries.length} items)
+          <Text
+            variant="fortnite"
+            className="mx-sm text-fortnite-blue dark:text-fortnite-blue"
+          >
+            {group.layoutName} ({group.entries.length})
           </Text>
           <View className="h-px flex-1 bg-neutral-300 dark:bg-neutral-700" />
         </View>
-        <Text className="ml-2 text-lg text-neutral-500 dark:text-neutral-400">
+        <Text className="ml-sm text-lg text-neutral-500 dark:text-neutral-400">
           {isExpanded ? '−' : '+'}
         </Text>
       </Pressable>
@@ -173,7 +181,7 @@ function LoadingState() {
   return (
     <View className="flex-1 items-center justify-center bg-neutral-50 dark:bg-neutral-900">
       <FocusAwareStatusBar />
-      <Text className="text-lg text-gray-900 dark:text-white">
+      <Text variant="fortnite" className="text-fortnite-orange">
         Loading Fortnite Shop...
       </Text>
     </View>
@@ -185,18 +193,23 @@ function NoDataState({ onRetry }: { onRetry: () => void }) {
   return (
     <View className="flex-1 items-center justify-center bg-neutral-50 dark:bg-neutral-900">
       <FocusAwareStatusBar />
-      <Text className="mb-4 text-center text-lg text-gray-900 dark:text-white">
+      <Text variant="heading" className="mb-md text-center">
         No shop data available
       </Text>
-      <Text className="mb-4 text-center text-sm text-gray-600 dark:text-gray-300">
+      <Text
+        variant="bodySmall"
+        className="mb-md text-center text-neutral-600 dark:text-neutral-300"
+      >
         The Fortnite shop might be temporarily unavailable
       </Text>
-      <Text
+      <Pressable
+        className="rounded bg-primary-600 px-md py-sm"
         onPress={onRetry}
-        className="rounded bg-blue-500 px-4 py-2 text-white"
       >
-        Try Again
-      </Text>
+        <Text variant="fortnite" className="text-white">
+          Try Again
+        </Text>
+      </Pressable>
     </View>
   );
 }
@@ -229,6 +242,7 @@ export function ShopScreen() {
   return (
     <View className="flex-1 bg-neutral-50 dark:bg-neutral-900">
       <FocusAwareStatusBar />
+
       <FlashList
         data={grouped}
         renderItem={({ item: group }) => (

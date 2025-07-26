@@ -19,6 +19,19 @@ const appIconBadgeConfig: AppIconBadgeConfig = {
   ],
 };
 
+const iosConfig = {
+  supportsTablet: true,
+  bundleIdentifier: Env.BUNDLE_ID,
+  infoPlist: {
+    ITSAppUsesNonExemptEncryption: false,
+    UIBackgroundModes: [
+      'remote-notification',
+      'background-fetch',
+      'background-processing',
+    ],
+  },
+};
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: Env.NAME,
@@ -35,14 +48,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     fallbackToCacheTimeout: 0,
   },
   assetBundlePatterns: ['**/*'],
-  ios: {
-    supportsTablet: true,
-    bundleIdentifier: Env.BUNDLE_ID,
-    infoPlist: {
-      ITSAppUsesNonExemptEncryption: false,
-      UIBackgroundModes: ['remote-notification'],
-    },
-  },
+  ios: iosConfig,
   experiments: {
     typedRoutes: true,
   },
@@ -70,7 +76,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-font',
       {
-        fonts: ['./assets/fonts/Inter.ttf'],
+        fonts: [
+          './assets/fonts/fortnitebattlefest.ttf',
+          './assets/fonts/Inter.ttf',
+        ],
       },
     ],
     'expo-localization',

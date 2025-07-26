@@ -145,6 +145,71 @@ Components follow a consistent structure:
 - **Internationalization**: Support for multiple languages
 - **Responsive Design**: Optimized for both iOS and Android devices
 
+## 🎨 Typography & Design System
+
+### Typography
+
+The app uses a comprehensive typography system with two main fonts:
+
+- **FORTNITE BATTLEFEST**: Default font used throughout the app for headings and UI elements (Copyright © SpideRaYsfoNtS. All rights reserved)
+- **Inter**: Secondary font used for body text and certain UI elements where readability is critical
+
+#### Text Variants
+
+The `Text` component supports various variants for consistent typography:
+
+```jsx
+// Default text uses FORTNITE BATTLEFEST font
+<Text>DEFAULT FORTNITE TEXT</Text>
+
+// Explicitly use Inter font when needed
+<Text variant="inter">Regular body text</Text>
+
+// Other variants
+<Text variant="h1">HEADING 1</Text>
+```
+
+Available variants:
+
+- Default: FORTNITE BATTLEFEST font with uppercase styling
+- `h1`, `h2`, `h3`, `h4`: Headings with different sizes
+- `inter`: Explicitly use Inter font for better readability
+- `body`, `bodyLarge`, `bodySmall`: Body text in different sizes (uses Inter)
+- `caption`: Small text for secondary information (uses Inter)
+- `label`: Form labels and small headings (uses Inter)
+- `button`: Button text styling
+
+### Spacing System
+
+The app uses a consistent spacing system:
+
+```jsx
+<View className="p-base mb-lg">
+  <Text className="mb-sm">Consistent spacing</Text>
+</View>
+```
+
+Spacing values:
+
+- `xs`: 0.25rem (4px)
+- `sm`: 0.5rem (8px)
+- `base`: 1rem (16px)
+- `md`: 1.25rem (20px)
+- `lg`: 1.5rem (24px)
+- `xl`: 2rem (32px)
+- `2xl`: 2.5rem (40px)
+- `3xl`: 3rem (48px)
+- `4xl`: 4rem (64px)
+
+### Color System
+
+The app uses a comprehensive color system with:
+
+- Base colors (primary, neutral, etc.)
+- Semantic colors (success, warning, danger)
+- Contrast colors for accessibility
+- Special Fortnite-themed colors
+
 ## 📱 Available Scripts
 
 - `pnpm start` - Start the development server

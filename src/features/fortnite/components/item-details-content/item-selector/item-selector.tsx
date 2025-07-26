@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
-import { FlatList, Image, Pressable, View } from 'react-native';
+import { FlatList, Image, Pressable, StyleSheet, View } from 'react-native';
 
 import type { ShopItem } from '@/api/fortnite/types';
 import { Text } from '@/components/ui';
+
+const styles = StyleSheet.create({
+  itemName: {
+    fontFamily: 'FORTNITE BATTLEFEST',
+    textTransform: 'uppercase',
+  },
+  sectionTitle: {
+    fontFamily: 'FORTNITE BATTLEFEST',
+    textTransform: 'uppercase',
+  },
+});
 
 type Props = {
   entry: ShopItem;
@@ -92,7 +103,7 @@ export function ItemSelector({ entry, selectedItemId, onSelectItem }: Props) {
 
   return (
     <View className="mb-4 px-4">
-      <Text className="mb-2 text-lg font-semibold text-white">
+      <Text className="mb-2 text-lg text-white" style={styles.sectionTitle}>
         Bundle Contents
       </Text>
       <FlatList
@@ -100,26 +111,30 @@ export function ItemSelector({ entry, selectedItemId, onSelectItem }: Props) {
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Pressable
-            onPress={() => onSelectItem(item.id)}
-            className={`mr-3 rounded-lg p-2 ${
-              selectedItemId === item.id ? 'bg-indigo-600' : 'bg-gray-800'
-            }`}
-          >
-            <Image
-              source={{ uri: item.image }}
-              style={{ width: 60, height: 60 }}
-              resizeMode="contain"
-            />
-            <Text
-              className="mt-1 max-w-[80px] text-center text-xs text-white"
-              numberOfLines={1}
+        renderItem={({ item }) => {
+          const bgClass =
+            selectedItemId === item.id ? 'bg-indigo-600' : 'bg-gray-800';
+
+          return (
+            <Pressable
+              onPress={() => onSelectItem(item.id)}
+              className={`mr-3 rounded-lg p-2 ${bgClass}`}
             >
-              {item.name}
-            </Text>
-          </Pressable>
-        )}
+              <Image
+                source={{ uri: item.image }}
+                style={{ width: 60, height: 60 }}
+                resizeMode="contain"
+              />
+              <Text
+                className="mt-1 max-w-[80px] text-center text-xs text-white"
+                style={styles.itemName}
+                numberOfLines={1}
+              >
+                {item.name}
+              </Text>
+            </Pressable>
+          );
+        }}
       />
     </View>
   );

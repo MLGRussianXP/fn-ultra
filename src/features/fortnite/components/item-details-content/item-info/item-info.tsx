@@ -1,8 +1,15 @@
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import type { DetailedBrItem } from '@/api/fortnite/types';
 import { Text } from '@/components/ui';
+
+const styles = StyleSheet.create({
+  itemName: {
+    fontFamily: 'FORTNITE BATTLEFEST',
+    textTransform: 'uppercase',
+  },
+});
 
 type Props = {
   brItemData: DetailedBrItem;
@@ -11,7 +18,7 @@ type Props = {
 export function ItemInfo({ brItemData }: Props) {
   return (
     <View className="px-4 pt-4">
-      <Text className="mb-2 text-3xl font-bold text-white">
+      <Text className="mb-2 text-3xl text-white" style={styles.itemName}>
         {brItemData.name}
       </Text>
 

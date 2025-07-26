@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { type TextStyle } from 'react-native';
 
 import {
   Home as HomeIcon,
@@ -7,9 +8,22 @@ import {
   Settings as SettingsIcon,
 } from '@/components/ui/icons';
 
+const tabBarLabelStyle: TextStyle = {
+  fontFamily: 'FORTNITE BATTLEFEST',
+  textTransform: 'uppercase',
+};
+
 export default function TabLayout() {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarLabelStyle,
+        headerTitleStyle: {
+          fontFamily: 'FORTNITE BATTLEFEST',
+          textTransform: 'uppercase',
+        } as TextStyle,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

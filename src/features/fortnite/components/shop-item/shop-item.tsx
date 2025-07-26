@@ -1,10 +1,17 @@
 import * as React from 'react';
-import { Pressable } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 import type { ShopItem as ShopItemType } from '@/api/fortnite/types';
 import { Image, Text, View } from '@/components/ui';
 
 import { ShopItemPrice } from '../shop-item-price';
+
+const styles = StyleSheet.create({
+  itemTitle: {
+    fontFamily: 'FORTNITE BATTLEFEST',
+    textTransform: 'uppercase',
+  },
+});
 
 type Props = {
   item: ShopItemType;
@@ -77,7 +84,8 @@ export function ShopItem({ item, onPress }: Props) {
           {/* Title Overlay */}
           <View className="absolute inset-x-0 bottom-0 bg-black/40 p-2">
             <Text
-              className="text-sm font-bold text-white"
+              className="text-sm text-white"
+              style={styles.itemTitle}
               numberOfLines={1}
               testID="item-title"
             >

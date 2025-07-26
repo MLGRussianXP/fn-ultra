@@ -27,5 +27,4 @@ export { useNotifications } from './notifications/hooks';
 export {
   requestNotificationPermissions,
   scheduleLocalNotification,
-  sendTestNotification,
 } from './notifications/services';

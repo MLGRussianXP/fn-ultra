@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import { router } from 'expo-router';
 import React from 'react';
 import { AppState } from 'react-native';
 
@@ -38,6 +39,9 @@ const NotificationsContext = React.createContext<NotificationsContextType>({
   hasPermissions: false,
 });
 
+// Track processed notifications to prevent duplicates
+const processedNotificationIds = new Set<string>();
+
 // Handle notification response
 const handleNotificationResponse = (
   response: Notifications.NotificationResponse
@@ -51,9 +55,51 @@ const handleNotificationResponse = (
   if (data.type === 'shop_update') {
     // Navigate to shop screen
     console.log('Shop update notification tapped');
+    try {
+      router.push('/(app)/index');
+    } catch (error) {
+      console.error('Failed to navigate to shop screen:', error);
+    }
   } else if (data.type === 'item_watch' && data.itemId) {
     // Navigate to item details screen
     console.log('Item watch notification tapped:', data.itemId);
+    try {
+      router.push(`/(app)/item/${data.itemId}`);
+    } catch (error) {
+      console.error('Failed to navigate to item details:', error);
+    }
+  } else if (data.type === 'daily_shop_check') {
+    // This was the scheduled notification, trigger the actual check
+    console.log('Daily shop check notification triggered');
+  }
+};
+
+// Handle notification received (when app is in foreground)
+const handleNotificationReceived = (
+  notification: Notifications.Notification
+) => {
+  // Check if we've already processed this notification
+  const notificationId = notification.request.identifier;
+  if (processedNotificationIds.has(notificationId)) {
+    console.log(`Skipping already processed notification: ${notificationId}`);
+    return;
+  }
+
+  // Mark as processed
+  processedNotificationIds.add(notificationId);
+
+  console.log('Notification received:', notification);
+  const data = notification.request.content.data;
+
+  // If this is a daily shop check notification, don't show any UI
+  if (data.type === 'daily_shop_check') {
+    console.log('Daily shop check notification received');
+    // Don't show any UI for silent notifications
+    if (data.silent) {
+      // Prevent default notification display
+      notification.request.content.title = '';
+      notification.request.content.body = '';
+    }
   }
 };
 
@@ -218,9 +264,9 @@ const useNotificationChannelSetup = () => {
 // Setup notification received listener
 const useNotificationReceivedListener = () => {
   React.useEffect(() => {
-    const subscription = addNotificationReceivedListener((notification) => {
-      console.log('Notification received:', notification);
-    });
+    const subscription = addNotificationReceivedListener(
+      handleNotificationReceived
+    );
     return () => subscription.remove();
   }, []);
 };

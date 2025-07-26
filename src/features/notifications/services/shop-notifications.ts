@@ -14,10 +14,79 @@ export const WATCHED_ITEMS_TASK = 'WATCHED_ITEMS_TASK';
 // Last notification timestamps (to prevent duplicate notifications)
 const LAST_ITEM_WATCH_KEY = 'notifications.lastItemWatch';
 
+// Notification identifier for scheduled daily notifications
+const DAILY_SHOP_NOTIFICATION_ID = 'daily-shop-update';
+
+/**
+ * Calculates the next 00:00 GMT time
+ */
+function getNext00GMT(): Date {
+  const now = new Date();
+  const next00GMT = new Date();
+
+  // Set to next 00:00 GMT
+  next00GMT.setUTCHours(0, 0, 0, 0);
+
+  // If it's already past 00:00 GMT today, schedule for tomorrow
+  if (now.getTime() >= next00GMT.getTime()) {
+    next00GMT.setUTCDate(next00GMT.getUTCDate() + 1);
+  }
+
+  return next00GMT;
+}
+
+/**
+ * Processes shop data and sends appropriate notifications
+ */
+async function processShopDataAndNotify(shopData: ShopData): Promise<void> {
+  // Get the last seen shop date
+  const lastSeenShopDate = getItem<string>(
+    STORAGE_KEYS.NOTIFICATIONS.LAST_SEEN_SHOP_DATE
+  );
+
+  // If we've already seen this shop update, don't send notifications
+  if (lastSeenShopDate === shopData.date) {
+    console.log(
+      '[DailyNotification] Shop not updated (date:',
+      shopData.date,
+      '), skipping notification'
+    );
+    return;
+  }
+
+  console.log('[DailyNotification] Shop updated! New date:', shopData.date);
+
+  // Store the current shop date
+  storeItem(STORAGE_KEYS.NOTIFICATIONS.LAST_SEEN_SHOP_DATE, shopData.date);
+
+  // Always send shop update notification
+  await sendShopUpdateNotification(shopData.date);
+  console.log('[DailyNotification] Shop update notification sent');
+
+  // Check for watched items separately
+  const watchedItemsInShop = getWatchedItemsInShop(shopData);
+
+  // Send individual notifications for each watched item
+  if (
+    watchedItemsInShop.length > 0 &&
+    (await shouldSendWatchedItemsNotification())
+  ) {
+    for (const item of watchedItemsInShop) {
+      await sendWatchedItemNotification(item);
+      console.log(
+        `[DailyNotification] Watched item notification sent for: ${item.name}`
+      );
+    }
+
+    // Save the notification timestamp after sending all item notifications
+    await storeItem(LAST_ITEM_WATCH_KEY, new Date().toISOString());
+  }
+}
+
 /**
  * Fetches the latest shop data from the Fortnite API
  */
-async function fetchShopData(): Promise<ShopData | null> {
+export async function fetchShopData(): Promise<ShopData | null> {
   try {
     const response = await fetch(`${Env.FORTNITE_API_URL}/v2/shop`);
 
@@ -39,7 +108,7 @@ async function fetchShopData(): Promise<ShopData | null> {
  * @param shopData Current shop data
  * @returns Array of watched items that are in the shop
  */
-function getWatchedItemsInShop(shopData: ShopData): BrItem[] {
+export function getWatchedItemsInShop(shopData: ShopData): BrItem[] {
   // Get watched items from storage
   const watchedItems =
     getItem<Record<string, boolean>>(
@@ -135,48 +204,28 @@ async function shouldSendWatchedItemsNotification(): Promise<boolean> {
 }
 
 /**
- * Sends notifications for watched items in the shop
- * @param itemsInShop Array of watched items that are in the shop
+ * Sends a notification for a single watched item
  */
-async function sendWatchedItemsNotification(
-  itemsInShop: BrItem[]
-): Promise<void> {
-  if (itemsInShop.length === 0) {
-    return;
-  }
-
-  // Create notification content based on number of items
-  let title: string;
-  let body: string;
-
-  if (itemsInShop.length === 1) {
-    title = 'Watched Item Available!';
-    body = `${itemsInShop[0].name} is now available in the shop!`;
-  } else {
-    title = 'Watched Items Available!';
-    body = `${itemsInShop.length} items on your watch list are in the shop today!`;
-  }
-
+export async function sendWatchedItemNotification(item: BrItem): Promise<void> {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title,
-      body,
+      title: 'Watched Item Available!',
+      body: `${item.name} is now available in the shop!`,
       data: {
         type: 'item_watch',
-        itemIds: itemsInShop.map((item) => item.id),
+        itemId: item.id,
       },
     },
     trigger: null, // Send immediately
   });
-
-  // Save the notification timestamp
-  await storeItem(LAST_ITEM_WATCH_KEY, new Date().toISOString());
 }
 
 /**
  * Sends a shop update notification
  */
-async function sendShopUpdateNotification(shopDate: string): Promise<void> {
+export async function sendShopUpdateNotification(
+  shopDate: string
+): Promise<void> {
   await Notifications.scheduleNotificationAsync({
     content: {
       title: 'Fortnite Shop Update',
@@ -215,41 +264,8 @@ async function handleShopUpdateTask(): Promise<number> {
       return BackgroundTask.BackgroundTaskResult.Failed;
     }
 
-    // Get the last seen shop date
-    const lastSeenShopDate = getItem<string>(
-      STORAGE_KEYS.NOTIFICATIONS.LAST_SEEN_SHOP_DATE
-    );
-
-    // If we've already seen this shop update, don't send notifications
-    if (lastSeenShopDate === shopData.date) {
-      console.log(
-        '[ShopUpdateTask] Shop not updated (date:',
-        shopData.date,
-        '), skipping notification'
-      );
-      return BackgroundTask.BackgroundTaskResult.Success;
-    }
-
-    console.log('[ShopUpdateTask] Shop updated! New date:', shopData.date);
-
-    // Store the current shop date
-    storeItem(STORAGE_KEYS.NOTIFICATIONS.LAST_SEEN_SHOP_DATE, shopData.date);
-
-    // Send shop update notification only if the shop is new
-    await sendShopUpdateNotification(shopData.date);
-    console.log('[ShopUpdateTask] Shop update notification sent');
-
-    // Check for watched items in the shop
-    const watchedItemsInShop = getWatchedItemsInShop(shopData);
-
-    // Send watched items notification if needed
-    if (
-      watchedItemsInShop.length > 0 &&
-      (await shouldSendWatchedItemsNotification())
-    ) {
-      await sendWatchedItemsNotification(watchedItemsInShop);
-      console.log('[ShopUpdateTask] Watched items notification sent');
-    }
+    // Process the shop data and send notifications
+    await processShopDataAndNotify(shopData);
 
     return BackgroundTask.BackgroundTaskResult.Success;
   } catch (error) {
@@ -299,19 +315,64 @@ export async function unregisterShopUpdateTask(): Promise<void> {
 }
 
 /**
- * Schedules a shop update notification (no-op, kept for API compatibility)
+ * Schedules a shop update notification for daily 00:00 GMT delivery
  */
 export async function scheduleDailyShopNotification(): Promise<string | null> {
-  // No longer schedules a repeating notification
-  return null;
+  try {
+    // Cancel any existing scheduled notification
+    await cancelDailyShopNotification();
+
+    const next00GMT = getNext00GMT();
+    console.log(
+      '[DailyNotification] Scheduling daily notification for:',
+      next00GMT.toISOString()
+    );
+
+    // Schedule the silent trigger for the next 00:00 GMT
+    // This won't show a notification, but will trigger our background check
+    const notificationId = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '', // Empty title - no visible notification
+        body: '', // Empty body - no visible notification
+        data: {
+          type: 'daily_shop_check',
+          scheduledFor: next00GMT.toISOString(),
+          silent: true,
+        },
+      },
+      trigger: {
+        channelId: 'shop-updates',
+        seconds: Math.floor((next00GMT.getTime() - Date.now()) / 1000),
+      },
+      identifier: DAILY_SHOP_NOTIFICATION_ID,
+    });
+
+    console.log('[DailyNotification] Scheduled with ID:', notificationId);
+    return notificationId;
+  } catch (error) {
+    console.error(
+      '[DailyNotification] Failed to schedule daily notification:',
+      error
+    );
+    return null;
+  }
 }
 
 /**
- * Cancels the shop update notification (no-op, kept for API compatibility)
+ * Cancels the daily shop update notification
  */
 export async function cancelDailyShopNotification(): Promise<void> {
-  // No longer cancels a repeating notification
-  return;
+  try {
+    await Notifications.cancelScheduledNotificationAsync(
+      DAILY_SHOP_NOTIFICATION_ID
+    );
+    console.log('[DailyNotification] Cancelled daily shop notification');
+  } catch (error) {
+    console.error(
+      '[DailyNotification] Failed to cancel daily notification:',
+      error
+    );
+  }
 }
 
 /**

@@ -75,4 +75,29 @@ module.exports = {
     800: '#991B1B',
     900: '#7F1D1D',
   },
+  // New colors for better visual hierarchy
+  fortnite: {
+    blue: '#1D96FC',
+    purple: '#9D4EDD',
+    orange: '#FF7B1A',
+    green: '#22C55E',
+    yellow: '#F59E0B',
+    red: '#DC2626',
+    dark: '#121212',
+    light: '#F5F5F5',
+  },
+  // Enhanced contrast colors for accessibility
+  contrast: {
+    high: {
+      light: '#FFFFFF',
+      dark: '#121212',
+    },
+    text: {
+      primary: '#121212',
+      secondary: '#404040',
+      tertiary: '#737373',
+      inverse: '#FFFFFF',
+      accent: '#FF6C00',
+    },
+  },
 };

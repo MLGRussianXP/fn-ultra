@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React from 'react';
-import { Pressable } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 import type { ShopItem } from '@/api/fortnite/types';
 import { Image, Text, View } from '@/components/ui';
@@ -9,6 +9,14 @@ import { useShopItemData } from '@/features/fortnite/hooks/use-shop-item-data';
 import { countItemsInEntry, isSingleItemEntry } from '@/lib/utils';
 
 import { ShopItemPrice } from '../shop-item-price';
+
+// Item title styles
+const styles = StyleSheet.create({
+  itemTitle: {
+    fontFamily: 'FORTNITE BATTLEFEST',
+    textTransform: 'uppercase',
+  },
+});
 
 type Props = {
   entry: ShopItem;
@@ -69,19 +77,20 @@ function ShopItemBackground({
 
 function ShopItemOverlay({
   title,
-  titleClass,
+  isWide,
   item,
 }: {
   title: string;
-  titleClass: string;
+  isWide: boolean;
   item: ShopItem;
 }) {
   return (
-    <View className="absolute inset-x-0 bottom-0 z-20 bg-black/40 p-3">
-      {/* Title */}
+    <View className="absolute inset-x-0 bottom-0 z-20 bg-black/60 p-base">
+      {/* Title - explicitly set FORTNITE BATTLEFEST font */}
       <Text
-        className={`mb-1 font-bold text-white ${titleClass}`}
+        className={`mb-sm ${isWide ? 'text-lg' : 'text-sm'} text-fortnite-light`}
         numberOfLines={1}
+        style={styles.itemTitle}
       >
         {title}
       </Text>
@@ -143,14 +152,13 @@ export function ShopItemCard({ entry, isWide = false }: Props) {
   const { brItems } = entry;
 
   const widthClass = isWide ? 'w-full' : 'w-[48%]';
-  const titleClass = isWide ? 'text-lg' : 'text-sm';
   const hasBrItems = brItems && brItems.length > 0;
 
   const handlePress = useShopItemNavigation(entry, !!hasBrItems, brItems || []);
 
   return (
     <Pressable
-      className={`mb-3 overflow-hidden rounded-xl shadow-lg ${widthClass}`}
+      className={`mb-lg overflow-hidden rounded-xl shadow-lg ${widthClass}`}
       onPress={handlePress}
       android_ripple={{ color: 'rgba(0,0,0,0.1)' }}
       disabled={!hasBrItems}
@@ -165,7 +173,7 @@ export function ShopItemCard({ entry, isWide = false }: Props) {
           image={image}
         />
 
-        <ShopItemOverlay title={title} titleClass={titleClass} item={entry} />
+        <ShopItemOverlay title={title} isWide={isWide} item={entry} />
       </View>
     </Pressable>
   );

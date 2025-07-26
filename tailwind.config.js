@@ -1,4 +1,9 @@
 const colors = require('./src/components/ui/colors');
+const {
+  spacing,
+  lineHeight,
+  letterSpacing,
+} = require('./src/components/ui/spacing');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -9,9 +14,13 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        inter: ['Inter'],
+        sans: ['FORTNITE BATTLEFEST'],
+        fortnite: ['FORTNITE BATTLEFEST'],
       },
       colors,
+      spacing,
+      lineHeight,
+      letterSpacing,
     },
   },
   plugins: [],

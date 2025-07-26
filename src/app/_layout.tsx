@@ -12,6 +12,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { APIProvider } from '@/api';
+import { TextProvider } from '@/components/ui';
 import { NotificationsProvider } from '@/features/notifications/provider/notifications-provider';
 import {
   registerShopUpdateTask,
@@ -19,6 +20,7 @@ import {
 } from '@/features/notifications/services';
 import { loadSelectedTheme } from '@/hooks/use-selected-theme';
 import { useThemeConfig } from '@/hooks/use-theme-config';
+import { overrideFontStyles, useFonts } from '@/lib';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -42,16 +44,42 @@ SplashScreen.setOptions({
 });
 
 export default function RootLayout() {
+  const { fontsLoaded, onLayoutRootView } = useFonts();
+
+  // Apply font override when fonts are loaded
+  useEffect(() => {
+    if (fontsLoaded) {
+      // Override font styles to ensure bold text uses our font
+      overrideFontStyles();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <Providers>
-      <Stack>
+    <Providers onLayout={onLayoutRootView}>
+      <Stack
+        screenOptions={{
+          headerTitleStyle: {
+            fontFamily: 'FORTNITE BATTLEFEST',
+          },
+        }}
+      >
         <Stack.Screen name="(app)" options={{ headerShown: false }} />
       </Stack>
     </Providers>
   );
 }
 
-function Providers({ children }: { children: React.ReactNode }) {
+function Providers({
+  children,
+  onLayout,
+}: {
+  children: React.ReactNode;
+  onLayout: () => void;
+}) {
   const theme = useThemeConfig();
 
   // Initialize notifications only once when the app is fully loaded
@@ -72,15 +100,18 @@ function Providers({ children }: { children: React.ReactNode }) {
     <GestureHandlerRootView
       style={styles.container}
       className={theme.dark ? `dark` : undefined}
+      onLayout={onLayout}
     >
       <KeyboardProvider>
         <ThemeProvider value={theme}>
           <APIProvider>
             <NotificationsProvider>
-              <BottomSheetModalProvider>
-                {children}
-                <FlashMessage position="top" />
-              </BottomSheetModalProvider>
+              <TextProvider>
+                <BottomSheetModalProvider>
+                  {children}
+                  <FlashMessage position="top" />
+                </BottomSheetModalProvider>
+              </TextProvider>
             </NotificationsProvider>
           </APIProvider>
         </ThemeProvider>

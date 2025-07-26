@@ -1,6 +1,8 @@
 import { SplashScreen, Stack } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
 
+import { BoldTextFix } from '@/components/ui';
+
 export default function AppLayout() {
   const hideSplash = useCallback(async () => {
     await SplashScreen.hideAsync();
@@ -13,22 +15,31 @@ export default function AppLayout() {
   }, [hideSplash]);
 
   return (
-    <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          title: 'Shop',
-        }}
-      />
-      <Stack.Screen
-        name="item/[id]"
-        options={{
-          presentation: 'modal',
+    <>
+      <BoldTextFix />
+      <Stack
+        screenOptions={{
           headerShown: true,
-          headerBackTitle: 'Back',
-          title: 'Item Details',
+          headerTitleStyle: {
+            fontFamily: 'FORTNITE BATTLEFEST',
+          },
         }}
-      />
-    </Stack>
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            title: 'Fortnite Shop',
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name="item/[id]"
+          options={{
+            title: 'Item Details',
+            headerShown: true,
+          }}
+        />
+      </Stack>
+    </>
   );
 }

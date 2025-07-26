@@ -76,7 +76,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-font',
       {
-        fonts: ['./assets/fonts/Inter.ttf'],
+        fonts: [
+          './assets/fonts/fortnitebattlefest.ttf',
+          './assets/fonts/Inter.ttf',
+        ],
       },
     ],
     'expo-localization',

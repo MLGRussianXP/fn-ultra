@@ -6,9 +6,22 @@ import {
   Settings as SettingsIcon,
 } from '@/components/ui/icons';
 
+const tabBarLabelStyle = {
+  fontFamily: 'FORTNITE BATTLEFEST',
+  textTransform: 'uppercase',
+};
+
 export default function TabLayout() {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarLabelStyle,
+        headerTitleStyle: {
+          fontFamily: 'FORTNITE BATTLEFEST',
+          textTransform: 'uppercase',
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

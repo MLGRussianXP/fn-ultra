@@ -5,6 +5,7 @@ export * from './feed';
 export * from './github';
 export * from './home';
 export * from './language';
+export * from './search';
 export * from './settings';
 export * from './star';
 export * from './style';

@@ -4,20 +4,8 @@ import { View } from 'react-native';
 import { Text } from '@/components/ui';
 import { Switch } from '@/components/ui/checkbox';
 import { useNotifications } from '@/features/notifications/hooks';
-import {
-  handlePermissionRequest,
-  sendTestNotification,
-} from '@/features/notifications/services';
+import { handlePermissionRequest } from '@/features/notifications/services';
 import { translate } from '@/lib/i18n';
-
-// Helper function to send a test notification with error handling
-const sendTestNotificationWithErrorHandling = async () => {
-  try {
-    await sendTestNotification();
-  } catch (error) {
-    console.error('Failed to send test notification:', error);
-  }
-};
 
 // Extract some functionality to reduce component size for linting
 const useToggleState = (shopUpdatesEnabled: boolean) => {
@@ -52,10 +40,6 @@ export const ShopUpdatesToggle = () => {
           // Use the helper function to handle the permission request
           const granted = await handlePermissionRequest(() => {
             toggleShopUpdates(true);
-            // Send a test notification
-            setTimeout(() => {
-              sendTestNotificationWithErrorHandling();
-            }, 500);
           });
 
           // If not granted, revert local state

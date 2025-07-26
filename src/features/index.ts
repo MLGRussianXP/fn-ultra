@@ -29,3 +29,6 @@ export {
   scheduleLocalNotification,
   sendTestNotification,
 } from './notifications/services';
+
+// Export Search feature components and screens
+export * from './search';

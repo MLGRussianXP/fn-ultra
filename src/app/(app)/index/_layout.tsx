@@ -3,6 +3,7 @@ import React from 'react';
 
 import {
   Home as HomeIcon,
+  Search as SearchIcon,
   Settings as SettingsIcon,
 } from '@/components/ui/icons';
 
@@ -16,6 +17,15 @@ export default function TabLayout() {
           headerShown: false,
           tabBarIcon: ({ color }) => <HomeIcon color={color} />,
           tabBarButtonTestID: 'shop-tab',
+        }}
+      />
+      <Tabs.Screen
+        name="search"
+        options={{
+          title: 'Search',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <SearchIcon color={color} />,
+          tabBarButtonTestID: 'search-tab',
         }}
       />
       <Tabs.Screen

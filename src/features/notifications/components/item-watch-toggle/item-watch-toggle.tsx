@@ -5,20 +5,8 @@ import type { DetailedBrItem } from '@/api/fortnite/types';
 import { Text } from '@/components/ui';
 import { Switch } from '@/components/ui/checkbox';
 import { useNotifications } from '@/features/notifications/hooks';
-import {
-  handlePermissionRequest,
-  sendTestNotification,
-} from '@/features/notifications/services';
+import { handlePermissionRequest } from '@/features/notifications/services';
 import { translate } from '@/lib/i18n';
-
-// Helper function to send a test notification with error handling
-const sendTestNotificationWithErrorHandling = async () => {
-  try {
-    await sendTestNotification();
-  } catch (error) {
-    console.error('Failed to send test notification:', error);
-  }
-};
 
 // Extract some functionality to reduce component size for linting
 const useToggleState = (isWatched: boolean) => {
@@ -60,10 +48,6 @@ export function ItemWatchToggle({ brItemData }: Props) {
           // Use the helper function to handle the permission request
           const granted = await handlePermissionRequest(() => {
             toggleItemWatch(brItemData.id, true);
-            // Send a test notification
-            setTimeout(() => {
-              sendTestNotificationWithErrorHandling();
-            }, 500);
           });
 
           // If not granted, revert local state
@@ -86,13 +70,14 @@ export function ItemWatchToggle({ brItemData }: Props) {
   );
 
   return (
-    <View className="m-4 flex-row items-center justify-between rounded-lg bg-neutral-800 p-4">
-      <View className="flex-1">
-        <Text className="text-base font-medium text-white">
+    <View className="flex-row items-center justify-between px-4 py-2">
+      <View>
+        <Text className="text-base font-medium">
           {translate('settings.notifications.watch_item')}
         </Text>
-        <Text className="text-sm text-neutral-400">
-          {translate('settings.notifications.watch_item_description')}
+        <Text className="text-sm text-neutral-600 dark:text-neutral-400">
+          {translate('settings.notifications.watch_item_description')}{' '}
+          You&apos;ll be notified when this item appears in the shop.
         </Text>
       </View>
       <Switch

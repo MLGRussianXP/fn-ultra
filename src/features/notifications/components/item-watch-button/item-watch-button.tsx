@@ -12,20 +12,8 @@ import Animated, {
 import type { DetailedBrItem } from '@/api/fortnite/types';
 import { Bell } from '@/components/ui/icons';
 import { useNotifications } from '@/features/notifications/hooks';
-import {
-  handlePermissionRequest,
-  sendTestNotification,
-} from '@/features/notifications/services';
+import { handlePermissionRequest } from '@/features/notifications/services';
 import { translate } from '@/lib/i18n';
-
-// Helper function to send a test notification with error handling
-const sendTestNotificationWithErrorHandling = async () => {
-  try {
-    await sendTestNotification();
-  } catch (error) {
-    console.error('Failed to send test notification:', error);
-  }
-};
 
 // Extract some functionality to reduce component size for linting
 const useToggleState = (isWatched: boolean) => {
@@ -79,10 +67,7 @@ const useToggleHandler = (params: ToggleHandlerParams) => {
         // Use the helper function to handle the permission request
         const granted = await handlePermissionRequest(() => {
           toggleItemWatch(brItemId, true);
-          // Send a test notification
-          setTimeout(() => {
-            sendTestNotificationWithErrorHandling();
-          }, 500);
+          // No test notification needed
         });
 
         // If not granted, revert local state

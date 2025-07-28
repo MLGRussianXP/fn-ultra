@@ -6,8 +6,19 @@ export function Search(props: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <Path
-        d="M11 4a7 7 0 1 1 0 14a7 7 0 0 1 0-14zm0 2a5 5 0 1 0 0 10a5 5 0 0 0 0-10zm7.707 13.293a1 1 0 0 1-1.414 0l-3.387-3.387a8 8 0 1 1 1.414-1.414l3.387 3.387a1 1 0 0 1 0 1.414z"
-        fill={color}
+        d="M10.5 18C14.6421 18 18 14.6421 18 10.5C18 6.35786 14.6421 3 10.5 3C6.35786 3 3 6.35786 3 10.5C3 14.6421 6.35786 18 10.5 18Z"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <Path
+        d="M21 21L16 16"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </Svg>
   );

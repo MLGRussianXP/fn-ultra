@@ -1,4 +1,27 @@
 {
+  "item_details": {
+    "added_to_game": "Добавлено в игру",
+    "built_in_emotes": "Встроенные эмоции",
+    "bundle_contents": "Содержимое набора",
+    "description": "Описание",
+    "error_message": "Не удалось загрузить данные предмета",
+    "error_title": "Ошибка загрузки предмета",
+    "exclusive_callout": "Эксклюзивное объявление",
+    "exclusive_description": "Эксклюзивное описание",
+    "introduction": "Введение",
+    "item_not_found": "Предмет не найден",
+    "last_seen": "Последний раз в магазине",
+    "loading": "Загрузка информации о предмете...",
+    "meta_tags": "Мета-теги",
+    "search_tags": "Поисковые теги",
+    "set": "Набор",
+    "showcase_video": "Демонстрационное видео",
+    "tags": "Теги",
+    "total_appearances": "{{count}} появлений всего",
+    "unlock_requirements": "Требования для разблокировки",
+    "variants": "Варианты",
+    "watch_video": "Смотреть видео"
+  },
   "onboarding": {
     "message": "Добро пожаловать на сайт приложения obytes"
   },

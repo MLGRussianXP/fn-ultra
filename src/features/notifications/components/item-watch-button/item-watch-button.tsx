@@ -137,18 +137,23 @@ export function ItemWatchButton({ brItemData }: Props) {
   return (
     <Animated.View
       entering={FadeIn.duration(300)}
-      className="absolute bottom-6 right-6 z-10"
+      className="absolute right-4 top-4 z-10"
     >
       <Animated.View style={animatedStyle}>
         <Pressable
           onPress={handleToggle}
           disabled={isToggling}
-          className="size-16 items-center justify-center rounded-full bg-neutral-800 shadow-xl"
+          className="size-12 items-center justify-center rounded-full bg-neutral-800/80 shadow-xl backdrop-blur-sm"
           accessibilityLabel={translate('settings.notifications.watch_item')}
           accessibilityRole="button"
           testID="item-watch-button"
         >
-          <Bell color="white" filled={localWatched} />
+          <Bell
+            color={localWatched ? '#9D4EDD' : 'white'}
+            filled={localWatched}
+            width={20}
+            height={20}
+          />
         </Pressable>
       </Animated.View>
     </Animated.View>

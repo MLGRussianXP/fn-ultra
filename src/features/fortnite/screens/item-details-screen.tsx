@@ -1,4 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
+import { useColorScheme } from 'nativewind';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
@@ -7,6 +8,7 @@ import type { ShopItem } from '@/api/fortnite/types';
 import { FocusAwareStatusBar, Text } from '@/components/ui';
 import { getShopItemData } from '@/features/fortnite/utils/shop-item-data';
 import { ItemWatchButton } from '@/features/notifications/components';
+import { translate } from '@/lib/i18n';
 
 import {
   ItemAdditionalInfo,
@@ -18,6 +20,7 @@ import {
 
 // eslint-disable-next-line max-lines-per-function
 export function ItemDetailsScreen() {
+  const { colorScheme } = useColorScheme();
   const params = useLocalSearchParams<{ id: string; entry: string }>();
   const [selectedItemId, setSelectedItemId] = useState<string | undefined>(
     params.id
@@ -49,12 +52,17 @@ export function ItemDetailsScreen() {
     setSelectedItemId(id);
   };
 
+  // Background color based on theme
+  const bgColor = colorScheme === 'dark' ? 'bg-neutral-950' : 'bg-neutral-50';
+
   // Loading state
   if (isLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-neutral-950">
+      <View className={`flex-1 items-center justify-center ${bgColor}`}>
         <FocusAwareStatusBar />
-        <Text className="text-lg text-white">Loading item details...</Text>
+        <Text className="text-lg text-neutral-800 dark:text-white">
+          {translate('item_details.loading')}
+        </Text>
       </View>
     );
   }
@@ -62,13 +70,15 @@ export function ItemDetailsScreen() {
   // Error state
   if (isError) {
     return (
-      <View className="flex-1 items-center justify-center bg-neutral-950">
+      <View className={`flex-1 items-center justify-center ${bgColor}`}>
         <FocusAwareStatusBar />
-        <Text className="mb-2 text-center text-lg font-semibold text-white">
-          Error Loading Item
+        <Text className="mb-2 text-center text-lg font-semibold text-neutral-800 dark:text-white">
+          {translate('item_details.error_title')}
         </Text>
-        <Text className="text-center text-sm text-gray-300">
-          {error instanceof Error ? error.message : 'Failed to load item data'}
+        <Text className="text-center text-sm text-neutral-600 dark:text-gray-300">
+          {error instanceof Error
+            ? error.message
+            : translate('item_details.error_message')}
         </Text>
       </View>
     );
@@ -77,9 +87,11 @@ export function ItemDetailsScreen() {
   // No data state
   if (!brItemData?.data) {
     return (
-      <View className="flex-1 items-center justify-center bg-neutral-950">
+      <View className={`flex-1 items-center justify-center ${bgColor}`}>
         <FocusAwareStatusBar />
-        <Text className="text-lg text-white">Item not found</Text>
+        <Text className="text-lg text-neutral-800 dark:text-white">
+          {translate('item_details.item_not_found')}
+        </Text>
       </View>
     );
   }
@@ -90,12 +102,20 @@ export function ItemDetailsScreen() {
     : { seriesImage: undefined, gradientColors: undefined };
 
   return (
-    <View className="flex-1 bg-neutral-950">
+    <View className={`flex-1 ${bgColor}`}>
       <FocusAwareStatusBar />
+
       {/* Floating notification button */}
       <ItemWatchButton brItemData={brItemData.data} />
 
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Hero section with image */}
+        <ItemHero
+          brItemData={brItemData.data}
+          seriesImage={seriesImage}
+          gradientColors={gradientColors}
+        />
+
         {/* Item selector (if bundle) */}
         {entry && (
           <ItemSelector
@@ -104,13 +124,6 @@ export function ItemDetailsScreen() {
             onSelectItem={handleSelectItem}
           />
         )}
-
-        {/* Hero section with image */}
-        <ItemHero
-          brItemData={brItemData.data}
-          seriesImage={seriesImage}
-          gradientColors={gradientColors}
-        />
 
         {/* Item info */}
         <ItemInfo brItemData={brItemData.data} />
@@ -122,6 +135,9 @@ export function ItemDetailsScreen() {
 
         {/* Additional info */}
         <ItemAdditionalInfo brItemData={brItemData.data} />
+
+        {/* Bottom padding */}
+        <View className="h-6" />
       </ScrollView>
     </View>
   );

@@ -1,4 +1,6 @@
-import { useCallback, useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useCallback, useMemo, useState } from 'react';
+import type { ColorValue } from 'react-native';
 import {
   Dimensions,
   FlatList,
@@ -27,91 +29,108 @@ export function ItemImageCarousel({
 }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
   const { width } = Dimensions.get('window');
+  const imageHeight = 360;
 
-  // Get all available images from the item
-  const images = [
-    brItemData.images.icon,
-    brItemData.images.featured,
-    ...(brItemData.images.lego
-      ? [brItemData.images.lego.small, brItemData.images.lego.large]
-      : []),
-  ].filter(Boolean) as string[];
+  // Get all available images from the item and filter out duplicates
+  const images = useMemo(() => {
+    const allImages = [
+      brItemData.images.featured,
+      brItemData.images.icon,
+      ...(brItemData.images.lego
+        ? [brItemData.images.lego.large, brItemData.images.lego.small]
+        : []),
+    ].filter(Boolean) as string[];
+
+    // Remove duplicates
+    return [...new Set(allImages)];
+  }, [brItemData.images]);
 
   // Handle scroll event to update active index
   const handleScroll = useCallback(
     (event: { nativeEvent: { contentOffset: { x: number } } }) => {
-      const slideIndex = Math.round(
-        event.nativeEvent.contentOffset.x / (width - 48)
-      );
+      const slideIndex = Math.round(event.nativeEvent.contentOffset.x / width);
       setActiveIndex(slideIndex);
     },
     [width]
   );
 
+  // Handle direct pagination tap
+  const handlePaginationTap = useCallback((index: number) => {
+    setActiveIndex(index);
+  }, []);
+
   // No images available
   if (images.length === 0) {
     return (
       <View
-        className="h-80 items-center justify-center bg-neutral-900"
+        className="h-80 items-center justify-center bg-fortnite-accent/10 dark:bg-fortnite-accent/20"
         testID={testID}
       >
-        <Text className="text-white">No images available</Text>
+        <Text className="text-neutral-800 dark:text-white">
+          No images available
+        </Text>
       </View>
     );
   }
 
+  // Use the series color if available, otherwise use the default accent color
+  const colorOne = (
+    gradientColors && gradientColors.length > 0 ? gradientColors[0] : '#9D4EDD'
+  ) as ColorValue; // First gradient color
+
+  const colorTwo = (
+    gradientColors && gradientColors.length > 1 ? gradientColors[1] : '#7E22CE'
+  ) as ColorValue; // Second gradient color
+
   return (
-    <View className="mb-4" testID={testID}>
-      <FlatList
-        data={images}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={width - 48}
-        decelerationRate="fast"
-        contentContainerStyle={{ paddingHorizontal: 24 }}
-        onScroll={handleScroll}
-        keyExtractor={(item) => item}
-        renderItem={({ item: imageUrl }) => (
-          <View
-            className="relative mr-4 overflow-hidden rounded-lg"
-            style={{ width: width - 48, height: 300 }}
-          >
-            {/* Series image background with gradient overlay */}
-            {seriesImage && (
-              <View
-                className="absolute size-full opacity-20"
-                testID="carousel-series-image-bg"
-              >
-                <Image
-                  source={{ uri: seriesImage }}
-                  style={StyleSheet.absoluteFill}
-                  resizeMode="cover"
+    <View className="mb-2" testID={testID}>
+      <View className="overflow-hidden">
+        <FlatList
+          data={images}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={width}
+          decelerationRate="fast"
+          onScroll={handleScroll}
+          keyExtractor={(item) => item}
+          renderItem={({ item: imageUrl }) => (
+            <View className="relative" style={{ width, height: imageHeight }}>
+              {/* Gradient background - contained within the image box */}
+              <View className="absolute size-full overflow-hidden rounded-lg">
+                <LinearGradient
+                  colors={[colorOne, colorTwo]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  className="absolute size-full"
+                  testID="carousel-gradient-bg"
                 />
               </View>
-            )}
 
-            {/* Gradient background */}
-            {gradientColors && gradientColors.length > 0 && (
-              <View
-                className="absolute size-full"
-                style={{
-                  backgroundColor: gradientColors[0],
-                  opacity: 0.3,
-                }}
-                testID="carousel-gradient-bg"
+              {/* Series image background with gradient overlay */}
+              {seriesImage && (
+                <View
+                  className="absolute size-full opacity-20"
+                  testID="carousel-series-image-bg"
+                >
+                  <Image
+                    source={{ uri: seriesImage }}
+                    style={StyleSheet.absoluteFill}
+                    resizeMode="cover"
+                  />
+                </View>
+              )}
+
+              {/* Main image */}
+              <Image
+                source={{ uri: imageUrl }}
+                style={{ width: '100%', height: '100%' }}
+                resizeMode="contain"
               />
-            )}
-
-            {/* Main image */}
-            <Image
-              source={{ uri: imageUrl }}
-              style={{ width: '100%', height: '100%' }}
-              resizeMode="contain"
-            />
-          </View>
-        )}
-      />
+            </View>
+          )}
+        />
+      </View>
 
       {/* Pagination dots */}
       {images.length > 1 && (
@@ -122,10 +141,14 @@ export function ItemImageCarousel({
           {images.map((_, index) => (
             <Pressable
               key={index}
-              onPress={() => setActiveIndex(index)}
-              className={`mx-1 size-2 rounded-full ${
-                activeIndex === index ? 'bg-white' : 'bg-gray-600'
+              onPress={() => handlePaginationTap(index)}
+              className={`mx-1 h-2 w-8 rounded-full ${
+                activeIndex === index
+                  ? 'bg-fortnite-accent'
+                  : 'bg-neutral-300 dark:bg-neutral-700'
               }`}
+              accessibilityLabel={`Image ${index + 1} of ${images.length}`}
+              accessibilityRole="button"
             />
           ))}
         </View>
@@ -133,8 +156,8 @@ export function ItemImageCarousel({
 
       {/* Series info */}
       {brItemData.series && (
-        <View className="mt-4 items-center">
-          <Text className="text-center text-sm text-gray-400">
+        <View className="mt-4 items-center pb-2">
+          <Text className="text-center text-sm font-medium text-fortnite-accent">
             {brItemData.series.value}
           </Text>
           {brItemData.series.colors && (

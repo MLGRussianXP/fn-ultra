@@ -1,4 +1,27 @@
 {
+  "item_details": {
+    "added_to_game": "Added to Game",
+    "built_in_emotes": "Built-in Emotes",
+    "bundle_contents": "Bundle Contents",
+    "description": "Description",
+    "error_message": "Failed to load item data",
+    "error_title": "Error Loading Item",
+    "exclusive_callout": "Exclusive Callout",
+    "exclusive_description": "Exclusive Description",
+    "introduction": "Introduction",
+    "item_not_found": "Item not found",
+    "last_seen": "Last Seen in Shop",
+    "loading": "Loading item details...",
+    "meta_tags": "Meta Tags",
+    "search_tags": "Search Tags",
+    "set": "Set",
+    "showcase_video": "Showcase Video",
+    "tags": "Tags",
+    "total_appearances": "{{count}} appearances in total",
+    "unlock_requirements": "Unlock Requirements",
+    "variants": "Variants",
+    "watch_video": "Watch Video"
+  },
   "onboarding": {
     "message": "Welcome to obytes app site"
   },

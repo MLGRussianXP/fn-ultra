@@ -1,11 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { getCurrentLanguage } from '@/api/common/utils';
+
 export interface SearchParams {
   [key: string]: string | number | boolean | undefined;
 }
 
 export async function fetchBrCosmeticsSearch(params: SearchParams) {
-  const query = Object.entries(params)
+  // Include the current language in the search parameters
+  const searchParams = {
+    ...params,
+    language: getCurrentLanguage(),
+  };
+
+  const query = Object.entries(searchParams)
     .filter(([, v]) => v !== '' && v !== undefined && v !== null)
     .map(
       ([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v as string)}`
@@ -20,8 +28,10 @@ export async function fetchBrCosmeticsSearch(params: SearchParams) {
 }
 
 export function useBrCosmeticsSearch(params: SearchParams, enabled = true) {
+  const language = getCurrentLanguage();
+
   return useQuery({
-    queryKey: ['brCosmeticsSearch', params],
+    queryKey: ['brCosmeticsSearch', { ...params, language }],
     queryFn: () => fetchBrCosmeticsSearch(params),
     enabled,
     retry: false,

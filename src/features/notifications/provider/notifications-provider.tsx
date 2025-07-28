@@ -308,17 +308,8 @@ const useAppStateChangeListener = (
 const useCreateContextValue = (contextData: NotificationsContextType) => {
   return React.useMemo(
     () => contextData,
-    [
-      contextData.shopUpdatesEnabled,
-      contextData.watchedItems,
-      contextData.permissionStatus,
-      contextData.isPermissionLoading,
-      contextData.toggleShopUpdates,
-      contextData.toggleItemWatch,
-      contextData.isItemWatched,
-      contextData.requestPermissions,
-      contextData.hasPermissions,
-    ]
+    // Include contextData in the dependency array to fix the warning
+    [contextData]
   );
 };
 

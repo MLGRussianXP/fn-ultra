@@ -6,6 +6,7 @@
 import { Env } from '@env';
 import { useQuery } from '@tanstack/react-query';
 
+import { getCurrentLanguage } from '@/api/common/utils';
 import { getQueryKey } from '@/api/common/utils/query-key';
 
 import type { DetailedBrItemResponse } from '../types';
@@ -23,7 +24,10 @@ async function fetchBrItem(id: string | null | undefined) {
     throw new Error('Item ID is required');
   }
 
-  const response = await fetch(`${API_URL}/v2/cosmetics/br/${id}`);
+  const language = getCurrentLanguage();
+  const response = await fetch(
+    `${API_URL}/v2/cosmetics/br/${id}?language=${language}`
+  );
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error || 'Failed to fetch item');
@@ -37,8 +41,10 @@ async function fetchBrItem(id: string | null | undefined) {
  * @returns The BR item data and query state
  */
 export function useBrItem(id: string | null | undefined) {
+  const language = getCurrentLanguage();
+
   return useQuery({
-    queryKey: getQueryKey(`brItem-${id || 'null'}`),
+    queryKey: getQueryKey(`brItem-${id || 'null'}`, { language }),
     queryFn: () => fetchBrItem(id),
     enabled: !!id,
   });

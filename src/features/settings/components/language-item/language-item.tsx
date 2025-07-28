@@ -20,9 +20,26 @@ export const LanguageItem = () => {
 
   const langs = React.useMemo(
     () => [
+      { label: translate('settings.arabic'), value: 'ar' },
+      { label: translate('settings.german'), value: 'de' },
       { label: translate('settings.english'), value: 'en' },
+      { label: translate('settings.spanish'), value: 'es' },
+      { label: translate('settings.spanish_latin'), value: 'es-419' },
+      { label: translate('settings.french'), value: 'fr' },
+      { label: translate('settings.indonesian'), value: 'id' },
+      { label: translate('settings.italian'), value: 'it' },
+      { label: translate('settings.japanese'), value: 'ja' },
+      { label: translate('settings.korean'), value: 'ko' },
+      { label: translate('settings.polish'), value: 'pl' },
+      { label: translate('settings.portuguese_brazil'), value: 'pt-BR' },
       { label: translate('settings.russian'), value: 'ru' },
+      { label: translate('settings.thai'), value: 'th' },
+      { label: translate('settings.turkish'), value: 'tr' },
+      { label: translate('settings.vietnamese'), value: 'vi' },
+      { label: translate('settings.chinese_simplified'), value: 'zh-Hans' },
+      { label: translate('settings.chinese_traditional'), value: 'zh-Hant' },
     ],
+
     []
   );
 

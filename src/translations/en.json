@@ -5,9 +5,18 @@
   "settings": {
     "about": "About",
     "app_name": "App Name",
+    "arabic": "Arabic",
+    "chinese_simplified": "Chinese (Simplified)",
+    "chinese_traditional": "Chinese (Traditional)",
     "english": "English",
+    "french": "French",
     "generale": "General",
+    "german": "German",
     "github": "Github",
+    "indonesian": "Indonesian",
+    "italian": "Italian",
+    "japanese": "Japanese",
+    "korean": "Korean",
     "language": "Language",
     "links": "Links",
     "logout": "Logout",
@@ -22,14 +31,19 @@
       "watch_item": "Watch This Item",
       "watch_item_description": "Get notified when this item returns to the shop"
     },
+    "polish": "Polish",
+    "portuguese_brazil": "Portuguese (Brazil)",
     "privacy": "Privacy Policy",
     "rate": "Rate",
     "russian": "Russian",
     "share": "Share",
+    "spanish": "Spanish",
+    "spanish_latin": "Spanish (Latin America)",
     "star": "Star Repository",
     "support": "Support",
     "support_us": "Support Us",
     "terms": "Terms of Service",
+    "thai": "Thai",
     "theme": {
       "dark": "Dark",
       "light": "Light",
@@ -37,7 +51,9 @@
       "title": "Theme"
     },
     "title": "Settings",
+    "turkish": "Turkish",
     "version": "Version",
+    "vietnamese": "Vietnamese",
     "website": "Website"
   },
   "welcome": "Welcome to obytes app site"

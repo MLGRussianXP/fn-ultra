@@ -103,6 +103,7 @@ export function getShopItemData(entry: ShopItem) {
   const image = getItemImage(mainItem);
   const seriesImage = getSeriesImage(entry);
   const gradientColors = getGradientColors(entry);
+  const seriesName = mainItem?.series?.value;
 
   return {
     title,
@@ -112,5 +113,6 @@ export function getShopItemData(entry: ShopItem) {
     hasColors: !!entry.colors,
     seriesImage,
     hasSeriesImage: !!seriesImage,
+    seriesName,
   };
 }

@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { type TextStyle } from 'react-native';
 
 import {
@@ -14,6 +15,8 @@ const tabBarLabelStyle: TextStyle = {
 };
 
 export default function TabLayout() {
+  const { t } = useTranslation();
+
   return (
     <Tabs
       screenOptions={{
@@ -27,7 +30,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Shop',
+          title: t('navigation.shop'),
           headerShown: false,
           tabBarIcon: ({ color }) => <HomeIcon color={color} />,
           tabBarButtonTestID: 'shop-tab',
@@ -36,7 +39,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="search"
         options={{
-          title: 'Search',
+          title: t('navigation.search'),
           headerShown: false,
           tabBarIcon: ({ color }) => <SearchIcon color={color} />,
           tabBarButtonTestID: 'search-tab',
@@ -45,7 +48,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: t('navigation.settings'),
           headerShown: false,
           tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
           tabBarButtonTestID: 'settings-tab',

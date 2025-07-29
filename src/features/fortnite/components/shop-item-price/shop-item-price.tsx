@@ -28,7 +28,7 @@ export function ShopItemPrice({ item }: Props) {
 
   return (
     <View className="flex-row items-center">
-      <Text className="text-fortnite-yellow" style={styles.priceValue}>
+      <Text className="text-white" style={styles.priceValue}>
         {item.finalPrice}
       </Text>
 

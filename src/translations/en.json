@@ -22,6 +22,11 @@
     "variants": "Variants",
     "watch_video": "Watch Video"
   },
+  "navigation": {
+    "search": "Search",
+    "settings": "Settings",
+    "shop": "Shop"
+  },
   "onboarding": {
     "message": "Welcome to obytes app site"
   },

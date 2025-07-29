@@ -22,6 +22,11 @@
     "variants": "Варианты",
     "watch_video": "Смотреть видео"
   },
+  "navigation": {
+    "search": "Поиск",
+    "settings": "Настройки",
+    "shop": "Магазин"
+  },
   "onboarding": {
     "message": "Добро пожаловать на сайт приложения obytes"
   },

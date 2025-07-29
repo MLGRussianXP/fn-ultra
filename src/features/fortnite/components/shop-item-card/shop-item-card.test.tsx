@@ -21,6 +21,17 @@ jest.mock('@/features/fortnite/hooks/use-shop-item-data', () => ({
   })),
 }));
 
+// Mock the useShop hook
+jest.mock('@/api/fortnite', () => ({
+  useShop: jest.fn(() => ({
+    data: {
+      data: {
+        vbuckIcon: 'https://example.com/vbuck.png',
+      },
+    },
+  })),
+}));
+
 const mockEntry: ShopItem = {
   offerId: '1',
   regularPrice: 1000,

@@ -7,11 +7,14 @@ import {
   Image,
   Pressable,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
 import type { DetailedBrItem } from '@/api/fortnite/types';
 import { Text } from '@/components/ui';
+
+import { FullscreenImageViewer } from './fullscreen-image-viewer/index';
 
 type Props = {
   brItemData: DetailedBrItem;
@@ -28,6 +31,8 @@ export function ItemImageCarousel({
   testID,
 }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [fullscreenVisible, setFullscreenVisible] = useState(false);
+  const [fullscreenIndex, setFullscreenIndex] = useState(0);
   const { width } = Dimensions.get('window');
   const imageHeight = 360;
 
@@ -57,6 +62,17 @@ export function ItemImageCarousel({
   // Handle direct pagination tap
   const handlePaginationTap = useCallback((index: number) => {
     setActiveIndex(index);
+  }, []);
+
+  // Handle image tap to open fullscreen viewer
+  const handleImageTap = useCallback((index: number) => {
+    setFullscreenIndex(index);
+    setFullscreenVisible(true);
+  }, []);
+
+  // Handle closing fullscreen viewer
+  const handleCloseFullscreen = useCallback(() => {
+    setFullscreenVisible(false);
   }, []);
 
   // No images available
@@ -94,8 +110,14 @@ export function ItemImageCarousel({
           decelerationRate="fast"
           onScroll={handleScroll}
           keyExtractor={(item) => item}
-          renderItem={({ item: imageUrl }) => (
-            <View className="relative" style={{ width, height: imageHeight }}>
+          renderItem={({ item: imageUrl, index }) => (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => handleImageTap(index)}
+              className="relative"
+              style={{ width, height: imageHeight }}
+              testID={`${testID}-image-${index}`}
+            >
               {/* Gradient background - contained within the image box */}
               <View className="absolute size-full overflow-hidden rounded-lg">
                 <LinearGradient
@@ -127,7 +149,7 @@ export function ItemImageCarousel({
                 style={{ width: '100%', height: '100%' }}
                 resizeMode="contain"
               />
-            </View>
+            </TouchableOpacity>
           )}
         />
       </View>
@@ -175,6 +197,14 @@ export function ItemImageCarousel({
           )}
         </View>
       )}
+
+      {/* Fullscreen Image Viewer */}
+      <FullscreenImageViewer
+        images={images}
+        initialIndex={fullscreenIndex}
+        visible={fullscreenVisible}
+        onClose={handleCloseFullscreen}
+      />
     </View>
   );
 }

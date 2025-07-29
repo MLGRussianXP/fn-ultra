@@ -5,6 +5,17 @@ import type { ShopItem } from '@/api/fortnite/types';
 
 import { ShopItemPrice } from './shop-item-price';
 
+// Mock the useShop hook
+jest.mock('@/api/fortnite', () => ({
+  useShop: jest.fn(() => ({
+    data: {
+      data: {
+        vbuckIcon: 'https://example.com/vbuck.png',
+      },
+    },
+  })),
+}));
+
 // Create a mock item factory to reduce duplication
 const createMockItem = (
   regularPrice: number,
@@ -45,7 +56,8 @@ describe('ShopItemPrice', () => {
     render(<ShopItemPrice item={mockItem} />);
 
     expect(screen.getByText('1000')).toBeTruthy();
-    expect(screen.getByText('V-Bucks')).toBeTruthy();
+    // V-Bucks text is no longer rendered when vbuckIcon is available
+    // expect(screen.getByText('V-Bucks')).toBeTruthy();
   });
 
   it('renders with discount', () => {
@@ -53,7 +65,8 @@ describe('ShopItemPrice', () => {
     render(<ShopItemPrice item={mockItem} />);
 
     expect(screen.getByText('1000')).toBeTruthy();
-    expect(screen.getByText('V-Bucks')).toBeTruthy();
+    // V-Bucks text is no longer rendered when vbuckIcon is available
+    // expect(screen.getByText('V-Bucks')).toBeTruthy();
     expect(screen.getByText('1500')).toBeTruthy();
   });
 });

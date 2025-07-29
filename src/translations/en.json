@@ -1,4 +1,10 @@
 {
+  "errors": {
+    "error": "Error",
+    "image_save_failed": "Failed to save the image. Please try again.",
+    "media_library_permission_message": "Please grant access to your media library to save images.",
+    "permission_denied": "Permission Denied"
+  },
   "item_details": {
     "added_to_game": "Added to Game",
     "built_in_emotes": "Built-in Emotes",
@@ -8,6 +14,7 @@
     "error_title": "Error Loading Item",
     "exclusive_callout": "Exclusive Callout",
     "exclusive_description": "Exclusive Description",
+    "image_saved": "Image saved successfully to your gallery.",
     "introduction": "Introduction",
     "item_not_found": "Item not found",
     "last_seen": "Last Seen in Shop",
@@ -23,9 +30,9 @@
     "watch_video": "Watch Video"
   },
   "navigation": {
+    "home": "Home",
     "search": "Search",
-    "settings": "Settings",
-    "shop": "Shop"
+    "settings": "Settings"
   },
   "onboarding": {
     "message": "Welcome to obytes app site"
@@ -84,5 +91,6 @@
     "vietnamese": "Vietnamese",
     "website": "Website"
   },
+  "success": "Success",
   "welcome": "Welcome to obytes app site"
 }

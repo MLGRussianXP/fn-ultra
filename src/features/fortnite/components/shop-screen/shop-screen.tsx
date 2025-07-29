@@ -224,6 +224,7 @@ function NoDataState({ onRetry }: { onRetry: () => void }) {
   );
 }
 
+// Remove the button to navigate to animation test screen
 export function ShopScreen() {
   const { data, isPending, isError, error, refetch, grouped } = useShopState();
 

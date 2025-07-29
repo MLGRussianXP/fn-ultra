@@ -1,59 +1,83 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { type TextStyle } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import {
-  Home as HomeIcon,
-  Search as SearchIcon,
-  Settings as SettingsIcon,
-} from '@/components/ui/icons';
+import { FocusAwareStatusBar, Text, View } from '@/components/ui';
+import { Home, Search, Settings } from '@/components/ui/icons';
 
-const tabBarLabelStyle: TextStyle = {
-  fontFamily: 'FORTNITE BATTLEFEST',
-  textTransform: 'uppercase',
-};
-
-export default function TabLayout() {
-  const { t } = useTranslation();
+export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarLabelStyle,
-        headerTitleStyle: {
-          fontFamily: 'FORTNITE BATTLEFEST',
-          textTransform: 'uppercase',
-        } as TextStyle,
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: t('navigation.shop'),
+    <View style={styles.container}>
+      <FocusAwareStatusBar />
+      <Tabs
+        screenOptions={{
           headerShown: false,
-          tabBarIcon: ({ color }) => <HomeIcon color={color} />,
-          tabBarButtonTestID: 'shop-tab',
+          tabBarStyle: {
+            backgroundColor: '#fff',
+            borderTopWidth: 0,
+            elevation: 0,
+            height: 60 + insets.bottom,
+            paddingBottom: insets.bottom,
+            paddingHorizontal: 10,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: -1,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+          },
+          tabBarActiveTintColor: '#000',
+          tabBarInactiveTintColor: '#999',
+          tabBarLabelStyle: {
+            fontFamily: 'FORTNITE BATTLEFEST',
+            fontSize: 10,
+          },
+          tabBarShowLabel: true,
         }}
-      />
-      <Tabs.Screen
-        name="search"
-        options={{
-          title: t('navigation.search'),
-          headerShown: false,
-          tabBarIcon: ({ color }) => <SearchIcon color={color} />,
-          tabBarButtonTestID: 'search-tab',
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: t('navigation.settings'),
-          headerShown: false,
-          tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
-          tabBarButtonTestID: 'settings-tab',
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            tabBarIcon: ({ color }) => <Home color={color} />,
+            tabBarLabel: ({ color }) => (
+              <Text style={[styles.tabLabel, { color }]}>SHOP</Text>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="search"
+          options={{
+            tabBarIcon: ({ color }) => <Search color={color} />,
+            tabBarLabel: ({ color }) => (
+              <Text style={[styles.tabLabel, { color }]}>SEARCH</Text>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="settings"
+          options={{
+            tabBarIcon: ({ color }) => <Settings color={color} />,
+            tabBarLabel: ({ color }) => (
+              <Text style={[styles.tabLabel, { color }]}>SETTINGS</Text>
+            ),
+          }}
+        />
+      </Tabs>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  tabLabel: {
+    fontFamily: 'FORTNITE BATTLEFEST',
+    fontSize: 10,
+    marginTop: -5,
+  },
+});

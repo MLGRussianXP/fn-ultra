@@ -1,5 +1,4 @@
 import React from 'react';
-import { Pressable } from 'react-native';
 import Animated, {
   FadeIn,
   useAnimatedStyle,
@@ -10,6 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import type { DetailedBrItem } from '@/api/fortnite/types';
+import { AnimatedPressable } from '@/components/ui';
 import { Bell } from '@/components/ui/icons';
 import { useNotifications } from '@/features/notifications/hooks';
 import { handlePermissionRequest } from '@/features/notifications/services';
@@ -140,13 +140,15 @@ export function ItemWatchButton({ brItemData }: Props) {
       className="absolute right-4 top-4 z-10"
     >
       <Animated.View style={animatedStyle}>
-        <Pressable
+        <AnimatedPressable
           onPress={handleToggle}
           disabled={isToggling}
           className="size-12 items-center justify-center rounded-full bg-neutral-800/80 shadow-xl backdrop-blur-sm"
           accessibilityLabel={translate('settings.notifications.watch_item')}
           accessibilityRole="button"
           testID="item-watch-button"
+          scaleFactor={0.9}
+          useSpring={true}
         >
           <Bell
             color={localWatched ? '#9D4EDD' : 'white'}
@@ -154,7 +156,7 @@ export function ItemWatchButton({ brItemData }: Props) {
             width={20}
             height={20}
           />
-        </Pressable>
+        </AnimatedPressable>
       </Animated.View>
     </Animated.View>
   );

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
 
-import { Pressable, Text, View } from '@/components/ui';
+import { AnimatedPressable, Text, View } from '@/components/ui';
 import { ArrowRight } from '@/components/ui/icons';
 import type { TxKeyPath } from '@/lib/i18n';
 
@@ -27,10 +27,13 @@ type ItemProps = {
 export const Item = ({ text, value, icon, onPress }: ItemProps) => {
   const isPressable = onPress !== undefined;
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={onPress}
       pointerEvents={isPressable ? 'auto' : 'none'}
       className="flex-1 flex-row items-center justify-between px-4 py-2"
+      scaleFactor={0.98}
+      useSpring={true}
+      disabled={!isPressable}
     >
       <View className="flex-row items-center">
         {icon && <View className="pr-2">{icon}</View>}
@@ -49,6 +52,6 @@ export const Item = ({ text, value, icon, onPress }: ItemProps) => {
           </View>
         )}
       </View>
-    </Pressable>
+    </AnimatedPressable>
   );
 };

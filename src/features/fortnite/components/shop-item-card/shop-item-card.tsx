@@ -1,10 +1,10 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React from 'react';
-import { Pressable, StyleSheet, type TextStyle } from 'react-native';
+import { StyleSheet, type TextStyle } from 'react-native';
 
 import type { ShopItem } from '@/api/fortnite/types';
-import { Image, Text, View } from '@/components/ui';
+import { AnimatedPressable, Image, Text, View } from '@/components/ui';
 import { useShopItemData } from '@/features/fortnite/hooks/use-shop-item-data';
 import { countItemsInEntry, isSingleItemEntry } from '@/lib/utils';
 
@@ -231,12 +231,13 @@ export function ShopItemCard({ entry, isWide = false }: Props) {
   const handlePress = useShopItemNavigation(entry, !!hasBrItems, brItems || []);
 
   return (
-    <Pressable
+    <AnimatedPressable
       className={`mb-lg overflow-hidden rounded-xl shadow-lg ${widthClass}`}
       onPress={handlePress}
-      android_ripple={{ color: 'rgba(0,0,0,0.1)' }}
       disabled={!hasBrItems}
       testID="shop-item-card-pressable"
+      scaleFactor={0.97}
+      useSpring={true}
     >
       <View className="relative h-52">
         <ShopItemBackground
@@ -253,6 +254,6 @@ export function ShopItemCard({ entry, isWide = false }: Props) {
           seriesName={seriesName}
         />
       </View>
-    </Pressable>
+    </AnimatedPressable>
   );
 }

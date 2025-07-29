@@ -1,9 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import * as React from 'react';
-import { Pressable, StyleSheet, type TextStyle } from 'react-native';
+import { StyleSheet, type TextStyle } from 'react-native';
 
 import type { ShopItem as ShopItemType } from '@/api/fortnite/types';
-import { Image, Text, View } from '@/components/ui';
+import { AnimatedPressable, Image, Text, View } from '@/components/ui';
 import { getGradientColors } from '@/features/fortnite/utils/shop-item-data';
 
 import { ShopItemPrice } from '../shop-item-price';
@@ -228,14 +228,15 @@ export function ShopItem({ item, onPress, disabled = false }: Props) {
   const imageUrl = getImageUrl(item, mainItem);
 
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={onPress}
       className="overflow-hidden rounded-xl shadow-lg"
       testID="shop-item-pressable"
-      android_ripple={{ color: 'rgba(0,0,0,0.1)' }}
       role="button"
       accessibilityRole="button"
       disabled={disabled}
+      scaleFactor={0.97}
+      useSpring={true}
     >
       <View className="overflow-hidden rounded-lg shadow-sm">
         <View className="relative h-48">
@@ -255,6 +256,6 @@ export function ShopItem({ item, onPress, disabled = false }: Props) {
           />
         </View>
       </View>
-    </Pressable>
+    </AnimatedPressable>
   );
 }

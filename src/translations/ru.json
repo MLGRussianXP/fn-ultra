@@ -31,8 +31,10 @@
   },
   "navigation": {
     "home": "Главная",
+    "item_details": "Детали предмета",
     "search": "Поиск",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "shop": "Магазин Fortnite"
   },
   "notifications": {
     "shop_update": {
@@ -46,6 +48,35 @@
   },
   "onboarding": {
     "message": "Добро пожаловать на сайт приложения obytes"
+  },
+  "search": {
+    "adjust_filters": "Попробуйте изменить параметры поиска",
+    "advanced_filters": "Расширенные фильтры",
+    "fields": {
+      "hasFeaturedImage": "Имеет изображение",
+      "hasVariants": "Имеет варианты",
+      "id": "ID",
+      "language": "Язык",
+      "matchMethod": "Метод совпадения",
+      "name": "Название",
+      "rarity": "Редкость",
+      "searchLanguage": "Язык поиска",
+      "series": "Серия",
+      "set": "Набор",
+      "type": "Тип"
+    },
+    "hide_advanced": "Скрыть расширенные фильтры",
+    "loading": "Загрузка поиска...",
+    "name_placeholder": "Введите название косметики...",
+    "no": "Нет",
+    "no_results": "Результаты не найдены",
+    "primary_filters": "Основные фильтры",
+    "results_count": "Результаты ({{count}})",
+    "search_button": "Поиск",
+    "show_advanced": "Показать расширенные фильтры",
+    "title": "Поиск косметики BR",
+    "view_more": "Показать ещё",
+    "yes": "Да"
   },
   "settings": {
     "about": "О приложении",

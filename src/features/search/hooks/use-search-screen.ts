@@ -6,12 +6,13 @@ import { type SearchParams, useBrCosmeticsSearch } from '@/api/search';
 import { type SearchParam } from '../utils/search-params';
 
 export interface PrimaryState {
-  name: string;
-  id: string;
+  name: string; // Keep this for the dedicated search field at the top
   type: string;
   rarity: string;
+  series: string;
+  set: string;
   hasVariants: string;
-  hasFeaturedImage: string;
+  matchMethod: string;
   [key: string]: string;
 }
 
@@ -51,11 +52,12 @@ function useDisplayedResults({
 function useSearchScreenState(ALL_PARAMS: SearchParam[]) {
   const [primary, setPrimary] = useState<PrimaryState>({
     name: '',
-    id: '',
     type: '',
     rarity: '',
+    series: '',
+    set: '',
     hasVariants: '',
-    hasFeaturedImage: '',
+    matchMethod: '',
   });
   const [additional, setAdditional] = useState(
     Object.fromEntries(
@@ -63,11 +65,12 @@ function useSearchScreenState(ALL_PARAMS: SearchParam[]) {
         (p) =>
           !p.primary &&
           p.key !== 'name' &&
-          p.key !== 'id' &&
           p.key !== 'type' &&
           p.key !== 'rarity' &&
+          p.key !== 'series' &&
+          p.key !== 'set' &&
           p.key !== 'hasVariants' &&
-          p.key !== 'hasFeaturedImage'
+          p.key !== 'matchMethod'
       ).map((p) => [p.key, ''])
     )
   );

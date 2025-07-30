@@ -31,8 +31,10 @@
   },
   "navigation": {
     "home": "Home",
+    "item_details": "Item Details",
     "search": "Search",
-    "settings": "Settings"
+    "settings": "Settings",
+    "shop": "Fortnite Shop"
   },
   "notifications": {
     "shop_update": {
@@ -46,6 +48,35 @@
   },
   "onboarding": {
     "message": "Welcome to obytes app site"
+  },
+  "search": {
+    "adjust_filters": "Try adjusting your search filters",
+    "advanced_filters": "Advanced Filters",
+    "fields": {
+      "hasFeaturedImage": "Has Featured Image",
+      "hasVariants": "Has Variants",
+      "id": "ID",
+      "language": "Language",
+      "matchMethod": "Match Method",
+      "name": "Name",
+      "rarity": "Rarity",
+      "searchLanguage": "Search Language",
+      "series": "Series",
+      "set": "Set",
+      "type": "Type"
+    },
+    "hide_advanced": "Hide Advanced Filters",
+    "loading": "Loading Search...",
+    "name_placeholder": "Enter cosmetic name...",
+    "no": "No",
+    "no_results": "No results found",
+    "primary_filters": "Primary Filters",
+    "results_count": "Results ({{count}})",
+    "search_button": "Search",
+    "show_advanced": "Show Advanced Filters",
+    "title": "Search BR Cosmetics",
+    "view_more": "View More",
+    "yes": "Yes"
   },
   "settings": {
     "about": "About",

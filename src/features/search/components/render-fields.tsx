@@ -1,7 +1,8 @@
 import React from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
-import { Select } from '@/components/ui/select';
+import { Input, Select, Text } from '@/components/ui';
+import { translate } from '@/lib/i18n';
 
 import { type SearchParam } from '../utils/search-params';
 
@@ -18,8 +19,8 @@ function BooleanField<T extends Record<string, string>>({
   setValue: SetValue<T>;
 }) {
   return (
-    <View key={param.key} className="mb-2">
-      <Text className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+    <View key={param.key} className="mb-4">
+      <Text className="mb-1 text-xs font-medium text-neutral-500 dark:text-neutral-400">
         {param.label}
       </Text>
       <View className="flex-row">
@@ -30,12 +31,12 @@ function BooleanField<T extends Record<string, string>>({
               [param.key]: v[param.key] === 'true' ? '' : 'true',
             }))
           }
-          className={`rounded-l px-3 py-2 ${value[param.key] === 'true' ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'}`}
+          className={`flex w-14 items-center justify-center rounded-l-lg py-2 ${value[param.key] === 'true' ? 'bg-[#8b5cf6]' : 'bg-neutral-200 dark:bg-neutral-700'}`}
         >
           <Text
-            className={`text-sm ${value[param.key] === 'true' ? 'text-white' : 'text-gray-800 dark:text-gray-200'}`}
+            className={`w-full text-center text-sm ${value[param.key] === 'true' ? 'text-white' : 'text-neutral-800 dark:text-neutral-200'}`}
           >
-            Yes
+            {translate('search.yes')}
           </Text>
         </Pressable>
         <Pressable
@@ -45,12 +46,12 @@ function BooleanField<T extends Record<string, string>>({
               [param.key]: v[param.key] === 'false' ? '' : 'false',
             }))
           }
-          className={`rounded-r px-3 py-2 ${value[param.key] === 'false' ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'}`}
+          className={`flex w-14 items-center justify-center rounded-r-lg py-2 ${value[param.key] === 'false' ? 'bg-[#8b5cf6]' : 'bg-neutral-200 dark:bg-neutral-700'}`}
         >
           <Text
-            className={`text-sm ${value[param.key] === 'false' ? 'text-white' : 'text-gray-800 dark:text-gray-200'}`}
+            className={`w-full text-center text-sm ${value[param.key] === 'false' ? 'text-white' : 'text-neutral-800 dark:text-neutral-200'}`}
           >
-            No
+            {translate('search.no')}
           </Text>
         </Pressable>
       </View>
@@ -68,22 +69,18 @@ function SelectField<T extends Record<string, string>>({
   setValue: SetValue<T>;
 }) {
   return (
-    <View key={param.key} className="mb-2">
-      <Text className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
-        {param.label}
-      </Text>
-      <View className="overflow-hidden rounded-lg">
-        <Select
-          value={value[param.key] || ''}
-          onSelect={(v: string | number) =>
-            setValue((prev) => ({ ...prev, [param.key]: v as string }))
-          }
-          options={
-            param.options?.map((opt) => ({ label: opt, value: opt })) || []
-          }
-          placeholder="Select..."
-        />
-      </View>
+    <View key={param.key} className="mb-4">
+      <Select
+        label={param.label}
+        value={value[param.key] || ''}
+        onSelect={(v: string | number) =>
+          setValue((prev) => ({ ...prev, [param.key]: v as string }))
+        }
+        options={
+          param.options?.map((opt) => ({ label: opt, value: opt })) || []
+        }
+        placeholder="Select..."
+      />
     </View>
   );
 }
@@ -100,20 +97,16 @@ function TextField<T extends Record<string, string>>({
   handleSearch: HandleSearch;
 }) {
   return (
-    <View key={param.key} className="mb-2">
-      <Text className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
-        {param.label}
-      </Text>
-      <TextInput
+    <View key={param.key} className="mb-4">
+      <Input
+        label={param.label}
         value={value[param.key] || ''}
         onChangeText={(t) => setValue((v) => ({ ...v, [param.key]: t }))}
-        placeholder={param.label}
-        className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+        placeholder={`Enter ${param.label.toLowerCase()}...`}
         keyboardType="default"
         returnKeyType="search"
         onSubmitEditing={handleSearch}
         maxLength={64}
-        placeholderTextColor="#9ca3af"
       />
     </View>
   );

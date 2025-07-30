@@ -1,3 +1,5 @@
+import { translate } from '@/lib/i18n';
+
 /**
  * Search parameters configuration for BR Cosmetics Search
  */
@@ -11,29 +13,65 @@ export interface SearchParam {
 }
 
 export const ALL_SEARCH_PARAMS: SearchParam[] = [
-  { key: 'name', label: 'Name', type: 'string', primary: true },
-  { key: 'id', label: 'ID', type: 'string', primary: true },
-  { key: 'type', label: 'Type', type: 'string', primary: true },
-  { key: 'rarity', label: 'Rarity', type: 'string', primary: true },
-  { key: 'hasVariants', label: 'Has Variants', type: 'boolean', primary: true },
   {
-    key: 'hasFeaturedImage',
-    label: 'Has Featured Image',
+    key: 'type',
+    label: translate('search.fields.type'),
+    type: 'string',
+    primary: true,
+  },
+  {
+    key: 'rarity',
+    label: translate('search.fields.rarity'),
+    type: 'string',
+    primary: true,
+  },
+  {
+    key: 'series',
+    label: translate('search.fields.series'),
+    type: 'string',
+    primary: true,
+  },
+  {
+    key: 'set',
+    label: translate('search.fields.set'),
+    type: 'string',
+    primary: true,
+  },
+  {
+    key: 'hasVariants',
+    label: translate('search.fields.hasVariants'),
     type: 'boolean',
     primary: true,
   },
-  { key: 'language', label: 'Language', type: 'string', primary: false },
   {
-    key: 'searchLanguage',
-    label: 'Search Language',
+    key: 'matchMethod',
+    label: translate('search.fields.matchMethod'),
+    type: 'select',
+    options: ['full', 'contains', 'starts', 'ends'],
+    primary: true,
+  },
+  {
+    key: 'id',
+    label: translate('search.fields.id'),
     type: 'string',
     primary: false,
   },
   {
-    key: 'matchMethod',
-    label: 'Match Method',
-    type: 'select',
-    options: ['full', 'contains', 'starts', 'ends'],
+    key: 'language',
+    label: translate('search.fields.language'),
+    type: 'string',
+    primary: false,
+  },
+  {
+    key: 'searchLanguage',
+    label: translate('search.fields.searchLanguage'),
+    type: 'string',
+    primary: false,
+  },
+  {
+    key: 'hasFeaturedImage',
+    label: translate('search.fields.hasFeaturedImage'),
+    type: 'boolean',
     primary: false,
   },
   { key: 'description', label: 'Description', type: 'string', primary: false },

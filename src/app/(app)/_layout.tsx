@@ -23,6 +23,7 @@ export default function AppLayout() {
           headerTitleStyle: {
             fontFamily: 'FORTNITE BATTLEFEST',
           },
+          animation: 'none', // Disable default animations since we're using custom ones
         }}
       >
         <Stack.Screen

@@ -308,21 +308,35 @@ const useAppStateChangeListener = (
 const useCreateContextValue = (contextData: NotificationsContextType) => {
   return React.useMemo(
     () => contextData,
-    [
-      contextData.shopUpdatesEnabled,
-      contextData.watchedItems,
-      contextData.permissionStatus,
-      contextData.isPermissionLoading,
-      contextData.toggleShopUpdates,
-      contextData.toggleItemWatch,
-      contextData.isItemWatched,
-      contextData.requestPermissions,
-      contextData.hasPermissions,
-    ]
+    // Include contextData in the dependency array to fix the warning
+    [contextData]
   );
 };
 
 // Split useProviderSetup into smaller hooks to comply with max-lines-per-function
+
+// Hook for shop notification initialization
+function useShopNotificationInit(
+  shopUpdatesEnabled: boolean,
+  hasPermissions: boolean
+) {
+  // Track if we've already checked for shop updates in this session
+  const hasCheckedShopUpdates = React.useRef(false);
+
+  React.useEffect(() => {
+    if (shopUpdatesEnabled && hasPermissions) {
+      // Only initialize shop notifications once per app session
+      if (!hasCheckedShopUpdates.current) {
+        hasCheckedShopUpdates.current = true;
+        manageShopNotifications(true).catch((error) => {
+          console.error('Failed to initialize shop notifications:', error);
+        });
+      }
+    }
+  }, [shopUpdatesEnabled, hasPermissions]);
+
+  return hasCheckedShopUpdates;
+}
 
 function useProviderSetup() {
   // Permission state
@@ -359,6 +373,9 @@ function useProviderSetup() {
   useNotificationResponseListener();
   useAppStateChangeListener(checkPermissions);
 
+  // Initialize shop notifications
+  useShopNotificationInit(shopUpdatesEnabled, hasPermissions);
+
   React.useEffect(() => {
     checkPermissions();
   }, [checkPermissions]);
@@ -367,8 +384,6 @@ function useProviderSetup() {
     loadShopUpdatesPreference();
     loadWatchedItemsPreference();
   }, [loadShopUpdatesPreference, loadWatchedItemsPreference]);
-
-  useShopNotificationInit(shopUpdatesEnabled, hasPermissions);
 
   return useCreateContextValue({
     shopUpdatesEnabled,
@@ -381,19 +396,6 @@ function useProviderSetup() {
     requestPermissions,
     hasPermissions,
   });
-}
-
-function useShopNotificationInit(
-  shopUpdatesEnabled: boolean,
-  hasPermissions: boolean
-) {
-  React.useEffect(() => {
-    if (shopUpdatesEnabled && hasPermissions) {
-      manageShopNotifications(true).catch((error) => {
-        console.error('Failed to initialize shop notifications:', error);
-      });
-    }
-  }, [shopUpdatesEnabled, hasPermissions]);
 }
 
 export const NotificationsProvider = ({

@@ -14,7 +14,7 @@ type Props = {
 export function ItemHero({ brItemData, seriesImage, gradientColors }: Props) {
   return (
     <View
-      className="relative aspect-[1.2] w-full overflow-hidden"
+      className="relative w-full overflow-hidden bg-neutral-100 dark:bg-neutral-900"
       testID="item-hero"
     >
       <ItemImageCarousel

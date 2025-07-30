@@ -83,8 +83,10 @@ describe('ItemWatchToggle - Rendering', () => {
 
     // Check that the component renders correctly
     expect(getByText('settings.notifications.watch_item')).toBeTruthy();
+
+    // Check for the notification description text
     expect(
-      getByText('settings.notifications.watch_item_description')
+      getByText(/You'll be notified when this item appears in the shop/)
     ).toBeTruthy();
   });
 
@@ -102,8 +104,10 @@ describe('ItemWatchToggle - Rendering', () => {
 
     // Check that the component renders correctly
     expect(getByText('settings.notifications.watch_item')).toBeTruthy();
+
+    // Check for the notification description text
     expect(
-      getByText('settings.notifications.watch_item_description')
+      getByText(/You'll be notified when this item appears in the shop/)
     ).toBeTruthy();
   });
 });

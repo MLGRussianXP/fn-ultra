@@ -7,6 +7,7 @@ import {
   FocusAwareStatusBar,
   ScrollView,
   Text,
+  ThemeTransition,
   View,
 } from '@/components/ui';
 import { Github, Star } from '@/components/ui/icons';
@@ -39,7 +40,7 @@ export function SettingsScreen() {
   };
 
   return (
-    <>
+    <ThemeTransition>
       <FocusAwareStatusBar />
 
       <ScrollView>
@@ -69,6 +70,6 @@ export function SettingsScreen() {
           </ItemsContainer>
         </View>
       </ScrollView>
-    </>
+    </ThemeTransition>
   );
 }

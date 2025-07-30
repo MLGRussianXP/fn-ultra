@@ -6,7 +6,7 @@ import * as React from 'react';
 import { LOCAL } from '@/lib/i18n/utils';
 import { storage } from '@/lib/storage';
 
-import { useShop } from './use-shop';
+import { useBrCosmeticsSearch } from './use-search';
 
 // Mock expo-localization
 jest.mock('expo-localization', () => ({
@@ -22,22 +22,15 @@ jest.mock('@/api/common/utils', () => {
   };
 });
 
-// Mock the useQuery function to expose the queryKey
-jest.mock('@tanstack/react-query', () => {
-  const originalModule = jest.requireActual('@tanstack/react-query');
-  return {
-    ...originalModule,
-    useQuery: jest.fn(({ queryKey }) => ({
-      queryKey,
-      isLoading: false,
-      isError: false,
-      isSuccess: true,
-      data: { data: {} },
-    })),
-  };
-});
+// Mock fetch to prevent actual API calls
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve({ data: [] }),
+  } as Response)
+);
 
-describe('useShop', () => {
+describe('useBrCosmeticsSearch', () => {
   let queryClient: QueryClient;
 
   beforeEach(() => {
@@ -63,31 +56,29 @@ describe('useShop', () => {
   const wrapper = ({ children }: { children: React.ReactNode }) =>
     React.createElement(QueryClientProvider, { client: queryClient }, children);
 
-  it('includes the system language in query key when no language is set', () => {
-    const { result } = renderHook(() => useShop(), { wrapper });
-    const queryResult = result.current as any; // Type assertion to avoid TypeScript errors
+  it('includes system language parameter in the API call when no language is set', () => {
+    const searchParams = { name: 'test' };
 
-    // Check that the query key includes the system language parameter
-    expect(queryResult.queryKey).toEqual([
-      'fortnite',
-      'shop',
-      { language: 'fr' },
-    ]);
+    renderHook(() => useBrCosmeticsSearch(searchParams), { wrapper });
+
+    // Check that fetch was called with the system language parameter
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining('language=fr')
+    );
   });
 
-  it('includes the selected language in query key', () => {
+  it('uses the selected language in the API call', () => {
     // Set the language to Russian
     storage.set(LOCAL, 'ru');
 
-    const { result } = renderHook(() => useShop(), { wrapper });
-    const queryResult = result.current as any; // Type assertion to avoid TypeScript errors
+    const searchParams = { name: 'test' };
 
-    // Check that the query key includes the language parameter
-    expect(queryResult.queryKey).toEqual([
-      'fortnite',
-      'shop',
-      { language: 'ru' },
-    ]);
+    renderHook(() => useBrCosmeticsSearch(searchParams), { wrapper });
+
+    // Check that fetch was called with the language parameter
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining('language=ru')
+    );
   });
 
   it('falls back to English if system language is not supported', () => {
@@ -96,14 +87,13 @@ describe('useShop', () => {
       { languageCode: 'xyz', regionCode: 'XY' },
     ]);
 
-    const { result } = renderHook(() => useShop(), { wrapper });
-    const queryResult = result.current as any; // Type assertion to avoid TypeScript errors
+    const searchParams = { name: 'test' };
 
-    // Check that the query key includes English as fallback
-    expect(queryResult.queryKey).toEqual([
-      'fortnite',
-      'shop',
-      { language: 'en' },
-    ]);
+    renderHook(() => useBrCosmeticsSearch(searchParams), { wrapper });
+
+    // Check that fetch was called with English as fallback
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining('language=en')
+    );
   });
 });

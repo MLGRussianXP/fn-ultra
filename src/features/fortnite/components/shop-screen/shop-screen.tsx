@@ -108,14 +108,24 @@ function GridItems({
   return (
     <View className="w-full px-base">
       <View className="flex-row flex-wrap gap-sm">
-        {entries.map((entry) => (
-          <View key={entry.offerId} className="mb-md w-[48%] grow">
-            <ShopItemComponent
-              item={entry}
-              onPress={() => onItemPress(entry)}
-            />
-          </View>
-        ))}
+        {entries.map((entry) => {
+          const isFullScreen =
+            entry.tileSize === 'Size_2_x_1' || entry.tileSize === 'double';
+          const hasBrItems = entry.brItems && entry.brItems.length > 0;
+
+          return (
+            <View
+              key={entry.offerId}
+              className={`mb-md grow ${isFullScreen ? 'w-full' : 'w-[48%]'}`}
+            >
+              <ShopItemComponent
+                item={entry}
+                onPress={hasBrItems ? () => onItemPress(entry) : undefined}
+                disabled={!hasBrItems}
+              />
+            </View>
+          );
+        })}
       </View>
     </View>
   );
@@ -214,17 +224,21 @@ function NoDataState({ onRetry }: { onRetry: () => void }) {
   );
 }
 
+// Remove the button to navigate to animation test screen
 export function ShopScreen() {
   const { data, isPending, isError, error, refetch, grouped } = useShopState();
 
   const handleItemPress = React.useCallback((entry: ShopItem) => {
-    router.push({
-      pathname: '/item/[id]',
-      params: {
-        id: entry.brItems?.[0]?.id || 'unknown',
-        entry: JSON.stringify(entry),
-      },
-    });
+    // Only navigate if the entry has BR items
+    if (entry.brItems && entry.brItems.length > 0) {
+      router.push({
+        pathname: '/item/[id]',
+        params: {
+          id: entry.brItems[0].id,
+          entry: JSON.stringify(entry),
+        },
+      });
+    }
   }, []);
 
   if (isError) {

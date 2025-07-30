@@ -7,7 +7,7 @@ import type { TxKeyPath } from '@/lib/i18n';
 import { translate } from '@/lib/i18n';
 
 // Import typography utilities
-const { textStyles } = require('../../ui/typography');
+import { textStyles } from '../../ui/typography';
 
 type TextVariant =
   | 'default'
@@ -34,9 +34,9 @@ interface Props extends TextProps {
 
 // Helper function to get variant classes
 function getVariantClasses(variant: TextVariant): string {
-  // Use predefined text styles if available
-  if (textStyles[variant]) {
-    return textStyles[variant];
+  // Check if the variant exists in textStyles
+  if (variant in textStyles) {
+    return textStyles[variant as keyof typeof textStyles];
   }
 
   // Fallback to basic variants
@@ -47,8 +47,6 @@ function getVariantClasses(variant: TextVariant): string {
       return 'text-xl tracking-fortnite';
     case 'subheading':
       return 'text-lg tracking-fortnite';
-    case 'caption':
-      return 'text-sm tracking-fortnite text-gray-500 dark:text-gray-400';
     case 'fortnite':
       return 'text-lg tracking-fortnite uppercase';
     default:

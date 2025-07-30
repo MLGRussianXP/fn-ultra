@@ -12,7 +12,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { APIProvider } from '@/api';
-import { TextProvider } from '@/components/ui';
+import { TextProvider, ThemeTransition } from '@/components/ui';
 import { NotificationsProvider } from '@/features/notifications/provider/notifications-provider';
 import {
   registerShopUpdateTask,
@@ -108,7 +108,7 @@ function Providers({
             <NotificationsProvider>
               <TextProvider>
                 <BottomSheetModalProvider>
-                  {children}
+                  <ThemeTransition>{children}</ThemeTransition>
                   <FlashMessage position="top" />
                 </BottomSheetModalProvider>
               </TextProvider>

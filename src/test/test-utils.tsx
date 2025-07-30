@@ -2,6 +2,7 @@ import '@shopify/flash-list/jestSetup';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderOptions } from '@testing-library/react-native';
 import { cleanup, render, userEvent } from '@testing-library/react-native';
 import type { ReactElement } from 'react';
@@ -13,10 +14,24 @@ afterEach(() => {
 });
 
 const createAppWrapper = () => {
+  // Create a new QueryClient for each test
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        // Turn off retries for testing
+        retry: false,
+        // Don't cache between tests
+        gcTime: 0,
+      },
+    },
+  });
+
   return ({ children }: { children: React.ReactNode }) => (
-    <BottomSheetModalProvider>
-      <NavigationContainer>{children}</NavigationContainer>
-    </BottomSheetModalProvider>
+    <QueryClientProvider client={queryClient}>
+      <BottomSheetModalProvider>
+        <NavigationContainer>{children}</NavigationContainer>
+      </BottomSheetModalProvider>
+    </QueryClientProvider>
   );
 };
 

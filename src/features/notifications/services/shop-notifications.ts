@@ -5,6 +5,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import type { BrItem, ShopData, ShopResponse } from '@/api/fortnite/types';
 import { STORAGE_KEYS } from '@/features/notifications/utils/storage-keys';
+import { translate } from '@/lib/i18n/utils';
 import { getItem, setItem as storeItem } from '@/lib/storage';
 
 // Task names
@@ -13,9 +14,13 @@ export const WATCHED_ITEMS_TASK = 'WATCHED_ITEMS_TASK';
 
 // Last notification timestamps (to prevent duplicate notifications)
 const LAST_ITEM_WATCH_KEY = 'notifications.lastItemWatch';
+const LAST_SHOP_CHECK_KEY = 'notifications.lastShopCheck';
 
 // Notification identifier for scheduled daily notifications
 const DAILY_SHOP_NOTIFICATION_ID = 'daily-shop-update';
+
+// In-memory flag to prevent duplicate notifications in the same session
+let hasProcessedShopUpdate = false;
 
 /**
  * Calculates the next 00:00 GMT time
@@ -54,10 +59,27 @@ async function processShopDataAndNotify(shopData: ShopData): Promise<void> {
     return;
   }
 
+  // Check if we've already processed this update in the current session
+  if (hasProcessedShopUpdate) {
+    console.log(
+      '[DailyNotification] Already processed shop update in this session'
+    );
+    // Still update the last seen date to prevent future duplicate notifications
+    storeItem(STORAGE_KEYS.NOTIFICATIONS.LAST_SEEN_SHOP_DATE, shopData.date);
+    return;
+  }
+
   console.log('[DailyNotification] Shop updated! New date:', shopData.date);
 
   // Store the current shop date
   storeItem(STORAGE_KEYS.NOTIFICATIONS.LAST_SEEN_SHOP_DATE, shopData.date);
+
+  // Set the in-memory flag to prevent duplicate notifications
+  hasProcessedShopUpdate = true;
+
+  // Store the current timestamp to prevent duplicate notifications
+  const now = new Date().toISOString();
+  storeItem(LAST_SHOP_CHECK_KEY, now);
 
   // Always send shop update notification
   await sendShopUpdateNotification(shopData.date);
@@ -79,7 +101,7 @@ async function processShopDataAndNotify(shopData: ShopData): Promise<void> {
     }
 
     // Save the notification timestamp after sending all item notifications
-    await storeItem(LAST_ITEM_WATCH_KEY, new Date().toISOString());
+    await storeItem(LAST_ITEM_WATCH_KEY, now);
   }
 }
 
@@ -209,8 +231,10 @@ async function shouldSendWatchedItemsNotification(): Promise<boolean> {
 export async function sendWatchedItemNotification(item: BrItem): Promise<void> {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Watched Item Available!',
-      body: `${item.name} is now available in the shop!`,
+      title: translate('notifications.watched_item.title'),
+      body: translate('notifications.watched_item.body', {
+        itemName: item.name,
+      }),
       data: {
         type: 'item_watch',
         itemId: item.id,
@@ -228,8 +252,8 @@ export async function sendShopUpdateNotification(
 ): Promise<void> {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Fortnite Shop Update',
-      body: 'The item shop has been updated! Check out the new items.',
+      title: translate('notifications.shop_update.title'),
+      body: translate('notifications.shop_update.body'),
       data: {
         type: 'shop_update',
         shopDate,
@@ -291,7 +315,7 @@ export async function registerShopUpdateTask(): Promise<void> {
       return;
     }
 
-    // Register the background fetch task
+    // Register the background fetch task with higher priority
     await BackgroundTask.registerTaskAsync(SHOP_UPDATE_TASK, {
       minimumInterval: 60, // 1 hour in minutes
     });

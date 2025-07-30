@@ -104,6 +104,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'android.permission.READ_EXTERNAL_STORAGE',
       'android.permission.WRITE_EXTERNAL_STORAGE',
       'android.permission.ACCESS_MEDIA_LOCATION',
+      'android.permission.SCHEDULE_EXACT_ALARM',
+      'android.permission.USE_EXACT_ALARM',
+      'android.permission.WAKE_LOCK',
+      'android.permission.FOREGROUND_SERVICE',
+    ],
+    intentFilters: [
+      {
+        action: 'android.intent.action.MAIN',
+        category: ['android.intent.category.LAUNCHER'],
+      },
     ],
   },
   web: {

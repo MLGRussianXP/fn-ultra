@@ -34,6 +34,16 @@
     "search": "Search",
     "settings": "Settings"
   },
+  "notifications": {
+    "shop_update": {
+      "body": "The item shop has been updated! Check out the new items.",
+      "title": "Fortnite Shop Update"
+    },
+    "watched_item": {
+      "body": "{{itemName}} is now available in the shop!",
+      "title": "Watched Item Available!"
+    }
+  },
   "onboarding": {
     "message": "Welcome to obytes app site"
   },

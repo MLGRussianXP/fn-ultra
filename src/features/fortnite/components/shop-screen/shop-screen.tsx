@@ -11,20 +11,22 @@ import { ShopItem as ShopItemComponent } from '../shop-item';
 
 // Custom hook for shop state management
 function useShopState() {
-  const { data, isPending, isError, error, refetch } = useShop();
+  const shopQuery = useShop();
+  const { isPending, isError, error, refetch } = shopQuery;
+  const shopData = shopQuery.data;
 
   const grouped = React.useMemo(() => {
-    const entries = data?.data?.entries || [];
+    const entries = shopData?.data?.entries || [];
 
     if (entries.length === 0) {
       return [];
     }
 
     return groupAndSortEntries(entries);
-  }, [data]);
+  }, [shopData]);
 
   return {
-    data,
+    data: shopData,
     isPending,
     isError,
     error,

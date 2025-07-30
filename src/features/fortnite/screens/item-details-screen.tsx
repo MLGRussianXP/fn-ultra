@@ -51,12 +51,9 @@ export function ItemDetailsScreen() {
   }, [params.entry]);
 
   // Fetch BR item data
-  const {
-    data: brItemData,
-    isLoading,
-    isError,
-    error,
-  } = useBrItem(selectedItemId);
+  const brItemQuery = useBrItem(selectedItemId);
+  const { isLoading, isError, error } = brItemQuery;
+  const brItemData = brItemQuery.data;
 
   // Handle item selection
   const handleSelectItem = (id: string) => {

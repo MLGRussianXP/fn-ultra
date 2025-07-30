@@ -22,8 +22,8 @@ type Props = {
 };
 
 export function ShopItemPrice({ item }: Props) {
-  const { data } = useShop();
-  const vbuckIcon = data?.data?.vbuckIcon;
+  const shopQuery = useShop();
+  const vbuckIcon = shopQuery.data?.data?.vbuckIcon;
   const hasDiscount = item.regularPrice !== item.finalPrice;
 
   return (

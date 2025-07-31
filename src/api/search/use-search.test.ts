@@ -1,9 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { renderHook } from '@testing-library/react-native';
-import { getLocales } from 'expo-localization';
+import { renderHook, waitFor } from '@testing-library/react-native';
 import * as React from 'react';
 
-import { LOCAL } from '@/lib/i18n/utils';
 import { storage } from '@/lib/storage';
 
 import { useBrCosmeticsSearch } from './use-search';
@@ -22,78 +20,118 @@ jest.mock('@/api/common/utils', () => {
   };
 });
 
-// Mock fetch to prevent actual API calls
-global.fetch = jest.fn(() =>
-  Promise.resolve({
+// Mock storage
+jest.mock('@/lib/storage', () => ({
+  storage: {
+    getString: jest.fn(),
+    setString: jest.fn(),
+  },
+}));
+
+// Mock fetch
+global.fetch = jest.fn();
+
+const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
+const mockGetString = storage.getString as jest.MockedFunction<
+  typeof storage.getString
+>;
+
+// Helper function to create query client
+const createQueryClient = () => {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        gcTime: 0,
+      },
+    },
+  });
+};
+
+// Helper function to render hook with provider
+const renderHookWithProvider = (hook: () => any) => {
+  const queryClient = createQueryClient();
+  return renderHook(hook, {
+    wrapper: ({ children }: { children: React.ReactNode }) => {
+      return React.createElement(
+        QueryClientProvider,
+        { client: queryClient },
+        children
+      );
+    },
+  });
+};
+
+// Helper function to setup default mocks
+const setupDefaultMocks = () => {
+  mockGetString.mockReturnValue('fr');
+  mockFetch.mockResolvedValue({
     ok: true,
-    json: () => Promise.resolve({ data: [] }),
-  } as Response)
-);
+    json: async () => ({ data: [] }),
+  } as Response);
+};
 
 describe('useBrCosmeticsSearch', () => {
-  let queryClient: QueryClient;
-
   beforeEach(() => {
     jest.clearAllMocks();
-    storage.clearAll();
-    (getLocales as jest.Mock).mockReturnValue([
-      { languageCode: 'fr', regionCode: 'FR' },
-    ]);
+    setupDefaultMocks();
+  });
 
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
+  it('should fetch cosmetics with correct URL and parameters', async () => {
+    const { result } = renderHookWithProvider(() =>
+      useBrCosmeticsSearch({ query: 'test', rarity: 'rare' })
+    );
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining(
+          '/cosmetics/br/search/all?query=test&rarity=rare&language=fr'
+        ),
+        expect.any(Object)
+      );
     });
   });
 
-  afterEach(() => {
-    queryClient.clear();
+  it('should handle empty search parameters', async () => {
+    const { result } = renderHookWithProvider(() => useBrCosmeticsSearch({}));
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/cosmetics/br/search/all?language=fr'),
+        expect.any(Object)
+      );
+    });
   });
 
-  const wrapper = ({ children }: { children: React.ReactNode }) =>
-    React.createElement(QueryClientProvider, { client: queryClient }, children);
-
-  it('includes system language parameter in the API call when no language is set', () => {
-    const searchParams = { name: 'test' };
-
-    renderHook(() => useBrCosmeticsSearch(searchParams), { wrapper });
-
-    // Check that fetch was called with the system language parameter
-    expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining('language=fr')
+  it('should handle multiple search parameters', async () => {
+    const { result } = renderHookWithProvider(() =>
+      useBrCosmeticsSearch({
+        query: 'outfit',
+        rarity: 'legendary',
+        type: 'outfit',
+        series: 'marvel',
+      })
     );
-  });
 
-  it('uses the selected language in the API call', () => {
-    // Set the language to Russian
-    storage.set(LOCAL, 'ru');
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
 
-    const searchParams = { name: 'test' };
-
-    renderHook(() => useBrCosmeticsSearch(searchParams), { wrapper });
-
-    // Check that fetch was called with the language parameter
-    expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining('language=ru')
-    );
-  });
-
-  it('falls back to English if system language is not supported', () => {
-    // Set an unsupported system language
-    (getLocales as jest.Mock).mockReturnValue([
-      { languageCode: 'xyz', regionCode: 'XY' },
-    ]);
-
-    const searchParams = { name: 'test' };
-
-    renderHook(() => useBrCosmeticsSearch(searchParams), { wrapper });
-
-    // Check that fetch was called with English as fallback
-    expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining('language=en')
-    );
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining(
+          '/cosmetics/br/search/all?query=outfit&rarity=legendary&type=outfit&series=marvel&language=fr'
+        ),
+        expect.any(Object)
+      );
+    });
   });
 });

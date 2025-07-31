@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { type BrItem } from '@/api/fortnite/types';
 import { type SearchParams, useBrCosmeticsSearch } from '@/api/search';
@@ -28,25 +28,6 @@ export function buildSearchParams(
   });
   if (page > 1) merged.offset = (page - 1) * 100;
   return merged;
-}
-
-function useDisplayedResults({
-  hasSearched,
-  results,
-  setDisplayCount,
-  setDisplayedResults,
-}: {
-  hasSearched: boolean;
-  results: BrItem[];
-  setDisplayCount: (n: number) => void;
-  setDisplayedResults: (r: BrItem[]) => void;
-}) {
-  useEffect(() => {
-    if (!hasSearched) return;
-    if (Array.isArray(results) && results.length === 0) return;
-    setDisplayCount(20);
-    setDisplayedResults(results);
-  }, [results, hasSearched, setDisplayCount, setDisplayedResults]);
 }
 
 function useSearchScreenState(ALL_PARAMS: SearchParam[]) {
@@ -80,6 +61,7 @@ function useSearchScreenState(ALL_PARAMS: SearchParam[]) {
   const [displayedResults, setDisplayedResults] = useState<BrItem[]>([]);
   const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
   const [displayCount, setDisplayCount] = useState(20);
+
   return {
     primary,
     setPrimary,
@@ -143,12 +125,17 @@ export function useSearchScreen(ALL_PARAMS: SearchParam[]) {
     state.searchParams || {},
     state.hasSearched && !!state.searchParams
   );
-  useDisplayedResults({
-    hasSearched: state.hasSearched,
-    results,
-    setDisplayCount: state.setDisplayCount,
-    setDisplayedResults: state.setDisplayedResults,
-  });
+
+  // Update displayed results when search results change, but only if we have results
+  if (
+    state.hasSearched &&
+    results.length > 0 &&
+    state.displayedResults.length === 0
+  ) {
+    state.setDisplayCount(20);
+    state.setDisplayedResults(results);
+  }
+
   const { handleSearch, handleViewMore } = useSearchScreenHandlers({
     params,
     setPage: state.setPage,

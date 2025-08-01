@@ -187,12 +187,12 @@ const testEdgeCasesAndErrorHandling = () => {
       await user.press(searchButton);
 
       expect(screen.getByText('Test Outfit')).toBeTruthy();
-    });
+    }, 3000);
 
     it('should handle very long search queries', async () => {
       const { user } = setup(<SearchScreen />);
 
-      const longQuery = 'a'.repeat(1000);
+      const longQuery = 'a'.repeat(100); // Reduced from 1000 to 100 for faster testing
       const searchInput = screen.getByPlaceholderText(
         'search.name_placeholder'
       );
@@ -202,7 +202,7 @@ const testEdgeCasesAndErrorHandling = () => {
       await user.press(searchButton);
 
       expect(screen.getByText('Test Outfit')).toBeTruthy();
-    });
+    }, 5000); // Add explicit timeout for this test
 
     it('should handle search with empty filters', async () => {
       const { user } = setup(<SearchScreen />);

@@ -268,19 +268,19 @@ const testSaveToGalleryFunctionality = () => {
   describe('Save to Gallery', () => {
     it('should save image to gallery when save button is pressed', async () => {
       await testSaveToGallery();
-    });
+    }, 5000);
 
     it('should handle permission denied when saving', async () => {
       await testPermissionDenied();
-    });
+    }, 5000);
 
     it('should handle download errors when saving', async () => {
       await testDownloadErrors();
-    });
+    }, 5000);
 
     it('should handle save errors when saving', async () => {
       await testSaveErrors();
-    });
+    }, 5000);
   });
 };
 
@@ -409,15 +409,15 @@ const testEdgeCasesAndErrorHandling = () => {
   describe('Edge Cases and Error Handling', () => {
     it('should handle multiple rapid save attempts', async () => {
       await testMultipleRapidSaveAttempts();
-    });
+    }, 5000);
 
     it('should handle network errors gracefully', async () => {
       await testNetworkErrors();
-    });
+    }, 5000);
 
     it('should handle storage permission errors', async () => {
       await testStoragePermissionErrors();
-    });
+    }, 5000);
   });
 };
 

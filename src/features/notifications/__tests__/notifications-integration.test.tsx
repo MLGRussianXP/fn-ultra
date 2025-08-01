@@ -342,7 +342,7 @@ const testShopUpdatesToggleIntegration = () => {
       await waitFor(() => {
         expect(mockHandlePermissionRequest).toHaveBeenCalled();
       });
-    });
+    }, 3000);
 
     it('should disable shop updates and cancel notifications', async () => {
       // Setup: shop updates are currently enabled
@@ -369,7 +369,7 @@ const testShopUpdatesToggleIntegration = () => {
 
       // Should not request permission when disabling
       expect(mockHandlePermissionRequest).not.toHaveBeenCalled();
-    });
+    }, 3000);
   });
 };
 
@@ -417,7 +417,7 @@ const testEdgeCasesAndErrorHandling = () => {
       await waitFor(() => {
         expect(mockHandlePermissionRequest).toHaveBeenCalledTimes(3);
       });
-    });
+    }, 5000);
   });
 };
 

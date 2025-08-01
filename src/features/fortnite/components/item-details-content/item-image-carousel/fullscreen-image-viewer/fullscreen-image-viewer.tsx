@@ -1,13 +1,12 @@
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   Alert,
   Dimensions,
   FlatList,
   Image,
   Modal,
-  Platform,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -44,9 +43,7 @@ const isValidUrl = (url: string): boolean => {
 
 // Request permissions function
 const requestPermissions = async (): Promise<boolean> => {
-  console.log('Requesting media library permissions...');
-  const { status, canAskAgain } = await MediaLibrary.requestPermissionsAsync();
-  console.log('Permission status:', status, 'Can ask again:', canAskAgain);
+  const { status } = await MediaLibrary.requestPermissionsAsync();
 
   if (status !== 'granted') {
     console.error('Permission denied. Status:', status);
@@ -61,8 +58,6 @@ const requestPermissions = async (): Promise<boolean> => {
 
 // Download image function
 const downloadImage = async (url: string): Promise<string> => {
-  console.log('Downloading image from URL:', url);
-
   // Generate a unique filename
   const filename =
     FileSystem.documentDirectory +
@@ -71,7 +66,6 @@ const downloadImage = async (url: string): Promise<string> => {
   try {
     // Download the file
     const { uri } = await FileSystem.downloadAsync(url, filename);
-    console.log('File downloaded to:', uri);
     return uri;
   } catch (error) {
     console.error('Error downloading file:', error);
@@ -81,23 +75,18 @@ const downloadImage = async (url: string): Promise<string> => {
 
 // Save to media library function
 const saveToMediaLibrary = async (fileUri: string): Promise<void> => {
-  console.log('Saving file to media library:', fileUri);
   try {
     const asset = await MediaLibrary.createAssetAsync(fileUri);
-    console.log('Asset created successfully:', asset);
 
     if (!asset || !asset.id) {
       throw new Error('Failed to create asset: Asset ID is missing');
     }
 
-    console.log('Creating album...');
     const albumName = 'Fortnite Items';
     await MediaLibrary.createAlbumAsync(albumName, asset, false);
-    console.log('Album created/updated successfully');
 
     // Delete the temporary file
     await FileSystem.deleteAsync(fileUri, { idempotent: true });
-    console.log('Temporary file deleted');
 
     Alert.alert(translate('success'), translate('item_details.image_saved'));
   } catch (error) {
@@ -122,9 +111,16 @@ const useImageDownload = ({
   currentIndex,
 }: UseImageDownloadProps): UseImageDownloadResult => {
   const [isDownloading, setIsDownloading] = useState(false);
+  const isDownloadingRef = useRef(false);
 
   const handleDownload = useCallback(async () => {
+    // Prevent multiple rapid save attempts
+    if (isDownloadingRef.current) {
+      return;
+    }
+
     try {
+      isDownloadingRef.current = true;
       setIsDownloading(true);
 
       // Get the current image URL
@@ -144,9 +140,6 @@ const useImageDownload = ({
         Alert.alert(translate('errors.error'), 'Invalid image URL format');
         return;
       }
-
-      console.log('Attempting to save image:', imageUrl);
-      console.log('Platform:', Platform.OS);
 
       // Request permissions
       const permissionGranted = await requestPermissions();
@@ -169,6 +162,7 @@ const useImageDownload = ({
         translate('errors.image_save_failed')
       );
     } finally {
+      isDownloadingRef.current = false;
       setIsDownloading(false);
     }
   }, [currentIndex, images]);
@@ -188,6 +182,10 @@ const ImageItem = ({ imageUrl, width }: ImageItemProps) => (
       source={{ uri: imageUrl }}
       style={{ width: '100%', height: '80%' }}
       resizeMode="contain"
+      accessibilityRole="image"
+      testID="fullscreen-image"
+      onLoad={() => {}}
+      onError={() => {}}
     />
   </View>
 );

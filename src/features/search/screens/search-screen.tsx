@@ -2,12 +2,15 @@ import React from 'react';
 import {
   ActivityIndicator,
   Pressable,
+  RefreshControl,
   ScrollView,
-  Text,
   View,
 } from 'react-native';
 
 import { type BrItem } from '@/api/fortnite/types';
+import { Button, FocusAwareStatusBar, Input, Text } from '@/components/ui';
+import { CaretDown, Search } from '@/components/ui/icons';
+import { translate } from '@/lib/i18n';
 
 import { BrItemCard } from '../components/br-item-card';
 import { FieldAdditional, FieldPrimary } from '../components/render-fields';
@@ -27,18 +30,18 @@ function ResultsGrid({
 }: ResultsGridProps) {
   return (
     <>
-      <View className="flex-row flex-wrap justify-between">
+      <View className="flex-row flex-wrap justify-between px-base">
         {displayedResults.map((item, i) => (
           <BrItemCard key={item.id + i} item={item} />
         ))}
       </View>
       {canViewMore && (
-        <Pressable
+        <Button
           onPress={onViewMore}
-          className="mb-12 mt-6 self-center rounded-full bg-blue-500 px-6 py-3 shadow-sm"
-        >
-          <Text className="font-medium text-white">View More</Text>
-        </Pressable>
+          label={translate('search.view_more')}
+          className="mb-12 mt-6 self-center bg-[#8b5cf6] px-6 py-3"
+          fullWidth={false}
+        />
       )}
     </>
   );
@@ -56,9 +59,12 @@ function PrimaryFilters({
   handleSearch,
 }: PrimaryFiltersProps) {
   return (
-    <View className="mb-6 rounded-xl bg-white p-4 shadow-sm dark:bg-gray-800">
-      <Text className="mb-3 text-base font-medium text-gray-700 dark:text-gray-300">
-        Primary Filters
+    <View className="mb-6 rounded-xl bg-white p-base shadow-sm dark:bg-neutral-800">
+      <Text
+        variant="fortnite"
+        className="mb-3 text-[#8b5cf6] dark:text-[#8b5cf6]"
+      >
+        {translate('search.primary_filters')}
       </Text>
       <View>
         {ALL_SEARCH_PARAMS.filter((p) => p.primary).map((param) => (
@@ -87,9 +93,12 @@ function AdditionalFilters({
   handleSearch,
 }: AdditionalFiltersProps) {
   return (
-    <View className="mb-6 rounded-xl bg-white p-4 shadow-sm dark:bg-gray-800">
-      <Text className="mb-3 text-base font-medium text-gray-700 dark:text-gray-300">
-        Additional Filters
+    <View className="mb-6 rounded-xl bg-white p-base shadow-sm dark:bg-neutral-800">
+      <Text
+        variant="fortnite"
+        className="mb-3 text-[#8b5cf6] dark:text-[#8b5cf6]"
+      >
+        {translate('search.advanced_filters')}
       </Text>
       <View>
         {ALL_SEARCH_PARAMS.filter((p) => !p.primary).map((param) => (
@@ -116,6 +125,77 @@ interface SearchFormProps {
   handleSearch: () => void;
 }
 
+// Component for the search name input field
+function SearchNameField({
+  name,
+  setPrimary,
+  handleSearch,
+}: {
+  name: string;
+  setPrimary: React.Dispatch<React.SetStateAction<PrimaryState>>;
+  handleSearch: () => void;
+}) {
+  return (
+    <View className="mb-6 rounded-xl bg-white p-base shadow-sm dark:bg-neutral-800">
+      <Text
+        variant="fortnite"
+        className="mb-3 text-[#8b5cf6] dark:text-[#8b5cf6]"
+      >
+        {translate('search.fields.name')}
+      </Text>
+      <Input
+        value={name}
+        onChangeText={(text) => setPrimary((prev) => ({ ...prev, name: text }))}
+        placeholder={translate('search.name_placeholder')}
+        returnKeyType="search"
+        onSubmitEditing={handleSearch}
+      />
+    </View>
+  );
+}
+
+// Component for the advanced filters toggle
+function AdvancedFiltersToggle({
+  showAdditional,
+  setShowAdditional,
+}: {
+  showAdditional: boolean;
+  setShowAdditional: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  return (
+    <Pressable
+      onPress={() => setShowAdditional(!showAdditional)}
+      className="mb-4 flex-row items-center"
+    >
+      <View className="mr-2 size-5 items-center justify-center rounded-full bg-[#8b5cf6]">
+        <Text className="text-xs font-bold text-white">
+          {showAdditional ? '-' : '+'}
+        </Text>
+      </View>
+      <Text variant="fortnite" className="text-[#8b5cf6]">
+        {showAdditional
+          ? translate('search.hide_advanced')
+          : translate('search.show_advanced')}
+      </Text>
+      <CaretDown className={`ml-2 ${showAdditional ? 'rotate-180' : ''}`} />
+    </Pressable>
+  );
+}
+
+// Component for the search button
+function SearchButton({ handleSearch }: { handleSearch: () => void }) {
+  return (
+    <Button onPress={handleSearch} className="mb-8 self-start bg-[#8b5cf6]">
+      <View className="flex-row items-center">
+        <Search color="white" />
+        <Text className="ml-2 text-white">
+          {translate('search.search_button')}
+        </Text>
+      </View>
+    </Button>
+  );
+}
+
 function SearchForm({
   primary,
   setPrimary,
@@ -127,46 +207,41 @@ function SearchForm({
 }: SearchFormProps) {
   return (
     <>
-      <Text className="mb-4 text-xl font-bold text-gray-800 dark:text-white">
-        Search BR Cosmetics
-      </Text>
-
-      <PrimaryFilters
-        primary={primary}
-        setPrimary={setPrimary}
-        handleSearch={handleSearch}
-      />
-
-      <Pressable
-        onPress={() => setShowAdditional(!showAdditional)}
-        className="mb-4 flex-row items-center"
-      >
-        <View className="mr-2 size-5 items-center justify-center rounded-full bg-blue-500">
-          <Text className="text-xs font-bold text-white">
-            {showAdditional ? '-' : '+'}
-          </Text>
-        </View>
-        <Text className="text-blue-500">
-          {showAdditional
-            ? 'Hide Additional Filters'
-            : 'Show Additional Filters'}
+      <View className="mb-6 px-base">
+        <Text
+          variant="heading"
+          className="mb-4 text-neutral-800 dark:text-white"
+        >
+          {translate('search.title')}
         </Text>
-      </Pressable>
 
-      {showAdditional && (
-        <AdditionalFilters
-          additional={additional}
-          setAdditional={setAdditional}
+        <SearchNameField
+          name={primary.name}
+          setPrimary={setPrimary}
           handleSearch={handleSearch}
         />
-      )}
 
-      <Pressable
-        onPress={handleSearch}
-        className="mb-8 self-start rounded-full bg-blue-600 px-6 py-3 shadow-sm"
-      >
-        <Text className="font-medium text-white">Search</Text>
-      </Pressable>
+        <PrimaryFilters
+          primary={primary}
+          setPrimary={setPrimary}
+          handleSearch={handleSearch}
+        />
+
+        <AdvancedFiltersToggle
+          showAdditional={showAdditional}
+          setShowAdditional={setShowAdditional}
+        />
+
+        {showAdditional && (
+          <AdditionalFilters
+            additional={additional}
+            setAdditional={setAdditional}
+            handleSearch={handleSearch}
+          />
+        )}
+
+        <SearchButton handleSearch={handleSearch} />
+      </View>
     </>
   );
 }
@@ -193,14 +268,14 @@ function SearchResults({
       {isLoading && (
         <View className="my-8 items-center justify-center">
           <ActivityIndicator size="large" color="#3b82f6" />
-          <Text className="mt-2 text-gray-600 dark:text-gray-400">
-            Loading results...
+          <Text className="mt-2 text-neutral-600 dark:text-neutral-400">
+            {translate('search.loading')}
           </Text>
         </View>
       )}
 
       {isError && (
-        <View className="mb-6 rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
+        <View className="mx-base mb-6 rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
           <Text className="text-red-600 dark:text-red-400">
             {error instanceof Error ? error.message : String(error)}
           </Text>
@@ -209,20 +284,35 @@ function SearchResults({
 
       {!isLoading && displayedResults.length === 0 && !isError && (
         <View className="my-8 items-center justify-center">
-          <Text className="text-gray-500 dark:text-gray-400">
-            No results found.
+          <Text
+            variant="bodyLarge"
+            className="text-neutral-500 dark:text-neutral-400"
+          >
+            {translate('search.no_results')}
           </Text>
-          <Text className="mt-1 text-sm text-gray-400 dark:text-gray-500">
-            Try adjusting your search filters.
+          <Text
+            variant="bodySmall"
+            className="mt-1 text-neutral-400 dark:text-neutral-500"
+          >
+            {translate('search.adjust_filters')}
           </Text>
         </View>
       )}
 
       {displayedResults.length > 0 && (
         <View className="mb-4">
-          <Text className="mb-4 text-base font-medium text-gray-700 dark:text-gray-300">
-            Search Results ({displayedResults.length})
-          </Text>
+          <View className="mx-base mb-4 flex-row items-center">
+            <View className="h-px flex-1 bg-neutral-300 dark:bg-neutral-700" />
+            <Text
+              variant="fortnite"
+              className="mx-sm text-[#8b5cf6] dark:text-[#8b5cf6]"
+            >
+              {translate('search.results_count', {
+                count: displayedResults.length,
+              })}
+            </Text>
+            <View className="h-px flex-1 bg-neutral-300 dark:bg-neutral-700" />
+          </View>
           <ResultsGrid
             displayedResults={displayedResults.slice(0, displayCount)}
             onViewMore={handleViewMore}
@@ -231,6 +321,18 @@ function SearchResults({
         </View>
       )}
     </>
+  );
+}
+
+// Loading state component
+function LoadingState() {
+  return (
+    <View className="flex-1 items-center justify-center bg-neutral-50 dark:bg-neutral-900">
+      <FocusAwareStatusBar />
+      <Text variant="fortnite" className="text-[#8b5cf6]">
+        {translate('search.loading')}
+      </Text>
+    </View>
   );
 }
 
@@ -251,11 +353,24 @@ export function SearchScreen() {
     handleViewMore,
   } = useSearchScreen(ALL_SEARCH_PARAMS);
 
+  if (isLoading && !displayedResults.length) {
+    return <LoadingState />;
+  }
+
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <View className="flex-1 bg-neutral-50 dark:bg-neutral-900">
+      <FocusAwareStatusBar />
+
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ padding: 16 }}
+        contentContainerStyle={{ paddingVertical: 16 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoading && !!displayedResults.length}
+            onRefresh={handleSearch}
+          />
+        }
+        showsVerticalScrollIndicator={false}
       >
         <SearchForm
           primary={primary}

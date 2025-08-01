@@ -31,8 +31,10 @@
   },
   "navigation": {
     "home": "Главная",
+    "item_details": "Детали предмета",
     "search": "Поиск",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "shop": "Магазин Fortnite"
   },
   "notifications": {
     "shop_update": {
@@ -46,6 +48,61 @@
   },
   "onboarding": {
     "message": "Добро пожаловать на сайт приложения obytes"
+  },
+  "search": {
+    "adjust_filters": "Попробуйте изменить параметры поиска",
+    "advanced_filters": "Расширенные фильтры",
+    "enter_field": "Введите {{field}}...",
+    "fields": {
+      "added": "Добавлено (Unix Timestamp)",
+      "addedSince": "Добавлено с (Unix Timestamp)",
+      "backendIntroduction": "Backend Введение",
+      "backendRarity": "Backend Редкость",
+      "backendSeries": "Backend Серия",
+      "backendSet": "Backend Набор",
+      "backendType": "Backend Тип",
+      "description": "Описание",
+      "displayRarity": "Отображаемая Редкость",
+      "displayType": "Отображаемый Тип",
+      "dynamicPakId": "Динамический Pak Id",
+      "gameplayTag": "Игровой Тег",
+      "hasDynamicPakId": "Имеет Динамический Pak Id",
+      "hasFeaturedImage": "Имеет изображение",
+      "hasGameplayTags": "Имеет Игровые Теги",
+      "hasIntroduction": "Имеет Введение",
+      "hasMetaTags": "Имеет Мета-теги",
+      "hasSeries": "Имеет Серию",
+      "hasSet": "Имеет Набор",
+      "hasVariants": "Имеет варианты",
+      "id": "ID",
+      "introductionChapter": "Глава Введения",
+      "introductionSeason": "Сезон Введения",
+      "language": "Язык",
+      "lastAppearance": "Последнее Появление",
+      "matchMethod": "Метод совпадения",
+      "metaTag": "Мета-тег",
+      "name": "Название",
+      "rarity": "Редкость",
+      "searchLanguage": "Язык поиска",
+      "series": "Серия",
+      "set": "Набор",
+      "setText": "Текст Набора",
+      "type": "Тип",
+      "unseenFor": "Не видели (в секундах)"
+    },
+    "hide_advanced": "Скрыть расширенные фильтры",
+    "loading": "Загрузка поиска...",
+    "name_placeholder": "Введите название косметики...",
+    "no": "Нет",
+    "no_results": "Результаты не найдены",
+    "primary_filters": "Основные фильтры",
+    "results_count": "Результаты ({{count}})",
+    "search_button": "Поиск",
+    "select_placeholder": "Выбрать...",
+    "show_advanced": "Показать расширенные фильтры",
+    "title": "Поиск косметики BR",
+    "view_more": "Показать ещё",
+    "yes": "Да"
   },
   "settings": {
     "about": "О приложении",

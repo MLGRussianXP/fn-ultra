@@ -2,6 +2,7 @@ import { SplashScreen, Stack } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
 
 import { BoldTextFix } from '@/components/ui';
+import { translate } from '@/lib/i18n';
 
 export default function AppLayout() {
   const hideSplash = useCallback(async () => {
@@ -29,14 +30,14 @@ export default function AppLayout() {
         <Stack.Screen
           name="index"
           options={{
-            title: 'Fortnite Shop',
+            title: translate('navigation.shop'),
             headerShown: true,
           }}
         />
         <Stack.Screen
           name="item/[id]"
           options={{
-            title: 'Item Details',
+            title: translate('navigation.item_details'),
             headerShown: true,
           }}
         />

@@ -40,7 +40,7 @@ export function ThemeTransition({
       // Update previous theme reference
       prevThemeRef.current = colorScheme;
     }
-  }, [colorScheme, duration]);
+  }, [colorScheme, duration, opacity]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,

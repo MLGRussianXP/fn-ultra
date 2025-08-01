@@ -1,9 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { renderHook } from '@testing-library/react-native';
+import { renderHook, waitFor } from '@testing-library/react-native';
 import { getLocales } from 'expo-localization';
 import * as React from 'react';
 
-import { LOCAL } from '@/lib/i18n/utils';
 import { storage } from '@/lib/storage';
 
 import { useBrItem } from './use-br-item';
@@ -22,73 +21,143 @@ jest.mock('@/api/common/utils', () => {
   };
 });
 
-// Mock fetch to prevent actual API calls
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    ok: true,
-    json: () => Promise.resolve({ data: {} }),
-  } as Response)
-);
+// Mock storage
+jest.mock('@/lib/storage', () => ({
+  storage: {
+    getString: jest.fn(),
+    setString: jest.fn(),
+    clearAll: jest.fn(),
+    set: jest.fn(),
+  },
+}));
+
+// Mock fetch
+global.fetch = jest.fn();
+
+// Helper function to setup mocks
+const setupMocks = () => {
+  jest.clearAllMocks();
+  (storage as any).clearAll();
+  (getLocales as jest.Mock).mockReturnValue([
+    { languageCode: 'fr', regionCode: 'FR' },
+  ]);
+};
+
+// Helper function to create query client
+const createQueryClient = () => {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        staleTime: 0,
+      },
+    },
+  });
+};
+
+// Helper function to setup wrapper
+const createWrapper = (queryClient: QueryClient) => {
+  return ({ children }: { children: React.ReactNode }) =>
+    React.createElement(QueryClientProvider, { client: queryClient }, children);
+};
+
+// Helper function to setup test environment
+const setupTestEnvironment = () => {
+  setupMocks();
+  const queryClient = createQueryClient();
+  const wrapper = createWrapper(queryClient);
+  return { queryClient, wrapper };
+};
+
+// Helper function to test system language parameter
+const testSystemLanguageParameter = async (wrapper: any) => {
+  const itemId = 'test-item-id';
+
+  renderHook(() => useBrItem(itemId), { wrapper });
+
+  // Wait for the query to execute
+  await waitFor(() => {
+    expect(global.fetch).toHaveBeenCalled();
+  });
+
+  await waitFor(() => {
+    const callArgs = (global.fetch as jest.Mock).mock.calls[0];
+    expect(callArgs[0]).toContain('language=fr');
+  });
+};
+
+// Helper function to test selected language
+const testSelectedLanguage = async (wrapper: any) => {
+  // Set the language to Russian before rendering the hook
+  (storage as any).getString.mockReturnValue('ru');
+
+  const itemId = 'test-item-id';
+
+  renderHook(() => useBrItem(itemId), { wrapper });
+
+  // Wait for the query to execute
+  await waitFor(() => {
+    expect(global.fetch).toHaveBeenCalled();
+  });
+
+  await waitFor(() => {
+    const callArgs = (global.fetch as jest.Mock).mock.calls[0];
+    expect(callArgs[0]).toContain('language=ru');
+  });
+};
+
+// Helper function to test fallback language
+const testFallbackLanguage = async (wrapper: any) => {
+  // Reset storage mock to return null (no stored language)
+  (storage as any).getString.mockReturnValue(null);
+
+  // Set an unsupported system language
+  (getLocales as jest.Mock).mockReturnValue([
+    { languageCode: 'xyz', regionCode: 'XY' },
+  ]);
+
+  const itemId = 'test-item-id';
+
+  renderHook(() => useBrItem(itemId), { wrapper });
+
+  // Wait for the query to execute
+  await waitFor(() => {
+    expect(global.fetch).toHaveBeenCalled();
+  });
+
+  await waitFor(() => {
+    const callArgs = (global.fetch as jest.Mock).mock.calls[0];
+    expect(callArgs[0]).toContain('language=en');
+  });
+};
 
 describe('useBrItem', () => {
-  const testItemId = 'test-item-id';
   let queryClient: QueryClient;
+  let wrapper: ({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) => React.ReactElement;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    storage.clearAll();
-    (getLocales as jest.Mock).mockReturnValue([
-      { languageCode: 'fr', regionCode: 'FR' },
-    ]);
-
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
+    const testEnv = setupTestEnvironment();
+    queryClient = testEnv.queryClient;
+    wrapper = testEnv.wrapper;
   });
 
   afterEach(() => {
     queryClient.clear();
   });
 
-  const wrapper = ({ children }: { children: React.ReactNode }) =>
-    React.createElement(QueryClientProvider, { client: queryClient }, children);
-
-  it('includes language parameter in the API call', () => {
-    renderHook(() => useBrItem(testItemId), { wrapper });
-
-    // Check that fetch was called with the language parameter
-    expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining(`?language=fr`)
-    );
+  it('includes system language parameter in the API call when no language is set', async () => {
+    await testSystemLanguageParameter(wrapper);
   });
 
-  it('uses the selected language in the API call', () => {
-    // Set the language to Russian
-    storage.set(LOCAL, 'ru');
-
-    renderHook(() => useBrItem(testItemId), { wrapper });
-
-    // Check that fetch was called with the language parameter
-    expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining(`?language=ru`)
-    );
+  it('uses the selected language in the API call', async () => {
+    await testSelectedLanguage(wrapper);
   });
 
-  it('falls back to English if system language is not supported', () => {
-    // Set an unsupported system language
-    (getLocales as jest.Mock).mockReturnValue([
-      { languageCode: 'xyz', regionCode: 'XY' },
-    ]);
-
-    renderHook(() => useBrItem(testItemId), { wrapper });
-
-    // Check that fetch was called with English as fallback
-    expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining(`?language=en`)
-    );
+  it('falls back to English if system language is not supported', async () => {
+    await testFallbackLanguage(wrapper);
   });
 });

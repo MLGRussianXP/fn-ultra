@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FocusAwareStatusBar, Text, View } from '@/components/ui';
 import { Home, Search, Settings } from '@/components/ui/icons';
+import { translate } from '@/lib/i18n';
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
@@ -44,7 +45,9 @@ export default function TabsLayout() {
           options={{
             tabBarIcon: ({ color }) => <Home color={color} />,
             tabBarLabel: ({ color }) => (
-              <Text style={[styles.tabLabel, { color }]}>SHOP</Text>
+              <Text style={[styles.tabLabel, { color }]}>
+                {translate('navigation.home').toUpperCase()}
+              </Text>
             ),
           }}
         />
@@ -53,7 +56,9 @@ export default function TabsLayout() {
           options={{
             tabBarIcon: ({ color }) => <Search color={color} />,
             tabBarLabel: ({ color }) => (
-              <Text style={[styles.tabLabel, { color }]}>SEARCH</Text>
+              <Text style={[styles.tabLabel, { color }]}>
+                {translate('navigation.search').toUpperCase()}
+              </Text>
             ),
           }}
         />
@@ -62,7 +67,9 @@ export default function TabsLayout() {
           options={{
             tabBarIcon: ({ color }) => <Settings color={color} />,
             tabBarLabel: ({ color }) => (
-              <Text style={[styles.tabLabel, { color }]}>SETTINGS</Text>
+              <Text style={[styles.tabLabel, { color }]}>
+                {translate('navigation.settings').toUpperCase()}
+              </Text>
             ),
           }}
         />

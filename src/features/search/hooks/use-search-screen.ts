@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { type BrItem } from '@/api/fortnite/types';
 import { type SearchParams, useBrCosmeticsSearch } from '@/api/search';
@@ -6,12 +6,13 @@ import { type SearchParams, useBrCosmeticsSearch } from '@/api/search';
 import { type SearchParam } from '../utils/search-params';
 
 export interface PrimaryState {
-  name: string;
-  id: string;
+  name: string; // Keep this for the dedicated search field at the top
   type: string;
   rarity: string;
+  series: string;
+  set: string;
   hasVariants: string;
-  hasFeaturedImage: string;
+  matchMethod: string;
   [key: string]: string;
 }
 
@@ -29,33 +30,15 @@ export function buildSearchParams(
   return merged;
 }
 
-function useDisplayedResults({
-  hasSearched,
-  results,
-  setDisplayCount,
-  setDisplayedResults,
-}: {
-  hasSearched: boolean;
-  results: BrItem[];
-  setDisplayCount: (n: number) => void;
-  setDisplayedResults: (r: BrItem[]) => void;
-}) {
-  useEffect(() => {
-    if (!hasSearched) return;
-    if (Array.isArray(results) && results.length === 0) return;
-    setDisplayCount(20);
-    setDisplayedResults(results);
-  }, [results, hasSearched, setDisplayCount, setDisplayedResults]);
-}
-
 function useSearchScreenState(ALL_PARAMS: SearchParam[]) {
   const [primary, setPrimary] = useState<PrimaryState>({
     name: '',
-    id: '',
     type: '',
     rarity: '',
+    series: '',
+    set: '',
     hasVariants: '',
-    hasFeaturedImage: '',
+    matchMethod: '',
   });
   const [additional, setAdditional] = useState(
     Object.fromEntries(
@@ -63,11 +46,12 @@ function useSearchScreenState(ALL_PARAMS: SearchParam[]) {
         (p) =>
           !p.primary &&
           p.key !== 'name' &&
-          p.key !== 'id' &&
           p.key !== 'type' &&
           p.key !== 'rarity' &&
+          p.key !== 'series' &&
+          p.key !== 'set' &&
           p.key !== 'hasVariants' &&
-          p.key !== 'hasFeaturedImage'
+          p.key !== 'matchMethod'
       ).map((p) => [p.key, ''])
     )
   );
@@ -77,6 +61,7 @@ function useSearchScreenState(ALL_PARAMS: SearchParam[]) {
   const [displayedResults, setDisplayedResults] = useState<BrItem[]>([]);
   const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
   const [displayCount, setDisplayCount] = useState(20);
+
   return {
     primary,
     setPrimary,
@@ -140,12 +125,17 @@ export function useSearchScreen(ALL_PARAMS: SearchParam[]) {
     state.searchParams || {},
     state.hasSearched && !!state.searchParams
   );
-  useDisplayedResults({
-    hasSearched: state.hasSearched,
-    results,
-    setDisplayCount: state.setDisplayCount,
-    setDisplayedResults: state.setDisplayedResults,
-  });
+
+  // Update displayed results when search results change, but only if we have results
+  if (
+    state.hasSearched &&
+    results.length > 0 &&
+    state.displayedResults.length === 0
+  ) {
+    state.setDisplayCount(20);
+    state.setDisplayedResults(results);
+  }
+
   const { handleSearch, handleViewMore } = useSearchScreenHandlers({
     params,
     setPage: state.setPage,

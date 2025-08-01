@@ -16,7 +16,6 @@
         "image": "latest"
       },
       "env": {
-        "EXPO_NO_DOTENV": "1",
         "APP_ENV": "production",
         "FLIPPER_DISABLE": "1"
       }

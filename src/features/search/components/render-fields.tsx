@@ -79,7 +79,7 @@ function SelectField<T extends Record<string, string>>({
         options={
           param.options?.map((opt) => ({ label: opt, value: opt })) || []
         }
-        placeholder="Select..."
+        placeholder={translate('search.select_placeholder')}
       />
     </View>
   );
@@ -102,7 +102,9 @@ function TextField<T extends Record<string, string>>({
         label={param.label}
         value={value[param.key] || ''}
         onChangeText={(t) => setValue((v) => ({ ...v, [param.key]: t }))}
-        placeholder={`Enter ${param.label.toLowerCase()}...`}
+        placeholder={translate('search.enter_field', {
+          field: param.label.toLowerCase(),
+        })}
         keyboardType="default"
         returnKeyType="search"
         onSubmitEditing={handleSearch}

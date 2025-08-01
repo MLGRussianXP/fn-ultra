@@ -1,39 +1,44 @@
-// Fortnite Shop API Types
+/**
+ * Fortnite API types
+ * @module api/fortnite/types
+ */
+
+// Shop API Types
 // Based on actual API response from https://fortnite-api.com/v2/shop
 
-export type FortniteRarity = {
+export type Rarity = {
   value: string;
   displayValue: string;
   backendValue: string;
 };
 
-export type FortniteType = {
+export type Type = {
   value: string;
   displayValue: string;
   backendValue: string;
 };
 
-export type FortniteSeries = {
+export type Series = {
   value: string;
   image?: string;
   colors: string[];
   backendValue: string;
 };
 
-export type FortniteSet = {
+export type Set = {
   value: string;
   text: string;
   backendValue: string;
 };
 
-export type FortniteIntroduction = {
+export type Introduction = {
   chapter: string;
   season: string;
   text: string;
   backendValue: number;
 };
 
-export type FortniteImages = {
+export type Images = {
   smallIcon: string;
   icon: string;
   featured?: string;
@@ -49,33 +54,33 @@ export type FortniteImages = {
   Other?: Record<string, string>;
 };
 
-export type FortniteVariantOption = {
+export type VariantOption = {
   tag: string;
   name: string;
   unlockRequirements: string;
   image: string;
 };
 
-export type FortniteVariant = {
+export type Variant = {
   channel: string;
   type: string;
-  options: FortniteVariantOption[];
+  options: VariantOption[];
 };
 
-export type FortniteBrItem = {
+export type BrItem = {
   id: string;
   name: string;
   description: string;
   exclusiveDescription?: string;
   unlockRequirements?: string;
   customExclusiveCallout?: string;
-  type: FortniteType;
-  rarity: FortniteRarity;
-  series?: FortniteSeries;
-  set?: FortniteSet;
-  introduction?: FortniteIntroduction;
-  images: FortniteImages;
-  variants?: FortniteVariant[];
+  type: Type;
+  rarity: Rarity;
+  series?: Series;
+  set?: Set;
+  introduction?: Introduction;
+  images: Images;
+  variants?: Variant[];
   builtInEmoteIds?: string[];
   searchTags?: string[];
   gameplayTags?: string[];
@@ -90,7 +95,7 @@ export type FortniteBrItem = {
   shopHistory?: string[];
 };
 
-export type FortniteTrackDifficulty = {
+export type TrackDifficulty = {
   vocals: number;
   guitar: number;
   bass: number;
@@ -99,7 +104,7 @@ export type FortniteTrackDifficulty = {
   plasticDrums: number;
 };
 
-export type FortniteTrack = {
+export type Track = {
   id: string;
   devName: string;
   title: string;
@@ -108,7 +113,7 @@ export type FortniteTrack = {
   releaseYear: number;
   bpm: number;
   duration: number;
-  difficulty: FortniteTrackDifficulty;
+  difficulty: TrackDifficulty;
   gameplayTags?: string[];
   genres?: string[];
   albumArt: string;
@@ -116,17 +121,17 @@ export type FortniteTrack = {
   shopHistory?: string[];
 };
 
-export type FortniteInstrument = {
+export type Instrument = {
   id: string;
   name: string;
   description: string;
-  type: FortniteType;
-  rarity: FortniteRarity;
+  type: Type;
+  rarity: Rarity;
   images: {
     small: string;
     large: string;
   };
-  series?: FortniteSeries;
+  series?: Series;
   gameplayTags?: string[];
   path?: string;
   showcaseVideo?: string;
@@ -134,18 +139,18 @@ export type FortniteInstrument = {
   shopHistory?: string[];
 };
 
-export type FortniteCar = {
+export type Car = {
   id: string;
   vehicleId: string;
   name: string;
   description: string;
-  type: FortniteType;
-  rarity: FortniteRarity;
+  type: Type;
+  rarity: Rarity;
   images: {
     small: string;
     large: string;
   };
-  series?: FortniteSeries;
+  series?: Series;
   gameplayTags?: string[];
   path?: string;
   showcaseVideo?: string;
@@ -153,11 +158,11 @@ export type FortniteCar = {
   shopHistory?: string[];
 };
 
-export type FortniteLegoKit = {
+export type LegoKit = {
   id: string;
   name: string;
-  type: FortniteType;
-  series?: FortniteSeries;
+  type: Type;
+  series?: Series;
   gameplayTags?: string[];
   images: {
     small: string;
@@ -169,19 +174,19 @@ export type FortniteLegoKit = {
   shopHistory?: string[];
 };
 
-export type FortniteBanner = {
+export type Banner = {
   value: string;
   intensity: string;
   backendValue: string;
 };
 
-export type FortniteRenderImage = {
+export type RenderImage = {
   productTag: string;
   fileName: string;
   image: string;
 };
 
-export type FortniteMaterialInstance = {
+export type MaterialInstance = {
   id: string;
   primaryMode: string;
   productTag: string;
@@ -191,36 +196,36 @@ export type FortniteMaterialInstance = {
   Flags: Record<string, boolean>;
 };
 
-export type FortniteDisplayAsset = {
+export type DisplayAsset = {
   id: string;
   cosmeticId?: string;
-  materialInstances: FortniteMaterialInstance[];
-  renderImages: FortniteRenderImage[];
+  materialInstances: MaterialInstance[];
+  renderImages: RenderImage[];
 };
 
-export type FortniteColors = {
+export type Colors = {
   color1: string;
   color2: string;
   color3: string;
   textBackgroundColor: string;
 };
 
-export type FortniteTextureMetadata = {
+export type TextureMetadata = {
   key: string;
   value: string;
 };
 
-export type FortniteStringMetadata = {
+export type StringMetadata = {
   key: string;
   value: string;
 };
 
-export type FortniteTextMetadata = {
+export type TextMetadata = {
   key: string;
   value: string;
 };
 
-export type FortniteLayout = {
+export type Layout = {
   id: string;
   name: string;
   category?: string;
@@ -230,23 +235,23 @@ export type FortniteLayout = {
   background?: string;
   useWidePreview: boolean;
   displayType: string;
-  textureMetadata?: FortniteTextureMetadata[];
-  stringMetadata?: FortniteStringMetadata[];
-  textMetadata?: FortniteTextMetadata[];
+  textureMetadata?: TextureMetadata[];
+  stringMetadata?: StringMetadata[];
+  textMetadata?: TextMetadata[];
 };
 
-export type FortniteBundle = {
+export type Bundle = {
   name: string;
   info: string;
   image: string;
 };
 
-export type FortniteOfferTag = {
+export type OfferTag = {
   id: string;
   text: string;
 };
 
-export type FortniteShopItem = {
+export type ShopItem = {
   // Basic item information
   regularPrice: number;
   finalPrice: number;
@@ -256,47 +261,47 @@ export type FortniteShopItem = {
   outDate: string;
 
   // Special properties
-  bundle?: FortniteBundle;
-  banner?: FortniteBanner;
-  offerTag?: FortniteOfferTag;
+  bundle?: Bundle;
+  banner?: Banner;
+  offerTag?: OfferTag;
 
   // Item properties
   giftable: boolean;
   refundable: boolean;
   sortPriority: number;
   layoutId: string;
-  layout: FortniteLayout;
+  layout: Layout;
 
   // Visual properties
-  colors?: FortniteColors;
+  colors?: Colors;
   tileBackgroundMaterial?: string;
   tileSize: string;
   displayAssetPath: string;
   newDisplayAssetPath: string;
-  newDisplayAsset: FortniteDisplayAsset;
+  newDisplayAsset: DisplayAsset;
 
   // Item content arrays
-  brItems?: FortniteBrItem[];
-  tracks?: FortniteTrack[];
-  instruments?: FortniteInstrument[];
-  cars?: FortniteCar[];
-  legoKits?: FortniteLegoKit[];
+  brItems?: BrItem[];
+  tracks?: Track[];
+  instruments?: Instrument[];
+  cars?: Car[];
+  legoKits?: LegoKit[];
 };
 
-export type FortniteShopData = {
+export type ShopData = {
   hash: string;
   date: string;
   vbuckIcon: string;
-  entries: FortniteShopItem[];
+  entries: ShopItem[];
 };
 
-export type FortniteShopResponse = {
+export type ShopResponse = {
   status: number;
-  data: FortniteShopData;
+  data: ShopData;
 };
 
 // Additional utility types for filtering and searching
-export type FortniteShopFilter = {
+export type ShopFilter = {
   rarity?: string;
   type?: string;
   series?: string;
@@ -313,20 +318,20 @@ export type FortniteShopFilter = {
   hasOfferTag?: boolean;
 };
 
-export type FortniteShopSort = {
+export type ShopSort = {
   field: 'price' | 'name' | 'date' | 'rarity' | 'sortPriority';
   direction: 'asc' | 'desc';
 };
 
 // Error response types
-export type FortniteApiError = {
+export type ApiError = {
   status: number;
   error: string;
   message?: string;
 };
 
 // API request types
-export type FortniteShopRequest = {
+export type ShopRequest = {
   language?: string;
   includeRefundable?: boolean;
   includeGiftable?: boolean;
@@ -334,20 +339,20 @@ export type FortniteShopRequest = {
 };
 
 // Detailed BR Item Types for individual item endpoint
-export type FortniteDetailedBrItem = {
+export type DetailedBrItem = {
   id: string;
   name: string;
   description: string;
   exclusiveDescription?: string;
   unlockRequirements?: string;
   customExclusiveCallout?: string;
-  type: FortniteType;
-  rarity: FortniteRarity;
-  series?: FortniteSeries;
-  set?: FortniteSet;
-  introduction?: FortniteIntroduction;
-  images: FortniteImages;
-  variants?: FortniteVariant[];
+  type: Type;
+  rarity: Rarity;
+  series?: Series;
+  set?: Set;
+  introduction?: Introduction;
+  images: Images;
+  variants?: Variant[];
   builtInEmoteIds?: string[];
   searchTags?: string[];
   gameplayTags?: string[];
@@ -362,7 +367,7 @@ export type FortniteDetailedBrItem = {
   shopHistory?: string[];
 };
 
-export type FortniteDetailedBrItemResponse = {
+export type DetailedBrItemResponse = {
   status: number;
-  data: FortniteDetailedBrItem;
+  data: DetailedBrItem;
 };

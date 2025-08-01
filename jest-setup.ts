@@ -6,6 +6,9 @@ global.window = {};
 // @ts-ignore
 global.window = global;
 
+// Set timeout for async operations
+jest.setTimeout(10000);
+
 // Clean up after each test
 afterEach(() => {
   jest.clearAllTimers();

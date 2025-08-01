@@ -28,16 +28,16 @@ module.exports = {
     900: '#171717',
   },
   primary: {
-    50: '#FFE2CC',
-    100: '#FFC499',
-    200: '#FFA766',
-    300: '#FF984C',
-    400: '#FF8933',
-    500: '#FF7B1A',
-    600: '#FF6C00',
-    700: '#E56100',
-    800: '#CC5600',
-    900: '#B24C00',
+    50: '#F3E8FF',
+    100: '#E9D5FF',
+    200: '#D8B4FE',
+    300: '#C084FC',
+    400: '#A855F7',
+    500: '#9333EA',
+    600: '#7E22CE',
+    700: '#6B21A8',
+    800: '#581C87',
+    900: '#4C1D95',
   },
   success: {
     50: '#F0FDF4',
@@ -74,5 +74,31 @@ module.exports = {
     700: '#B91C1C',
     800: '#991B1B',
     900: '#7F1D1D',
+  },
+  // New colors for better visual hierarchy
+  fortnite: {
+    blue: '#1D96FC',
+    purple: '#9D4EDD',
+    orange: '#FF7B1A',
+    green: '#22C55E',
+    yellow: '#F59E0B',
+    red: '#DC2626',
+    dark: '#121212',
+    light: '#F5F5F5',
+    accent: '#9D4EDD', // New Fortnite brand color (purple)
+  },
+  // Enhanced contrast colors for accessibility
+  contrast: {
+    high: {
+      light: '#FFFFFF',
+      dark: '#121212',
+    },
+    text: {
+      primary: '#121212',
+      secondary: '#404040',
+      tertiary: '#737373',
+      inverse: '#FFFFFF',
+      accent: '#9D4EDD', // Changed from orange to purple
+    },
   },
 };

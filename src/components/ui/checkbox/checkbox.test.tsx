@@ -1,9 +1,7 @@
 /* eslint-disable max-lines-per-function */
-import 'react-native';
+import * as React from 'react';
 
-import React from 'react';
-
-import { cleanup, screen, setup } from '@/lib/test-utils';
+import { cleanup, screen, setup } from '@/test';
 
 import { Checkbox, Radio, Switch } from './checkbox';
 

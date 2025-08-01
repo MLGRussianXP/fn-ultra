@@ -19,6 +19,58 @@ const appIconBadgeConfig: AppIconBadgeConfig = {
   ],
 };
 
+const iosConfig = {
+  supportsTablet: true,
+  bundleIdentifier: Env.BUNDLE_ID,
+  infoPlist: {
+    ITSAppUsesNonExemptEncryption: false,
+    UIBackgroundModes: [
+      'remote-notification',
+      'background-fetch',
+      'background-processing',
+    ],
+    NSPhotoLibraryUsageDescription:
+      'Allow access to save Fortnite item images to your photo library',
+    NSPhotoLibraryAddUsageDescription:
+      'Allow access to save Fortnite item images to your photo library',
+  },
+};
+
+// Define plugins with proper typing
+const plugins: (string | [string, Record<string, any>] | [string])[] = [
+  [
+    'expo-splash-screen',
+    {
+      backgroundColor: '#2E3C4B',
+      image: './assets/splash-icon.png',
+      imageWidth: 150,
+    },
+  ],
+  [
+    'expo-font',
+    {
+      fonts: [
+        './assets/fonts/fortnitebattlefest.ttf',
+        './assets/fonts/Inter.ttf',
+      ],
+    },
+  ],
+  'expo-localization',
+  'expo-router',
+  ['app-icon-badge', appIconBadgeConfig],
+  ['react-native-edge-to-edge'],
+  'expo-notifications',
+  [
+    'expo-media-library',
+    {
+      photosPermission:
+        'Allow $(PRODUCT_NAME) to access your photos to save Fortnite item images',
+      savePhotosPermission:
+        'Allow $(PRODUCT_NAME) to save Fortnite item images to your photo library',
+    },
+  ],
+];
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: Env.NAME,
@@ -35,13 +87,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     fallbackToCacheTimeout: 0,
   },
   assetBundlePatterns: ['**/*'],
-  ios: {
-    supportsTablet: true,
-    bundleIdentifier: Env.BUNDLE_ID,
-    infoPlist: {
-      ITSAppUsesNonExemptEncryption: false,
-    },
-  },
+  ios: iosConfig,
   experiments: {
     typedRoutes: true,
   },
@@ -51,31 +97,30 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: '#2E3C4B',
     },
     package: Env.PACKAGE,
+    permissions: [
+      'NOTIFICATIONS',
+      'VIBRATE',
+      'RECEIVE_BOOT_COMPLETED',
+      'android.permission.READ_EXTERNAL_STORAGE',
+      'android.permission.WRITE_EXTERNAL_STORAGE',
+      'android.permission.ACCESS_MEDIA_LOCATION',
+      'android.permission.SCHEDULE_EXACT_ALARM',
+      'android.permission.USE_EXACT_ALARM',
+      'android.permission.WAKE_LOCK',
+      'android.permission.FOREGROUND_SERVICE',
+    ],
+    intentFilters: [
+      {
+        action: 'android.intent.action.MAIN',
+        category: ['android.intent.category.LAUNCHER'],
+      },
+    ],
   },
   web: {
     favicon: './assets/favicon.png',
     bundler: 'metro',
   },
-  plugins: [
-    [
-      'expo-splash-screen',
-      {
-        backgroundColor: '#2E3C4B',
-        image: './assets/splash-icon.png',
-        imageWidth: 150,
-      },
-    ],
-    [
-      'expo-font',
-      {
-        fonts: ['./assets/fonts/Inter.ttf'],
-      },
-    ],
-    'expo-localization',
-    'expo-router',
-    ['app-icon-badge', appIconBadgeConfig],
-    ['react-native-edge-to-edge'],
-  ],
+  plugins,
   extra: {
     ...ClientEnv,
     eas: {

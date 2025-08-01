@@ -1,42 +1,47 @@
-import { Redirect, SplashScreen, Stack } from 'expo-router';
+import { SplashScreen, Stack } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
 
-import { useAuth } from '@/lib';
+import { BoldTextFix } from '@/components/ui';
+import { translate } from '@/lib/i18n';
 
 export default function AppLayout() {
-  const status = useAuth.use.status();
   const hideSplash = useCallback(async () => {
     await SplashScreen.hideAsync();
   }, []);
-  useEffect(() => {
-    if (status !== 'idle') {
-      setTimeout(() => {
-        hideSplash();
-      }, 1000);
-    }
-  }, [hideSplash, status]);
 
-  if (status === 'signOut') {
-    return <Redirect href="/login" />;
-  }
+  useEffect(() => {
+    setTimeout(() => {
+      hideSplash();
+    }, 1000);
+  }, [hideSplash]);
 
   return (
-    <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          title: 'Shop',
-        }}
-      />
-      <Stack.Screen
-        name="item/[id]"
-        options={{
-          presentation: 'modal',
+    <>
+      <BoldTextFix />
+      <Stack
+        screenOptions={{
           headerShown: true,
-          headerBackTitle: 'Back',
-          title: 'Item Details',
+          headerTitleStyle: {
+            fontFamily: 'FORTNITE BATTLEFEST',
+          },
+          animation: 'none', // Disable default animations since we're using custom ones
         }}
-      />
-    </Stack>
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            title: translate('navigation.shop'),
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name="item/[id]"
+          options={{
+            title: translate('navigation.item_details'),
+            headerShown: true,
+          }}
+        />
+      </Stack>
+    </>
   );
 }

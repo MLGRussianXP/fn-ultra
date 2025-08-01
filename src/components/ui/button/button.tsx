@@ -1,13 +1,15 @@
 import React from 'react';
 import type { PressableProps, View } from 'react-native';
-import { ActivityIndicator, Pressable, Text } from 'react-native';
+import { ActivityIndicator, Text } from 'react-native';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
+
+import { AnimatedPressable } from '../animated-pressable';
 
 const button = tv({
   slots: {
     container: 'my-2 flex flex-row items-center justify-center rounded-md px-4',
-    label: 'font-inter text-base font-semibold',
+    label: 'text-base tracking-fortnite',
     indicator: 'h-6 text-white',
   },
 
@@ -90,6 +92,7 @@ interface Props extends ButtonVariants, Omit<PressableProps, 'disabled'> {
   loading?: boolean;
   className?: string;
   textClassName?: string;
+  children?: React.ReactNode;
 }
 
 export const Button = React.forwardRef<View, Props>(
@@ -103,6 +106,7 @@ export const Button = React.forwardRef<View, Props>(
       className = '',
       testID,
       textClassName = '',
+      children,
       ...props
     },
     ref
@@ -113,15 +117,17 @@ export const Button = React.forwardRef<View, Props>(
     );
 
     return (
-      <Pressable
+      <AnimatedPressable
         disabled={disabled || loading}
         className={styles.container({ className })}
         {...props}
         ref={ref}
         testID={testID}
+        scaleFactor={0.97}
+        useSpring={true}
       >
-        {props.children ? (
-          props.children
+        {children ? (
+          children
         ) : (
           <>
             {loading ? (
@@ -140,7 +146,7 @@ export const Button = React.forwardRef<View, Props>(
             )}
           </>
         )}
-      </Pressable>
+      </AnimatedPressable>
     );
   }
 );

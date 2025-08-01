@@ -3,6 +3,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest-setup.ts'],
   testMatch: ['**/?(*.)+(spec|test).ts?(x)'],
   forceExit: true,
+  testTimeout: 10000, // 10 second timeout for individual tests
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!**/coverage/**',
